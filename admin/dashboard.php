@@ -7,7 +7,13 @@ echo 'INICIO'; exit;
 require_once '../config/database.php';
 try {
     require_once '../config/functions.php';
-    echo 'APOS FUNCTIONS'; exit;
+    // Teste de escrita no log
+    $testeLog = @file_put_contents(__DIR__ . '/../logs/auditoria.log', date('Y-m-d H:i:s') . " - TESTE DE PERMISSÃO\n", FILE_APPEND);
+    if ($testeLog === false) {
+        echo 'ERRO: Não foi possível escrever em logs/auditoria.log. Verifique permissões da pasta logs/.'; exit;
+    } else {
+        echo 'SUCESSO: Permissão de escrita em logs/auditoria.log OK.'; exit;
+    }
 } catch (Throwable $e) {
     echo 'ERRO FUNCTIONS: ' . $e->getMessage(); exit;
 }
