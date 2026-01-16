@@ -196,9 +196,13 @@ foreach ($resultados['votos'] as $voto) {
                                 <div class="text-xs text-gray-500 mb-1">Acesse pelo celular:</div>
                                 <?php
                                 $url_resultados = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-                                $qr_url = 'https://chart.googleapis.com/chart?chs=160x160&cht=qr&chl=' . urlencode($url_resultados);
+                                // Usar api.qrserver.com como alternativa (mais estável que chart.googleapis)
+                                $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' . urlencode($url_resultados);
                                 ?>
-                                <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="w-32 h-32 border rounded bg-white shadow" loading="lazy">
+                                <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="w-32 h-32 border rounded bg-white shadow" loading="lazy" onerror="this.style.display='none'">
+                                <noscript>
+                                    <a href="<?= htmlspecialchars($qr_url) ?>" target="_blank">Gerar QR Code</a>
+                                </noscript>
                                 <div class="text-[10px] text-gray-400 mt-1 break-all text-center"><?= htmlspecialchars($url_resultados) ?></div>
                             </div>
                         </div>
