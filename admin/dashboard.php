@@ -556,24 +556,52 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
             });
         }
 
-        // Função para atualizar gráficos via AJAX (polling simples)
-        async function fetchAndUpdate(){
-            try{
-                const params = new URLSearchParams(window.location.search);
-                params.set('ajax','1');
-                const res = await fetch(window.location.pathname + '?' + params.toString());
-                const data = await res.json();
-                if(chartMix){ chartMix.data.datasets[0].data = [data.sim, data.nao]; chartMix.update(); }
-                if(chartCount){ chartCount.data.datasets[0].data = [data.sim, data.nao]; chartCount.update(); }
-                if(chartPerc){ chartPerc.data.datasets[0].data = [data.percentual_sim, data.percentual_nao]; chartPerc.update(); }
-                if(chartTrend){ chartTrend.data.labels = data.trend_labels; chartTrend.data.datasets[0].data = data.trend_sim; chartTrend.data.datasets[1].data = data.trend_nao; chartTrend.update(); }
-                // atualizar contadores no DOM (se quiser adicionar IDs nos spans, podemos atualizar aqui)
-            }catch(e){ console.error('Falha ao atualizar dados:', e); }
+        // SSE (Server-Sent Events) para atualizações em tempo real
+        const electors = <?= isset($total_vereadores) ? (int)$total_vereadores : 0 ?>;
+        function animateBadge(id){
+            const el = document.getElementById(id);
+            if(!el) return;
+            el.classList.add('scale-105');
+            setTimeout(()=> el.classList.remove('scale-105'), 700);
         }
-        // polling a cada 30s
-        setInterval(fetchAndUpdate, 30000);
-        // também buscar ao carregar
-        fetchAndUpdate();
+
+        function updateFromPayload(data){
+            if(chartMix){ chartMix.data.datasets[0].data = [data.sim, data.nao]; chartMix.update(); }
+            if(chartCount){ chartCount.data.datasets[0].data = [data.sim, data.nao]; chartCount.update(); }
+            if(chartPerc){ chartPerc.data.datasets[0].data = [data.percentual_sim, data.percentual_nao]; chartPerc.update(); }
+            if(chartTrend){ chartTrend.data.labels = data.trend_labels; chartTrend.data.datasets[0].data = data.trend_sim; chartTrend.data.datasets[1].data = data.trend_nao; chartTrend.update(); }
+
+            // badges
+            const bVotos = document.getElementById('badge-votos');
+            const bNao = document.getElementById('badge-nao');
+            if(bVotos){ bVotos.textContent = data.total; animateBadge('badge-votos'); }
+            if(bNao){ bNao.textContent = Math.max(0, electors - data.total); animateBadge('badge-nao'); }
+        }
+
+        const sseUrl = 'stream_votes.php?votacao_id=<?= $votacao_ativa ? $votacao_ativa['id'] : 0 ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>';
+        if (!!window.EventSource) {
+            try {
+                const es = new EventSource(sseUrl);
+                es.onmessage = function(e){
+                    if (!e.data) return;
+                    try{ const data = JSON.parse(e.data); updateFromPayload(data); } catch(err) { /* ignore non-json heartbeats */ }
+                };
+                es.onerror = function(err){ console.error('SSE connection error', err); };
+            } catch(err){ console.error('SSE not available, falling back to polling', err); }
+        } else {
+            // fallback para polling se SSE não for suportado
+            async function fetchAndUpdate(){
+                try{
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('ajax','1');
+                    const res = await fetch(window.location.pathname + '?' + params.toString());
+                    const data = await res.json();
+                    updateFromPayload(data);
+                }catch(e){ console.error('Falha ao atualizar dados:', e); }
+            }
+            setInterval(fetchAndUpdate, 30000);
+            fetchAndUpdate();
+        }
     </script>
 </body>
 </html>
