@@ -114,7 +114,11 @@ $sucesso = $_GET['sucesso'] ?? '';
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
                         <div class="p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.66 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <!-- Heroicon: Users -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
                         </div>
                         <div>
                             <div class="text-sm text-gray-500 dark:text-gray-300">Eleitores</div>
@@ -124,7 +128,11 @@ $sucesso = $_GET['sucesso'] ?? '';
 
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
                         <div class="p-3 bg-green-50 dark:bg-green-900 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7 8h10M7 16h10"/></svg>
+                            <!-- Heroicon: Check Circle -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 dark:text-green-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 9v3l2 2" />
+                                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
                         <div>
                             <div class="text-sm text-gray-500 dark:text-gray-300">Votos</div>
@@ -134,7 +142,11 @@ $sucesso = $_GET['sucesso'] ?? '';
 
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
                         <div class="p-3 bg-red-50 dark:bg-red-900 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 dark:text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.36 5.64L5.64 18.36M6 4h12v12"/></svg>
+                            <!-- Heroicon: X Circle -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 dark:text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 9l-6 6M9 9l6 6" />
+                                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
                         <div>
                             <div class="text-sm text-gray-500 dark:text-gray-300">Não votaram</div>
@@ -144,7 +156,11 @@ $sucesso = $_GET['sucesso'] ?? '';
 
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
                         <div class="p-3 bg-indigo-50 dark:bg-indigo-900 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 dark:text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 11V3m0 8a8 8 0 100 16 8 8 0 000-16z"/></svg>
+                            <!-- Heroicon: Clock -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 dark:text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 7v5l3 3" />
+                            </svg>
                         </div>
                         <div>
                             <div class="text-sm text-gray-500 dark:text-gray-300">Votação</div>
