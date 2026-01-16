@@ -40,6 +40,7 @@
             document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
         };
     </script>
+<?php
 $erro = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
