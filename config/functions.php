@@ -41,49 +41,6 @@ function gerarCSRFToken() {
  */
 function validarCSRFToken() {
     iniciarSessao();
-
-// === Funções de perfil e proteção de acesso ===
-/**
- * Verifica se o eleitor logado possui perfil específico
- * @param string|array $perfis Perfil ou array de perfis permitidos
- * @return bool
- */
-function eleitorTemPerfil($perfis) {
-    iniciarSessao();
-    if (!isset($_SESSION['eleitor_id']) || !isset($_SESSION['eleitor_cpf'])) {
-        return false;
-    }
-    $perfil = $_SESSION['eleitor_perfil'] ?? null;
-    if (is_array($perfis)) {
-        return in_array($perfil, $perfis);
-    }
-    return $perfil === $perfis;
-}
-
-/**
- * Protege rota para perfis específicos de eleitor
- * @param string|array $perfis Perfil ou array de perfis permitidos
- */
-function protegerPorPerfil($perfis) {
-    if (!eleitorTemPerfil($perfis)) {
-        header('HTTP/1.1 403 Forbidden');
-        echo '<h2>Acesso negado: perfil insuficiente.</h2>';
-        exit;
-    }
-}
-
-/**
- * Verifica se o admin está autenticado e, opcionalmente, se é admin master
- */
-function verificarAdminPerfil($perfil = 'admin') {
-    iniciarSessao();
-    if (!isset($_SESSION['admin_id']) || !isset($_SESSION['admin_usuario'])) {
-        header('Location: /admin/login.php');
-        exit;
-    }
-    // Futuro: checar perfil do admin se necessário
-}
-
     if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token'])) {
         return false;
     }
