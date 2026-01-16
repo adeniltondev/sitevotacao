@@ -187,6 +187,7 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CPF</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cargo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
                             </tr>
                         </thead>
@@ -215,12 +216,27 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <?= $eleitor['cargo'] ? htmlspecialchars($eleitor['cargo']) : '-' ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <?php
+                                        // Exemplo: status ativo/inativo (futuro: campo na tabela)
+                                        $ativo = true; // Supondo todos ativos por padrão
+                                        echo $ativo
+                                            ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">Ativo</span>'
+                                            : '<span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">Inativo</span>';
+                                        ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-2">
                                         <form method="POST" action="" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este eleitor?')">
                                             <input type="hidden" name="acao" value="excluir_eleitor">
                                             <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
                                             <button type="submit" class="text-red-600 hover:text-red-900">Excluir</button>
                                         </form>
+                                        <form method="POST" action="" class="inline">
+                                            <input type="hidden" name="acao" value="bloquear_eleitor">
+                                            <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
+                                            <button type="submit" class="text-yellow-600 hover:text-yellow-900">Bloquear</button>
+                                        </form>
+                                        <a href="historico.php?cpf=<?= urlencode($eleitor['cpf']) ?>" class="text-blue-600 hover:text-blue-900">Histórico</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
