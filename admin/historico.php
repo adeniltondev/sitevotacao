@@ -2,9 +2,10 @@
 /**
  * Histórico de Votos do Vereador
  */
+
 require_once '../config/database.php';
 require_once '../config/functions.php';
-verificarAdmin();
+verificarAdminPerfil('admin');
 
 $cpf = preg_replace('/[^0-9]/', '', $_GET['cpf'] ?? '');
 if (!$cpf) {

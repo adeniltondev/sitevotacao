@@ -3,8 +3,12 @@
  * Painel de Resultados em Tempo Real
  * Estilo Institucional - Fundo Escuro
  */
+
 require_once '../config/database.php';
 require_once '../config/functions.php';
+
+// Permitir acesso apenas para vereador e secretario
+protegerPorPerfil(['vereador','secretario']);
 
 // Buscar votação ativa
 $votacao = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIMIT 1")->fetch();

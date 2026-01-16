@@ -2,10 +2,14 @@
 /**
  * Gerenciamento de Eleitores
  */
-require_once '../config/database.php';
 require_once '../config/functions.php';
 
 verificarAdmin();
+
+require_once '../config/database.php';
+require_once '../config/functions.php';
+
+verificarAdminPerfil('admin');
 
 $mensagem = '';
 $tipo_mensagem = '';

@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['eleitor_nome'] = $eleitor['nome'];
                 $_SESSION['eleitor_cargo'] = $eleitor['cargo'];
                 $_SESSION['eleitor_foto'] = $eleitor['foto'];
+                    $_SESSION['eleitor_perfil'] = $eleitor['perfil'];
                 registrarLog('Login eleitor realizado', ['cpf' => $cpf]);
                 header('Location: index.php');
                 exit;

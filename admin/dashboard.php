@@ -2,10 +2,11 @@
 /**
  * Painel Administrativo - Dashboard
  */
+
 require_once '../config/database.php';
 require_once '../config/functions.php';
 
-verificarAdmin();
+verificarAdminPerfil('admin');
 
 // Processar ações
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

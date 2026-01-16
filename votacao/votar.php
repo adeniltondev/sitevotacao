@@ -2,8 +2,12 @@
 /**
  * Processamento do Voto
  */
+
 require_once '../config/database.php';
 require_once '../config/functions.php';
+
+// Permitir votar apenas para perfil vereador
+protegerPorPerfil('vereador');
 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
