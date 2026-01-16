@@ -104,7 +104,7 @@ foreach ($resultados['votos'] as $voto) {
         }
         
         body {
-            background: #f3f4f6;
+            background: #f9fafb;
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             color: #1f2937;
