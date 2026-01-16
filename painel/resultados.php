@@ -209,16 +209,24 @@ foreach ($resultados['votos'] as $voto) {
         </button>
         <!-- Header -->
         <div class="bg-gray-800 border-b border-gray-700 py-4 px-8 fade-in">
-            <div class="max-w-7xl mx-auto">
-                <h1 class="text-2xl font-bold text-white mb-1">CÂMARA MUNICIPAL</h1>
-                <?php if ($votacao): ?>
-                    <p class="text-sm text-gray-200">
-                        <?= htmlspecialchars($votacao['titulo']) ?>
-                    </p>
-                    <p class="text-xs text-gray-300 mt-1">
-                        <?= date('d/m/Y H:i') ?>
-                    </p>
-                <?php endif; ?>
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white mb-1">CÂMARA MUNICIPAL</h1>
+                    <?php if ($votacao): ?>
+                        <p class="text-sm text-gray-200">
+                            <?= htmlspecialchars($votacao['titulo']) ?>
+                        </p>
+                        <p class="text-xs text-gray-300 mt-1">
+                            <?= date('d/m/Y H:i') ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="qrcode_publico.php" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75v-1.5A2.25 2.25 0 016.75 3h1.5M17.25 3h1.5A2.25 2.25 0 0121 5.25v1.5M21 17.25v1.5A2.25 2.25 0 0118.75 21h-1.5M6.75 21h-1.5A2.25 2.25 0 013 18.75v-1.5" /><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h.008v.008H7.5V7.5zm0 4.5h.008v.008H7.5V12zm0 4.5h.008v.008H7.5v-.008zm4.5-9h.008v.008H12V7.5zm0 4.5h.008v.008H12V12zm0 4.5h.008v.008H12v-.008zm4.5-9h.008v.008H16.5V7.5zm0 4.5h.008v.008H16.5V12z" /></svg>
+                        QR Code Público
+                    </a>
+                </div>
             </div>
         </div>
 
