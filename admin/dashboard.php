@@ -217,7 +217,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
                 <!-- Top stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                    <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                        <div id="badge-eleitores" class="absolute top-3 right-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-3 py-1 rounded-full text-sm font-semibold shadow"><?php $total_vereadores = $pdo->query("SELECT COUNT(*) FROM eleitores")->fetchColumn(); echo $total_vereadores; ?></div>
                         <div class="p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
                             <!-- Heroicon: Users -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -231,7 +232,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                    <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                        <div id="badge-votos" class="absolute top-3 right-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-3 py-1 rounded-full text-sm font-semibold shadow"><?= $total_geral ?></div>
                         <div class="p-3 bg-green-50 dark:bg-green-900 rounded-lg">
                             <!-- Heroicon: Check Circle -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 dark:text-green-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -245,7 +247,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                    <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                        <div id="badge-nao" class="absolute top-3 right-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-3 py-1 rounded-full text-sm font-semibold shadow"><?php $nao_votaram = $total_vereadores - $total_geral; echo $nao_votaram >= 0 ? $nao_votaram : 0; ?></div>
                         <div class="p-3 bg-red-50 dark:bg-red-900 rounded-lg">
                             <!-- Heroicon: X Circle -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 dark:text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -259,7 +262,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                    <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex items-center gap-4">
+                        <div id="badge-votacao" class="absolute top-3 right-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-3 py-1 rounded-full text-sm font-semibold shadow"><?= $votacao_ativa ? '1' : '0' ?></div>
                         <div class="p-3 bg-indigo-50 dark:bg-indigo-900 rounded-lg">
                             <!-- Heroicon: Clock -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 dark:text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
