@@ -26,64 +26,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensagem = 'CPF inválido';
             $tipo_mensagem = 'error';
         } else {
-            // Verificar se CPF já existe
-            $stmt = $pdo->prepare("SELECT id FROM eleitores WHERE cpf = ?");
-            $stmt->execute([$cpf]);
-            if ($stmt->fetch()) {
-                $mensagem = 'CPF já cadastrado';
-                $tipo_mensagem = 'error';
-            } else {
-                // Processar upload de foto
-                $foto = null;
-                if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-                    $resultado = uploadFoto($_FILES['foto'], '../uploads');
-                    if (!isset($resultado['erro'])) {
-                        $foto = $resultado['arquivo'];
+            try {
+                // Verificar se CPF já existe
+                $stmt = $pdo->prepare("SELECT id FROM eleitores WHERE cpf = ?");
+                $stmt->execute([$cpf]);
+                if ($stmt->fetch()) {
+                    $mensagem = 'CPF já cadastrado';
+                    $tipo_mensagem = 'error';
+                } else {
+                    // Processar upload de foto (usar caminho absoluto para evitar problemas de working dir)
+                    $foto = null;
+                    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+                        $resultado = uploadFoto($_FILES['foto'], __DIR__ . '/../uploads');
+                        if (!isset($resultado['erro'])) {
+                            $foto = $resultado['arquivo'];
+                        } else {
+                            // log do erro de upload, mas não interrompe o cadastro
+                            registrarLog('upload_foto_erro', ['erro' => $resultado['erro']]);
+                        }
                     }
+
+                    // Inserir eleitor
+                    $perfil = $_POST['perfil'] ?? 'vereador';
+                    $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
+                    $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
+                    $mensagem = 'Eleitor cadastrado com sucesso!';
+                    $tipo_mensagem = 'success';
                 }
-                
-                // Inserir eleitor
-                $perfil = $_POST['perfil'] ?? 'vereador';
-                $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
-                $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
-                $mensagem = 'Eleitor cadastrado com sucesso!';
-                $tipo_mensagem = 'success';
+            } catch (Exception $e) {
+                // Registrar erro e mostrar mensagem amigável em vez de 500
+                registrarLog('cadastrar_eleitor_erro', ['mensagem' => $e->getMessage()]);
+                $mensagem = 'Ocorreu um erro ao cadastrar o eleitor. Verifique os logs.';
+                $tipo_mensagem = 'error';
             }
         }
     }
     
-    if ($acao === 'excluir_eleitor') {
-            if ($acao === 'bloquear_eleitor') {
-                $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
-                $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 0 WHERE id = ?");
-                $stmt->execute([$eleitor_id]);
-                $mensagem = 'Eleitor bloqueado com sucesso!';
-                $tipo_mensagem = 'success';
-            }
-            if ($acao === 'desbloquear_eleitor') {
-                $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
-                $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 1 WHERE id = ?");
-                $stmt->execute([$eleitor_id]);
-                $mensagem = 'Eleitor desbloqueado com sucesso!';
-                $tipo_mensagem = 'success';
-            }
+    if ($acao === 'bloquear_eleitor') {
         $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
-        
+        $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 0 WHERE id = ?");
+        $stmt->execute([$eleitor_id]);
+        $mensagem = 'Eleitor bloqueado com sucesso!';
+        $tipo_mensagem = 'success';
+    }
+
+    if ($acao === 'desbloquear_eleitor') {
+        $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
+        $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 1 WHERE id = ?");
+        $stmt->execute([$eleitor_id]);
+        $mensagem = 'Eleitor desbloqueado com sucesso!';
+        $tipo_mensagem = 'success';
+    }
+
+    if ($acao === 'excluir_eleitor') {
+        $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
+
         // Buscar foto para excluir
         $stmt = $pdo->prepare("SELECT foto FROM eleitores WHERE id = ?");
         $stmt->execute([$eleitor_id]);
         $eleitor = $stmt->fetch();
-        
+
         if ($eleitor && $eleitor['foto']) {
-            $caminho_foto = '../uploads/' . $eleitor['foto'];
+            $caminho_foto = __DIR__ . '/../uploads/' . $eleitor['foto'];
             if (file_exists($caminho_foto)) {
-                unlink($caminho_foto);
+                @unlink($caminho_foto);
             }
         }
-        
+
         $stmt = $pdo->prepare("DELETE FROM eleitores WHERE id = ?");
         $stmt->execute([$eleitor_id]);
-        
+
         $mensagem = 'Eleitor excluído com sucesso!';
         $tipo_mensagem = 'success';
     }
