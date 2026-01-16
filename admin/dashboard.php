@@ -497,38 +497,79 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Dados iniciais gerados pelo servidor
         const sim = <?= $total_sim ?>;
         const nao = <?= $total_nao ?>;
         const total = <?= $total_geral ?>;
         const percSim = <?= $percentual_sim ?>;
         const percNao = <?= $percentual_nao ?>;
 
+        // Pie (Mix)
         const ctx1 = document.getElementById('graficoSimNao')?.getContext('2d');
-        if(ctx1){
-            new Chart(ctx1, {
+        let chartMix = null;
+        if (ctx1) {
+            chartMix = new Chart(ctx1, {
                 type: 'pie',
-                data: { labels: ['SIM','NÃO'], datasets: [{ data: [sim, nao], backgroundColor: ['#16a34a','#ef4444'] }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { labels: ['SIM', 'NÃO'], datasets: [{ data: [sim, nao], backgroundColor: ['#16a34a', '#ef4444'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: true } } }
             });
         }
 
+        // Bar (Contagem)
         const ctx2 = document.getElementById('graficoContagem')?.getContext('2d');
-        if(ctx2){
-            new Chart(ctx2, {
+        let chartCount = null;
+        if (ctx2) {
+            chartCount = new Chart(ctx2, {
                 type: 'bar',
-                data: { labels: ['SIM','NÃO'], datasets: [{ label: 'Votos', data: [sim, nao], backgroundColor: ['#16a34a','#ef4444'] }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision:0 } } }, plugins: { legend: { display: false } } }
+                data: { labels: ['SIM', 'NÃO'], datasets: [{ label: 'Votos', data: [sim, nao], backgroundColor: ['#16a34a', '#ef4444'] }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } }
             });
         }
 
+        // Doughnut (Percentual)
         const ctx3 = document.getElementById('graficoPercentual')?.getContext('2d');
-        if(ctx3){
-            new Chart(ctx3, {
+        let chartPerc = null;
+        if (ctx3) {
+            chartPerc = new Chart(ctx3, {
                 type: 'doughnut',
-                data: { labels: ['SIM','NÃO'], datasets: [{ data: [percSim, percNao], backgroundColor: ['#16a34a','#ef4444'] }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context){ return context.label + ': ' + context.raw + '%'; } } } } }
+                data: { labels: ['SIM', 'NÃO'], datasets: [{ data: [percSim, percNao], backgroundColor: ['#16a34a', '#ef4444'] }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (context) { return context.label + ': ' + context.raw + '%'; } } } } }
             });
         }
+
+        // Trend (linha)
+        const ctxT = document.getElementById('graficoTendencia')?.getContext('2d');
+        let chartTrend = null;
+        // dados iniciais do servidor (tentar usar PHP gerado se disponível)
+        const trend_labels = <?= json_encode(array_map(function($d){ return $d; }, (isset($trend_labels) ? $trend_labels : []))) ?>;
+        const trend_sim = <?= json_encode(isset($trend_sim) ? $trend_sim : array_fill(0,14,0)) ?>;
+        const trend_nao = <?= json_encode(isset($trend_nao) ? $trend_nao : array_fill(0,14,0)) ?>;
+        if (ctxT) {
+            chartTrend = new Chart(ctxT, {
+                type: 'line',
+                data: { labels: trend_labels, datasets: [{ label: 'SIM', data: trend_sim, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)', tension: 0.3 }, { label: 'NÃO', data: trend_nao, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.06)', tension: 0.3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
+        }
+
+        // Função para atualizar gráficos via AJAX (polling simples)
+        async function fetchAndUpdate(){
+            try{
+                const params = new URLSearchParams(window.location.search);
+                params.set('ajax','1');
+                const res = await fetch(window.location.pathname + '?' + params.toString());
+                const data = await res.json();
+                if(chartMix){ chartMix.data.datasets[0].data = [data.sim, data.nao]; chartMix.update(); }
+                if(chartCount){ chartCount.data.datasets[0].data = [data.sim, data.nao]; chartCount.update(); }
+                if(chartPerc){ chartPerc.data.datasets[0].data = [data.percentual_sim, data.percentual_nao]; chartPerc.update(); }
+                if(chartTrend){ chartTrend.data.labels = data.trend_labels; chartTrend.data.datasets[0].data = data.trend_sim; chartTrend.data.datasets[1].data = data.trend_nao; chartTrend.update(); }
+                // atualizar contadores no DOM (se quiser adicionar IDs nos spans, podemos atualizar aqui)
+            }catch(e){ console.error('Falha ao atualizar dados:', e); }
+        }
+        // polling a cada 30s
+        setInterval(fetchAndUpdate, 30000);
+        // também buscar ao carregar
+        fetchAndUpdate();
     </script>
 </body>
 </html>
