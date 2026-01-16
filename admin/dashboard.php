@@ -439,6 +439,30 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
                 <!-- Lista de Votantes -->
                 <?php if ($votacao_ativa && count($votos) > 0): ?>
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+                        <h2 class="text-lg font-semibold mb-4">Últimos 5 Votantes</h2>
+                        <div class="space-y-3">
+                            <?php
+                                $lastStmt = $pdo->prepare("SELECT nome, cpf, voto, criado_em FROM votos WHERE votacao_id = ?" . (isset($whereDate) ? $whereDate : "") . " ORDER BY criado_em DESC LIMIT 5");
+                                $lastParams = [$votacao_ativa['id']];
+                                if ($start_date && $end_date) { $lastParams[] = $start_date . ' 00:00:00'; $lastParams[] = $end_date . ' 23:59:59'; }
+                                $lastStmt->execute($lastParams);
+                                $ultimos = $lastStmt->fetchAll();
+                            ?>
+                            <?php foreach($ultimos as $u): ?>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-sm font-medium text-gray-700 dark:text-gray-200"><?= strtoupper(substr($u['nome'],0,1)) ?></div>
+                                        <div>
+                                            <div class="font-semibold"><?= htmlspecialchars($u['nome']) ?></div>
+                                            <div class="text-xs text-gray-500"><?= formatarCPF($u['cpf']) ?> • <?= date('d/m H:i', strtotime($u['criado_em'])) ?></div>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm font-semibold <?= $u['voto'] === 'sim' ? 'text-green-600' : 'text-red-600' ?>"><?= strtoupper($u['voto']) ?></div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                         <h2 class="text-lg font-semibold mb-4">Votantes (<?= count($votos) ?>)</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
