@@ -155,17 +155,27 @@ $sucesso = $_GET['sucesso'] ?? '';
 
                 <!-- Painel principal: gráfico + lista rápida -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold mb-4">Distribuição dos Votos</h2>
-                        <canvas id="graficoVotos" width="400" height="180"></canvas>
-                        <div class="mt-4 grid grid-cols-2 gap-4">
-                            <div class="flex items-center gap-3">
-                                <span class="inline-block w-3 h-3 rounded-full bg-green-600"></span>
-                                <div class="text-sm">SIM: <span class="font-semibold text-green-600"><?= $total_sim ?> (<?= $percentual_sim ?>%)</span></div>
+                    <div class="lg:col-span-2">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col">
+                                <h2 class="text-lg font-semibold mb-4">Mix SIM / NÃO</h2>
+                                <canvas id="graficoSimNao" height="180"></canvas>
+                                <div class="mt-4 w-full flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
+                                    <div class="flex items-center gap-3"><span class="inline-block w-3 h-3 rounded-full bg-green-600"></span>SIM: <span class="font-semibold text-green-600 ml-2"><?= $total_sim ?> (<?= $percentual_sim ?>%)</span></div>
+                                    <div class="flex items-center gap-3"><span class="inline-block w-3 h-3 rounded-full bg-red-600"></span>NÃO: <span class="font-semibold text-red-600 ml-2"><?= $total_nao ?> (<?= $percentual_nao ?>%)</span></div>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <span class="inline-block w-3 h-3 rounded-full bg-red-600"></span>
-                                <div class="text-sm">NÃO: <span class="font-semibold text-red-600"><?= $total_nao ?> (<?= $percentual_nao ?>%)</span></div>
+
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col">
+                                <h2 class="text-lg font-semibold mb-4">Contagem Absoluta</h2>
+                                <canvas id="graficoContagem" height="180"></canvas>
+                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-300">Total de votos: <span class="font-semibold"><?= $total_geral ?></span></div>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col">
+                                <h2 class="text-lg font-semibold mb-4">Percentual</h2>
+                                <canvas id="graficoPercentual" height="180"></canvas>
+                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-300">SIM: <span class="font-semibold text-green-600"><?= $percentual_sim ?>%</span> • NÃO: <span class="font-semibold text-red-600"><?= $percentual_nao ?>%</span></div>
                             </div>
                         </div>
                     </div>
@@ -285,12 +295,36 @@ $sucesso = $_GET['sucesso'] ?? '';
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const ctx = document.getElementById('graficoVotos')?.getContext('2d');
-        if(ctx){
-            new Chart(ctx, {
+        const sim = <?= $total_sim ?>;
+        const nao = <?= $total_nao ?>;
+        const total = <?= $total_geral ?>;
+        const percSim = <?= $percentual_sim ?>;
+        const percNao = <?= $percentual_nao ?>;
+
+        const ctx1 = document.getElementById('graficoSimNao')?.getContext('2d');
+        if(ctx1){
+            new Chart(ctx1, {
                 type: 'pie',
-                data: { labels: ['SIM','NÃO'], datasets: [{ data: [<?= $total_sim ?>, <?= $total_nao ?>], backgroundColor: ['#16a34a','#ef4444'] }] },
+                data: { labels: ['SIM','NÃO'], datasets: [{ data: [sim, nao], backgroundColor: ['#16a34a','#ef4444'] }] },
                 options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        const ctx2 = document.getElementById('graficoContagem')?.getContext('2d');
+        if(ctx2){
+            new Chart(ctx2, {
+                type: 'bar',
+                data: { labels: ['SIM','NÃO'], datasets: [{ label: 'Votos', data: [sim, nao], backgroundColor: ['#16a34a','#ef4444'] }] },
+                options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { precision:0 } } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        const ctx3 = document.getElementById('graficoPercentual')?.getContext('2d');
+        if(ctx3){
+            new Chart(ctx3, {
+                type: 'doughnut',
+                data: { labels: ['SIM','NÃO'], datasets: [{ data: [percSim, percNao], backgroundColor: ['#16a34a','#ef4444'] }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: function(context){ return context.label + ': ' + context.raw + '%'; } } } } }
             });
         }
     </script>
