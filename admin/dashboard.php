@@ -101,19 +101,126 @@ $sucesso = $_GET['sucesso'] ?? '';
     <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-blue-600">Painel Administrativo</h1>
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <div class="flex flex-col md:flex-row md:items-center gap-4 flex-1">
+                    <div>
+                        <h1 class="text-2xl font-bold text-blue-600">Câmara Municipal</h1>
+                        <div class="text-xs text-gray-500 font-semibold">Painel Administrativo</div>
+                    </div>
+                    <div class="hidden md:block border-l h-8 mx-4"></div>
+                    <div>
+                        <div class="text-sm text-gray-700 font-semibold">Sessão atual:</div>
+                        <div class="text-base text-gray-900 font-bold">
+                            <?= $votacao_ativa ? htmlspecialchars($votacao_ativa['titulo']) : 'Nenhuma sessão aberta' ?>
+                        </div>
+                    </div>
+                    <div class="hidden md:block border-l h-8 mx-4"></div>
+                    <div>
+                        <div class="text-sm text-gray-700 font-semibold">Status da votação:</div>
+                        <span class="text-xs font-bold px-2 py-1 rounded <?= $votacao_ativa ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' ?>">
+                            <?= $votacao_ativa ? 'ABERTA' : 'ENCERRADA' ?>
+                        </span>
+                    </div>
+                </div>
                 <div class="flex items-center gap-4">
-                    <span class="text-gray-700">Olá, <?= htmlspecialchars($_SESSION['admin_nome']) ?></span>
+                    <div class="text-right">
+                        <div class="text-sm font-semibold text-gray-800">
+                            <?= htmlspecialchars($_SESSION['admin_nome']) ?>
+                        </div>
+                        <div class="text-xs text-gray-500" id="relogio"></div>
+                    </div>
                     <a href="logout.php" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
                         Sair
                     </a>
                 </div>
             </div>
         </div>
+        <script>
+        function atualizarRelogio() {
+            const agora = new Date();
+            const data = agora.toLocaleDateString('pt-BR');
+            const hora = agora.toLocaleTimeString('pt-BR');
+            document.getElementById('relogio').textContent = `${data} ${hora}`;
+        }
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+        </script>
     </header>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Indicadores do Dashboard -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-gray-500 text-sm">Total de Vereadores</div>
+                        <div class="text-3xl font-bold text-blue-600">
+                            <?php
+                            $total_vereadores = $pdo->query("SELECT COUNT(*) FROM eleitores")->fetchColumn();
+                            echo $total_vereadores;
+                            ?>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-gray-500 text-sm">Total de Votos</div>
+                        <div class="text-3xl font-bold text-green-600">
+                            <?= $total_geral ?>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-gray-500 text-sm">Não Votaram</div>
+                        <div class="text-3xl font-bold text-red-600">
+                            <?php
+                            $nao_votaram = $total_vereadores - $total_geral;
+                            echo $nao_votaram >= 0 ? $nao_votaram : 0;
+                            ?>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-gray-500 text-sm">Última Ação</div>
+                        <div class="text-xs text-gray-700 text-center">
+                            <?php
+                            $log = @file_get_contents(__DIR__ . '/../logs/auditoria.log');
+                            $ultima_acao = '';
+                            if ($log) {
+                                $linhas = explode("\n", trim($log));
+                                $ultima = end($linhas);
+                                if ($ultima) {
+                                    $registro = json_decode($ultima, true);
+                                    if ($registro) {
+                                        $ultima_acao = $registro['data'] . ' - ' . $registro['acao'];
+                                    }
+                                }
+                            }
+                            echo $ultima_acao ?: 'Sem ações registradas';
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Pizza (SIM/NÃO) -->
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <h2 class="text-lg font-bold text-gray-800 mb-4">Distribuição dos Votos</h2>
+                    <canvas id="graficoVotos" width="400" height="180"></canvas>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        const ctx = document.getElementById('graficoVotos').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: ['SIM', 'NÃO'],
+                                datasets: [{
+                                    data: [<?= $total_sim ?>, <?= $total_nao ?>],
+                                    backgroundColor: ['#22c55e', '#ef4444'],
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: { position: 'bottom' }
+                                }
+                            }
+                        });
+                    </script>
+                </div>
         <?php if ($sucesso): ?>
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
                 <?php
