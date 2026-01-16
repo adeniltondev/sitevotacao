@@ -284,7 +284,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                         <h2 class="text-lg font-semibold">Tendência (últimos 14 dias)</h2>
                         <div class="text-sm text-gray-500">Atualiza automaticamente</div>
                     </div>
-                    <canvas id="graficoTendencia" height="120" aria-label="Gráfico de tendência de votos"></canvas>
+                    <canvas id="graficoTendencia" height="120" style="height:140px; max-height:220px;" aria-label="Gráfico de tendência de votos"></canvas>
                 </div>
 
                 <!-- Painel principal: gráfico + lista rápida -->
@@ -555,7 +555,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
             chartTrend = new Chart(ctxT, {
                 type: 'line',
                 data: { labels: trend_labels, datasets: [{ label: 'SIM', data: trend_sim, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)', tension: 0.3 }, { label: 'NÃO', data: trend_nao, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.06)', tension: 0.3 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, max: paddedMax, ticks: { precision: 0 } } } }
+                options: { responsive: true, maintainAspectRatio: true, aspectRatio: 5, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, suggestedMax: paddedMax, ticks: { precision: 0 } } } }
             });
         }
 
@@ -583,7 +583,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                     if (!chartTrend.options) chartTrend.options = {};
                     if (!chartTrend.options.scales) chartTrend.options.scales = {};
                     if (!chartTrend.options.scales.y) chartTrend.options.scales.y = {};
-                    chartTrend.options.scales.y.max = newMax;
+                    chartTrend.options.scales.y.suggestedMax = newMax;
                     chartTrend.options.scales.y.beginAtZero = true;
                 }catch(e){ console.warn('Erro ao recalcular escala do gráfico de tendência', e); }
                 chartTrend.update();
