@@ -274,6 +274,15 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                     </div>
                 </div>
 
+                <!-- Trend chart (últimos dias) -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold">Tendência (últimos 14 dias)</h2>
+                        <div class="text-sm text-gray-500">Atualiza automaticamente</div>
+                    </div>
+                    <canvas id="graficoTendencia" height="120" aria-label="Gráfico de tendência de votos"></canvas>
+                </div>
+
                 <!-- Painel principal: gráfico + lista rápida -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <div class="lg:col-span-2">
