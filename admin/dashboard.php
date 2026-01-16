@@ -1,8 +1,9 @@
 <?php
+
 require_once '../config/database.php';
 require_once '../config/functions.php';
 
-verificarAdminPerfil('admin');
+verificarAdmin();
 
 // Processar ações
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
