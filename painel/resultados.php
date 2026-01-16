@@ -7,8 +7,11 @@
 require_once '../config/database.php';
 require_once '../config/functions.php';
 
-// Permitir acesso apenas para vereador e secretario
-protegerPorPerfil(['vereador','secretario']);
+// Permitir acesso público para leitura dos totais, mas grid detalhado só para vereador/secretario
+$temAcessoDetalhado = false;
+if (isset($_SESSION['eleitor_id']) && isset($_SESSION['eleitor_perfil']) && in_array($_SESSION['eleitor_perfil'], ['vereador','secretario'])) {
+    $temAcessoDetalhado = true;
+}
 
 // Buscar votação ativa
 $votacao = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIMIT 1")->fetch();
