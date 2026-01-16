@@ -1,29 +1,8 @@
 <?php
-
-/**
- * Painel Administrativo - Dashboard
- */
-
 require_once '../config/database.php';
-try {
-    require_once '../config/functions.php';
-    // Teste de escrita no log
-    $testeLog = @file_put_contents(__DIR__ . '/../logs/auditoria.log', date('Y-m-d H:i:s') . " - TESTE DE PERMISSÃO\n", FILE_APPEND);
-    if ($testeLog === false) {
-        echo 'ERRO: Não foi possível escrever em logs/auditoria.log. Verifique permissões da pasta logs/.'; exit;
-    } else {
-        echo 'SUCESSO: Permissão de escrita em logs/auditoria.log OK.'; exit;
-    }
-} catch (Throwable $e) {
-    echo 'ERRO FUNCTIONS: ' . $e->getMessage(); exit;
-}
+require_once '../config/functions.php';
 
 verificarAdminPerfil('admin');
-
-// Ativar exibição de erros PHP para diagnóstico de erro 500
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 // Processar ações
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
