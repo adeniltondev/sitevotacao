@@ -53,20 +53,28 @@ $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIM
 // Buscar todas as votações
 $votacoes = $pdo->query("SELECT * FROM votacoes ORDER BY criada_em DESC")->fetchAll();
 
-// Buscar todos os votos da votação ativa
+// Buscar todos os votos da votação ativa (com suporte a filtro de data)
 $votos = [];
 if ($votacao_ativa) {
-    $votosStmt = $pdo->prepare("SELECT * FROM votos WHERE votacao_id = ? ORDER BY criado_em DESC");
-    $votosStmt->execute([$votacao_ativa['id']]);
+    $whereDate = "";
+    $params = [$votacao_ativa['id']];
+    if ($start_date && $end_date) {
+        $whereDate = " AND criado_em BETWEEN ? AND ?";
+        $params[] = $start_date . ' 00:00:00';
+        $params[] = $end_date . ' 23:59:59';
+    }
+
+    $votosStmt = $pdo->prepare("SELECT * FROM votos WHERE votacao_id = ?" . $whereDate . " ORDER BY criado_em DESC");
+    $votosStmt->execute($params);
     $votos = $votosStmt->fetchAll();
 
-    $total_sim_stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'sim'");
-    $total_sim_stmt->execute([$votacao_ativa['id']]);
-    $total_sim = $total_sim_stmt->fetch()['total'];
+    $total_sim_stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'sim'" . $whereDate);
+    $total_sim_stmt->execute($params);
+    $total_sim = (int)$total_sim_stmt->fetch()['total'];
 
-    $total_nao_stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'nao'");
-    $total_nao_stmt->execute([$votacao_ativa['id']]);
-    $total_nao = $total_nao_stmt->fetch()['total'];
+    $total_nao_stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'nao'" . $whereDate);
+    $total_nao_stmt->execute($params);
+    $total_nao = (int)$total_nao_stmt->fetch()['total'];
 
     $total_geral = $total_sim + $total_nao;
     $percentual_sim = $total_geral > 0 ? round(($total_sim / $total_geral) * 100, 1) : 0;
@@ -186,11 +194,24 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                         <p class="text-sm text-gray-600 dark:text-gray-300">Visão geral das votações e participação</p>
                     </div>
                     <div class="flex items-center gap-4">
+                        <form method="GET" class="flex items-center gap-2">
+                            <?php if($votacao_ativa): ?><input type="hidden" name="votacao_id" value="<?= $votacao_ativa['id'] ?>"><?php endif; ?>
+                            <label class="text-xs text-gray-500">Período:</label>
+                            <input aria-label="Data início" name="start" value="<?= htmlspecialchars($start_date ?? '') ?>" type="date" class="border rounded px-2 py-1 text-sm">
+                            <input aria-label="Data fim" name="end" value="<?= htmlspecialchars($end_date ?? '') ?>" type="date" class="border rounded px-2 py-1 text-sm">
+                            <button type="submit" class="ml-2 inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-1 rounded-lg">Aplicar</button>
+                        </form>
+                    </div>
+                    <div class="flex items-center gap-4">
                         <a href="eleitores.php" class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v6M21 12h-6M16 7a4 4 0 11-8 0 4 4 0 018 0zM2 21v-2a4 4 0 014-4h6"/></svg>
                             Cadastrar Eleitores
                         </a>
                         <a href="logout.php" class="inline-flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-300 transition">Sair</a>
+                        <?php if ($votacao_ativa): ?>
+                            <a href="exportar_csv.php?votacao_id=<?= $votacao_ativa['id'] ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>" class="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200">Exportar CSV</a>
+                            <a href="exportar_pdf.php?votacao_id=<?= $votacao_ativa['id'] ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>" target="_blank" class="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200">Exportar PDF</a>
+                        <?php endif; ?>
                     </div>
                 </header>
 
@@ -344,9 +365,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                             <?php else: ?>
                                 <div class="text-sm text-gray-600 dark:text-gray-300">Nenhuma votação aberta.</div>
                             <?php endif; ?>
-
                             <a href="../painel/resultados.php" target="_blank" class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Ver Painel de Resultados</a>
                             <a href="eleitores.php" class="w-full inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-4 py-2 rounded-lg">Gerenciar Eleitores</a>
+                            <a href="historico.php" class="w-full inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-4 py-2 rounded-lg">Ver Histórico</a>
                         </div>
                     </div>
                 </div>
