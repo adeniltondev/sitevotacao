@@ -6,6 +6,7 @@
 require_once '../config/database.php';
 require_once '../config/functions.php';
 verificarAdmin();
+require_once 'header.php';
 
 $cpf = preg_replace('/[^0-9]/', '', $_GET['cpf'] ?? '');
 if (!$cpf) {

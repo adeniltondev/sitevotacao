@@ -135,23 +135,7 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
             document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
         };
     </script>
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <a href="dashboard.php" class="text-blue-600 hover:text-blue-800">← Voltar</a>
-                    <h1 class="text-2xl font-bold text-blue-600">Gerenciar Eleitores</h1>
-                </div>
-                <div class="flex items-center gap-4">
-                    <span class="text-gray-700"><?= htmlspecialchars($_SESSION['admin_nome']) ?></span>
-                    <a href="logout.php" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-                        Sair
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <?php require_once 'header.php'; ?>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <?php if ($mensagem): ?>
