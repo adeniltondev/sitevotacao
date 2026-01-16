@@ -188,30 +188,29 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
         <main class="flex-1 md:ml-64">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <header class="flex items-center justify-between mb-8">
-                    <div>
+                <header class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                    <div class="flex-1">
                         <h1 class="text-2xl font-bold">Painel Administrativo</h1>
                         <p class="text-sm text-gray-600 dark:text-gray-300">Visão geral das votações e participação</p>
                     </div>
-                    <div class="flex items-center gap-4">
+
+                    <div class="flex items-center gap-4 flex-wrap">
                         <form method="GET" class="flex items-center gap-2">
                             <?php if($votacao_ativa): ?><input type="hidden" name="votacao_id" value="<?= $votacao_ativa['id'] ?>"><?php endif; ?>
-                            <label class="text-xs text-gray-500">Período:</label>
-                            <input aria-label="Data início" name="start" value="<?= htmlspecialchars($start_date ?? '') ?>" type="date" class="border rounded px-2 py-1 text-sm">
-                            <input aria-label="Data fim" name="end" value="<?= htmlspecialchars($end_date ?? '') ?>" type="date" class="border rounded px-2 py-1 text-sm">
+                            <label class="text-sm text-gray-600 dark:text-gray-300 mr-2">Período</label>
+                            <input aria-label="Data início" name="start" value="<?= htmlspecialchars($start_date ?? '') ?>" type="date" class="border rounded px-2 py-1 text-sm" />
+                            <input aria-label="Data fim" name="end" value="<?= htmlspecialchars($end_date ?? '') ?>" type="date" class="border rounded px-2 py-1 text-sm" />
                             <button type="submit" class="ml-2 inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-1 rounded-lg">Aplicar</button>
                         </form>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <a href="eleitores.php" class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v6M21 12h-6M16 7a4 4 0 11-8 0 4 4 0 018 0zM2 21v-2a4 4 0 014-4h6"/></svg>
-                            Cadastrar Eleitores
-                        </a>
-                        <a href="logout.php" class="inline-flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-300 transition">Sair</a>
-                        <?php if ($votacao_ativa): ?>
-                            <a href="exportar_csv.php?votacao_id=<?= $votacao_ativa['id'] ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>" class="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200">Exportar CSV</a>
-                            <a href="exportar_pdf.php?votacao_id=<?= $votacao_ativa['id'] ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>" target="_blank" class="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200">Exportar PDF</a>
-                        <?php endif; ?>
+
+                        <div class="flex items-center gap-2">
+                            <a href="eleitores.php" class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Cadastrar Eleitores</a>
+                            <a href="logout.php" class="inline-flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-2 rounded-lg hover:bg-gray-300 transition">Sair</a>
+                            <?php if ($votacao_ativa): ?>
+                                <a href="exportar_csv.php?votacao_id=<?= $votacao_ativa['id'] ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>" class="text-sm text-gray-700 dark:text-gray-300 hover:underline ml-3">Exportar CSV</a>
+                                <a href="exportar_pdf.php?votacao_id=<?= $votacao_ativa['id'] ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>" target="_blank" class="text-sm text-gray-700 dark:text-gray-300 hover:underline">Exportar PDF</a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </header>
 
