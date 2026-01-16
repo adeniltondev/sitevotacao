@@ -85,6 +85,7 @@ if ($votacao_ativa) {
 }
 
 $sucesso = $_GET['sucesso'] ?? '';
+require_once 'header.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -134,53 +135,7 @@ $sucesso = $_GET['sucesso'] ?? '';
         };
     </script>
     <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                <div class="flex flex-col md:flex-row md:items-center gap-4 flex-1">
-                    <div>
-                        <h1 class="text-2xl font-bold text-blue-600">Câmara Municipal</h1>
-                        <div class="text-xs text-gray-500 font-semibold">Painel Administrativo</div>
-                    </div>
-                    <div class="hidden md:block border-l h-8 mx-4"></div>
-                    <div>
-                        <div class="text-sm text-gray-700 font-semibold">Sessão atual:</div>
-                        <div class="text-base text-gray-900 font-bold">
-                            <?= $votacao_ativa ? htmlspecialchars($votacao_ativa['titulo']) : 'Nenhuma sessão aberta' ?>
-                        </div>
-                    </div>
-                    <div class="hidden md:block border-l h-8 mx-4"></div>
-                    <div>
-                        <div class="text-sm text-gray-700 font-semibold">Status da votação:</div>
-                        <span class="text-xs font-bold px-2 py-1 rounded <?= $votacao_ativa ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' ?>">
-                            <?= $votacao_ativa ? 'ABERTA' : 'ENCERRADA' ?>
-                        </span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="text-right">
-                        <div class="text-sm font-semibold text-gray-800">
-                            <?= htmlspecialchars($_SESSION['admin_nome']) ?>
-                        </div>
-                        <div class="text-xs text-gray-500" id="relogio"></div>
-                    </div>
-                    <a href="logout.php" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-                        Sair
-                    </a>
-                </div>
-            </div>
-        </div>
-        <script>
-        function atualizarRelogio() {
-            const agora = new Date();
-            const data = agora.toLocaleDateString('pt-BR');
-            const hora = agora.toLocaleTimeString('pt-BR');
-            document.getElementById('relogio').textContent = `${data} ${hora}`;
-        }
-        setInterval(atualizarRelogio, 1000);
-        atualizarRelogio();
-        </script>
-    </header>
+    
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Indicadores do Dashboard -->
