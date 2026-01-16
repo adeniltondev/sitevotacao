@@ -79,12 +79,20 @@ foreach ($resultados['votos'] as $voto) {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados - Sistema de Votação</title>
-    <meta http-equiv="refresh" content="300">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Resultados - Sistema de Votação</title>
+        <meta http-equiv="refresh" content="300">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            if (localStorage.getItem('darkMode') === '1' ||
+                    (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
+        <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -109,6 +117,27 @@ foreach ($resultados['votos'] as $voto) {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             color: #1f2937;
         }
+        .dark body {
+            background: #18181b;
+            color: #f3f4f6;
+        }
+        .dark .bg-white, .dark .stat-box, .dark .voter-card {
+            background: #23232a !important;
+            color: #f3f4f6 !important;
+            border-color: #333 !important;
+        }
+        .dark .bg-gray-800 { background: #18181b !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-600 { color: #d1d5db !important; }
+        .dark .text-gray-500 { color: #a1a1aa !important; }
+        .dark .bg-gray-50 { background: #23232a !important; }
+        .dark .bg-gray-100 { background: #23232a !important; }
+        .dark .border-gray-300 { border-color: #333 !important; }
+        .dark .border-gray-400 { border-color: #444 !important; }
+        .dark .border-gray-700 { border-color: #333 !important; }
+        .dark .bg-green-100 { background: #14532d !important; color: #bbf7d0 !important; }
+        .dark .bg-red-100 { background: #7f1d1d !important; color: #fecaca !important; }
+        .dark .bg-yellow-100 { background: #78350f !important; color: #fde68a !important; }
         
         .stat-box {
             background: #ffffff;
@@ -151,6 +180,9 @@ foreach ($resultados['votos'] as $voto) {
 </head>
 <body>
     <div class="min-h-screen w-full">
+        <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
+            <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
+        </button>
         <!-- Header -->
         <div class="bg-gray-800 border-b border-gray-700 py-4 px-8 fade-in">
             <div class="max-w-7xl mx-auto">
@@ -173,6 +205,15 @@ foreach ($resultados['votos'] as $voto) {
                     <div class="lg:col-span-1 space-y-4">
                         <!-- Detalhes da Proposição -->
                         <div class="stat-box rounded-lg p-6 fade-in">
+                                                        <!-- Exportação CSV -->
+                                                        <div class="mt-4 flex flex-col items-center">
+                                                            <div class="flex gap-2">
+                                                                <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">Exportar CSV</a>
+                                                                <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">Exportar PDF</a>
+                                                                <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition text-sm font-semibold">Exportar Ata</a>
+                                                            </div>
+                                                            <span class="text-xs text-gray-400 mt-1">Exporta todos os votos desta votação</span>
+                                                        </div>
                             <div class="text-xs text-gray-500 uppercase mb-2">VOTAÇÃO ÚNICA</div>
                             <h2 class="text-xl font-bold text-gray-800 mb-3">
                                 <?= htmlspecialchars($votacao['titulo']) ?>
@@ -321,6 +362,19 @@ foreach ($resultados['votos'] as $voto) {
     </div>
 
     <script>
+                function alternarModoEscuro() {
+                    const html = document.documentElement;
+                    const dark = html.classList.toggle('dark');
+                    localStorage.setItem('darkMode', dark ? '1' : '0');
+                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+                }
+                // Atualizar ícone ao carregar
+                document.addEventListener('DOMContentLoaded', function() {
+                    const dark = document.documentElement.classList.contains('dark');
+                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+                });
         const votacaoId = <?= $votacao ? $votacao['id'] : 'null' ?>;
         
         // Função para animar número

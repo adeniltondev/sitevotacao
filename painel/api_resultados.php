@@ -36,10 +36,21 @@ $total_geral = $total_sim + $total_nao;
 $percentual_sim = $total_geral > 0 ? round(($total_sim / $total_geral) * 100, 1) : 0;
 $percentual_nao = $total_geral > 0 ? round(($total_nao / $total_geral) * 100, 1) : 0;
 
+
+// Buscar votos detalhados
+$stmt = $pdo->prepare("SELECT nome, cpf, cargo, foto, voto, criado_em FROM votos WHERE votacao_id = ? ORDER BY criado_em DESC");
+$stmt->execute([$votacao_id]);
+$votos = $stmt->fetchAll();
+
+// Buscar eleitores cadastrados
+$eleitores = $pdo->query("SELECT nome, cpf, cargo, foto FROM eleitores ORDER BY nome ASC")->fetchAll();
+
 respostaJSON(true, 'Resultados obtidos com sucesso', [
     'total_sim' => $total_sim,
     'total_nao' => $total_nao,
     'total_geral' => $total_geral,
     'percentual_sim' => $percentual_sim,
-    'percentual_nao' => $percentual_nao
+    'percentual_nao' => $percentual_nao,
+    'votos' => $votos,
+    'eleitores' => $eleitores
 ]);
