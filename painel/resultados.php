@@ -86,123 +86,52 @@ foreach ($resultados['votos'] as $voto) {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Resultados - Sistema de Votação</title>
-        <meta http-equiv="refresh" content="300">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            if (localStorage.getItem('darkMode') === '1' ||
-                    (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        </script>
-        <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - Sistema de Votação</title>
+    <meta http-equiv="refresh" content="300">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inicializa tema a partir de localStorage ou preferência do sistema
+        if (localStorage.getItem('darkMode') === '1' ||
+            (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Painel de Resultados - Sistema de Votação</title>
-            <script src="https://cdn.tailwindcss.com"></script>
-            <script>
-                if (localStorage.getItem('darkMode') === '1' ||
-                        (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
-            </script>
-            <style>
-                .dark body { background: #18181b !important; color: #f3f4f6 !important; }
-                .dark .bg-white { background: #23232a !important; color: #f3f4f6 !important; }
-                .dark .text-gray-800 { color: #f3f4f6 !important; }
-                .dark .text-gray-600 { color: #d1d5db !important; }
-                .dark .bg-gray-50 { background: #23232a !important; }
-                .dark .bg-green-100 { background: #14532d !important; color: #bbf7d0 !important; }
-                .dark .bg-red-100 { background: #7f1d1d !important; color: #fecaca !important; }
-                .dark .bg-blue-600 { background: #1e40af !important; }
-                .dark .bg-green-50 { background: #14532d !important; color: #bbf7d0 !important; }
-                .dark .bg-red-50 { background: #7f1d1d !important; color: #fecaca !important; }
-            </style>
-        </head>
-        <body class="bg-gray-900 dark:bg-gray-900 min-h-screen">
-            <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
-                <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
-            </button>
-            <script>
-                function alternarModoEscuro() {
-                    const html = document.documentElement;
-                    const dark = html.classList.toggle('dark');
-                    localStorage.setItem('darkMode', dark ? '1' : '0');
-                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
-                }
-                window.onload = function() {
-                    const dark = document.documentElement.classList.contains('dark');
-                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
-                };
-            </script>
+    </script>
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Dark-mode overrides */
+        .dark body { background: #18181b !important; color: #f3f4f6 !important; }
+        .dark .bg-white { background: #23232a !important; color: #f3f4f6 !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-600 { color: #d1d5db !important; }
         .dark .bg-gray-50 { background: #23232a !important; }
+        .dark .bg-green-100 { background: #14532d !important; color: #bbf7d0 !important; }
+        .dark .bg-red-100 { background: #7f1d1d !important; color: #fecaca !important; }
+        .dark .bg-blue-600 { background: #1e40af !important; }
+        .dark .bg-green-50 { background: #14532d !important; color: #bbf7d0 !important; }
+        .dark .bg-red-50 { background: #7f1d1d !important; color: #fecaca !important; }
+
         .dark .bg-gray-100 { background: #23232a !important; }
         .dark .border-gray-300 { border-color: #333 !important; }
         .dark .border-gray-400 { border-color: #444 !important; }
         .dark .border-gray-700 { border-color: #333 !important; }
-        .dark .bg-green-100 { background: #14532d !important; color: #bbf7d0 !important; }
-        .dark .bg-red-100 { background: #7f1d1d !important; color: #fecaca !important; }
         .dark .bg-yellow-100 { background: #78350f !important; color: #fde68a !important; }
-        
-        .stat-box {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .voter-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .voter-card:hover {
-            background: #f9fafb;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .status-bar {
-            height: 8px;
-            width: 100%;
-            border-radius: 4px;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .status-bar.sim {
-            background: #22c55e;
-        }
-        
-        .status-bar.nao {
-            background: #ef4444;
-        }
-        
-        .status-bar.ausente {
-            background: #9ca3af;
-        }
+
+        .stat-box { background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+        .voter-card { background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
+        .voter-card:hover { background: #f9fafb; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .status-bar { height: 8px; width: 100%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .status-bar.sim { background: #22c55e; }
+        .status-bar.nao { background: #ef4444; }
+        .status-bar.ausente { background: #9ca3af; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
     <div class="min-h-screen w-full">
         <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
             <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
