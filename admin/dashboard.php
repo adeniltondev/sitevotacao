@@ -5,8 +5,12 @@ echo 'INICIO'; exit;
  */
 
 require_once '../config/database.php';
-echo 'APOS DATABASE'; exit;
-require_once '../config/functions.php';
+try {
+    require_once '../config/functions.php';
+    echo 'APOS FUNCTIONS'; exit;
+} catch (Throwable $e) {
+    echo 'ERRO FUNCTIONS: ' . $e->getMessage(); exit;
+}
 
 verificarAdminPerfil('admin');
 
