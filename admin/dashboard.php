@@ -549,10 +549,13 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         const trend_sim = <?= json_encode(isset($trend_sim) ? $trend_sim : array_fill(0,14,0)) ?>;
         const trend_nao = <?= json_encode(isset($trend_nao) ? $trend_nao : array_fill(0,14,0)) ?>;
         if (ctxT) {
+            // calcular limite Y inicial com um pequeno padding
+            const initialMax = Math.max.apply(null, trend_sim.concat(trend_nao));
+            const paddedMax = initialMax > 0 ? Math.ceil(initialMax * 1.15) : 1;
             chartTrend = new Chart(ctxT, {
                 type: 'line',
                 data: { labels: trend_labels, datasets: [{ label: 'SIM', data: trend_sim, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)', tension: 0.3 }, { label: 'NÃO', data: trend_nao, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.06)', tension: 0.3 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, max: paddedMax, ticks: { precision: 0 } } } }
             });
         }
 
