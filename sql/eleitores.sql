@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS eleitores (
     cpf VARCHAR(14) NOT NULL UNIQUE,
     cargo VARCHAR(100),
     foto VARCHAR(255),
+    ativo TINYINT(1) DEFAULT 1,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_cpf (cpf)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

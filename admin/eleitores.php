@@ -53,6 +53,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     if ($acao === 'excluir_eleitor') {
+            if ($acao === 'bloquear_eleitor') {
+                $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
+                $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 0 WHERE id = ?");
+                $stmt->execute([$eleitor_id]);
+                $mensagem = 'Eleitor bloqueado com sucesso!';
+                $tipo_mensagem = 'success';
+            }
+            if ($acao === 'desbloquear_eleitor') {
+                $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
+                $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 1 WHERE id = ?");
+                $stmt->execute([$eleitor_id]);
+                $mensagem = 'Eleitor desbloqueado com sucesso!';
+                $tipo_mensagem = 'success';
+            }
         $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
         
         // Buscar foto para excluir
@@ -219,7 +233,7 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <?php
                                         // Exemplo: status ativo/inativo (futuro: campo na tabela)
-                                        $ativo = true; // Supondo todos ativos por padrão
+                                        $ativo = $eleitor['ativo'] ?? 1;
                                         echo $ativo
                                             ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">Ativo</span>'
                                             : '<span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">Inativo</span>';
@@ -231,11 +245,19 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                             <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
                                             <button type="submit" class="text-red-600 hover:text-red-900">Excluir</button>
                                         </form>
-                                        <form method="POST" action="" class="inline">
-                                            <input type="hidden" name="acao" value="bloquear_eleitor">
-                                            <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
-                                            <button type="submit" class="text-yellow-600 hover:text-yellow-900">Bloquear</button>
-                                        </form>
+                                        <?php if ($eleitor['ativo']): ?>
+                                            <form method="POST" action="" class="inline">
+                                                <input type="hidden" name="acao" value="bloquear_eleitor">
+                                                <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
+                                                <button type="submit" class="text-yellow-600 hover:text-yellow-900">Bloquear</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <form method="POST" action="" class="inline">
+                                                <input type="hidden" name="acao" value="desbloquear_eleitor">
+                                                <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
+                                                <button type="submit" class="text-green-600 hover:text-green-900">Desbloquear</button>
+                                            </form>
+                                        <?php endif; ?>
                                         <a href="historico.php?cpf=<?= urlencode($eleitor['cpf']) ?>" class="text-blue-600 hover:text-blue-900">Histórico</a>
                                     </td>
                                 </tr>

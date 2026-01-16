@@ -31,11 +31,22 @@ if (empty($votacao_id) || empty($voto)) {
     exit;
 }
 
+
 // Usar dados da sessão do eleitor logado
 $cpf = preg_replace('/[^0-9]/', '', $_SESSION['eleitor_cpf']);
 $nome = $_SESSION['eleitor_nome'];
 $cargo = $_SESSION['eleitor_cargo'] ?? null;
 $foto = $_SESSION['eleitor_foto'] ?? null;
+
+// Verificar se eleitor está ativo
+$stmt = $pdo->prepare("SELECT ativo FROM eleitores WHERE cpf = ?");
+$stmt->execute([$cpf]);
+$eleitor = $stmt->fetch();
+if (!$eleitor || !$eleitor['ativo']) {
+    registrarLog('Voto bloqueado', ['cpf' => $cpf, 'motivo' => 'Eleitor inativo/bloqueado']);
+    header('Location: index.php?erro=' . urlencode('Seu acesso ao voto está bloqueado. Procure a administração.'));
+    exit;
+}
 
 if (!in_array($voto, ['sim', 'nao'])) {
     registrarLog('Voto falhou', ['motivo' => 'Opção de voto inválida', 'voto' => $voto]);
