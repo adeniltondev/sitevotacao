@@ -27,7 +27,7 @@ if (isset($_GET['sucesso'])) {
     <title>Sistema de Votação - Câmara</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white-50 min-h-screen">
+<body class="bg-gray-100 min-h-screen">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
         <div class="text-center mb-8">
