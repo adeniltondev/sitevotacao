@@ -89,13 +89,7 @@ $sucesso = $_GET['sucesso'] ?? '';
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-100">
-    <div class="fixed top-4 right-4 z-50">
-        <button id="darkToggle" aria-label="Alternar modo" class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-lg shadow">
-            <svg id="iconLight" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zM4.222 4.222a1 1 0 011.415 0L6.343 5a1 1 0 11-1.414 1.414L4.222 5.636a1 1 0 010-1.414zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm2.222 5.778a1 1 0 011.414 0l.707.707A1 1 0 015.343 18.1l-.707-.707a1 1 0 010-1.414zM10 17a1 1 0 011-1v1a1 1 0 11-2 0v-1a1 1 0 011 1zm5.778-1.222a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 011 1h-1a1 1 0 110-2h1a1 1 0 01-1 1zM15.657 5.343a1 1 0 010 1.414L14.95 7.464A1 1 0 0113.536 6.05l.707-.707a1 1 0 011.414 0z"/></svg>
-            <svg id="iconDark" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-200" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 116.707 2.707a7 7 0 1010.586 10.586z"/></svg>
-            <span id="darkText" class="text-sm text-gray-700 dark:text-gray-200">Modo</span>
-        </button>
-    </div>
+    <!-- Dark mode toggle removed as requested -->
 
     <div class="flex">
         <?php include 'sidebar.php'; ?>
@@ -291,22 +285,6 @@ $sucesso = $_GET['sucesso'] ?? '';
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const darkToggle = document.getElementById('darkToggle');
-        const darkText = document.getElementById('darkText');
-        const iconLight = document.getElementById('iconLight');
-        const iconDark = document.getElementById('iconDark');
-        function updateDarkUI(){
-            const dark = document.documentElement.classList.contains('dark');
-            if(dark){ iconLight.classList.remove('hidden'); iconDark.classList.add('hidden'); darkText.textContent = 'Claro'; }
-            else { iconLight.classList.add('hidden'); iconDark.classList.remove('hidden'); darkText.textContent = 'Escuro'; }
-        }
-        darkToggle.addEventListener('click', ()=>{
-            const dark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('darkMode', dark ? '1' : '0');
-            updateDarkUI();
-        });
-        updateDarkUI();
-
         const ctx = document.getElementById('graficoVotos')?.getContext('2d');
         if(ctx){
             new Chart(ctx, {
