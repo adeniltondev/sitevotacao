@@ -86,6 +86,7 @@ if (isset($_GET['sucesso'])) {
                 <!-- Formulário de Voto -->
                 <form id="formVoto" method="POST" action="votar.php" class="space-y-6">
                     <input type="hidden" name="votacao_id" value="<?= $votacao['id'] ?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
                     
                     <div>
                         <label class="block text-gray-700 font-medium mb-4">Seu Voto *</label>
