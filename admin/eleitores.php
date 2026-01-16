@@ -43,9 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Inserir eleitor
-                $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto) VALUES (?, ?, ?, ?)");
-                $stmt->execute([$nome, $cpf, $cargo ?: null, $foto]);
-                
+                $perfil = $_POST['perfil'] ?? 'vereador';
+                $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
                 $mensagem = 'Eleitor cadastrado com sucesso!';
                 $tipo_mensagem = 'success';
             }
@@ -169,6 +169,14 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                         placeholder="Ex: Vereador, Secretário, etc."
                     >
                 </div>
+                <div>
+                    <label for="perfil" class="block text-gray-700 font-medium mb-2">Permissão/Perfil</label>
+                    <select id="perfil" name="perfil" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="vereador">Vereador</option>
+                        <option value="secretario">Secretário</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
                 
                 <div>
                     <label for="foto" class="block text-gray-700 font-medium mb-2">Foto (Opcional)</label>
@@ -201,6 +209,7 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CPF</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cargo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Permissão</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
                             </tr>
@@ -229,6 +238,9 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <?= $eleitor['cargo'] ? htmlspecialchars($eleitor['cargo']) : '-' ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?= htmlspecialchars($eleitor['perfil'] ?? 'vereador') ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <?php
