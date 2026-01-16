@@ -269,6 +269,7 @@ $sucesso = $_GET['sucesso'] ?? '';
                     <form method="POST" action="" class="inline">
                         <input type="hidden" name="acao" value="encerrar_votacao">
                         <input type="hidden" name="votacao_id" value="<?= $votacao_ativa['id'] ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
                         <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
                             Encerrar Votação
                         </button>
@@ -300,6 +301,7 @@ $sucesso = $_GET['sucesso'] ?? '';
             <h2 class="text-xl font-bold text-gray-800 mb-4">Criar Nova Votação</h2>
             <form method="POST" action="">
                 <input type="hidden" name="acao" value="criar_votacao">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
                 <div class="mb-4">
                     <label for="titulo" class="block text-gray-700 font-medium mb-2">Título *</label>
                     <input 
@@ -367,12 +369,14 @@ $sucesso = $_GET['sucesso'] ?? '';
                                             <form method="POST" action="" class="inline">
                                                 <input type="hidden" name="acao" value="abrir_votacao">
                                                 <input type="hidden" name="votacao_id" value="<?= $votacao['id'] ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
                                                 <button type="submit" class="text-green-600 hover:text-green-900">Abrir</button>
                                             </form>
                                         <?php endif; ?>
                                         <form method="POST" action="" class="inline" onsubmit="return confirm('Tem certeza que deseja resetar os votos?')">
                                             <input type="hidden" name="acao" value="resetar_votos">
                                             <input type="hidden" name="votacao_id" value="<?= $votacao['id'] ?>">
+                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
                                             <button type="submit" class="text-orange-600 hover:text-orange-900">Resetar</button>
                                         </form>
                                     </div>

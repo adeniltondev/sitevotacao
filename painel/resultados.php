@@ -182,8 +182,18 @@ foreach ($resultados['votos'] as $voto) {
                                     <?= htmlspecialchars($votacao['descricao']) ?>
                                 </p>
                             <?php endif; ?>
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500 mb-2">
                                 DATA: <?= date('d/m/Y', strtotime($votacao['criada_em'])) ?>
+                            </div>
+                            <!-- QR Code Público -->
+                            <div class="flex flex-col items-center mt-4">
+                                <div class="text-xs text-gray-500 mb-1">Acesse pelo celular:</div>
+                                <?php
+                                $url_resultados = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                                $qr_url = 'https://chart.googleapis.com/chart?chs=160x160&cht=qr&chl=' . urlencode($url_resultados);
+                                ?>
+                                <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="w-32 h-32 border rounded bg-white shadow" loading="lazy">
+                                <div class="text-[10px] text-gray-400 mt-1 break-all text-center"><?= htmlspecialchars($url_resultados) ?></div>
                             </div>
                         </div>
 
