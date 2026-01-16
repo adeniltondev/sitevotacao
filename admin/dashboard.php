@@ -143,42 +143,63 @@ require_once 'header.php';
     <!-- Header já incluído -->
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Indicadores do Dashboard -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center border-t-4 border-blue-600 dark:border-blue-400">
-                <div class="mb-2">
-                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2a3 3 0 00-5.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2a3 3 0 015.356-1.857M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        <!-- Linha 1: Cards principais agrupados -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 flex flex-col items-center border-t-4 border-blue-600 dark:border-blue-400">
+                <div class="mb-2 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-blue-600"></span>
+                    <span class="text-gray-500 text-sm">Vereadores</span>
                 </div>
-                <div class="text-gray-500 text-sm">Total de Vereadores</div>
                 <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">
                     <?php $total_vereadores = $pdo->query("SELECT COUNT(*) FROM eleitores")->fetchColumn(); echo $total_vereadores; ?>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center border-t-4 border-green-600 dark:border-green-400">
-                <div class="mb-2">
-                    <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 018 0v2M9 17H7a2 2 0 01-2-2v-2a2 2 0 012-2h2m0 0V7a4 4 0 118 0v4m-8 0h8" /></svg>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 flex flex-col items-center border-t-4 border-green-600 dark:border-green-400">
+                <div class="mb-2 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-green-600"></span>
+                    <span class="text-gray-500 text-sm">Votos</span>
                 </div>
-                <div class="text-gray-500 text-sm">Total de Votos</div>
                 <div class="text-3xl font-bold text-green-600 dark:text-green-400">
                     <?= $total_geral ?>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center border-t-4 border-red-600 dark:border-red-400">
-                <div class="mb-2">
-                    <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-1.414 1.414A9 9 0 105.636 18.364l1.414-1.414A7 7 0 1116.95 7.05z" /></svg>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 flex flex-col items-center border-t-4 border-red-600 dark:border-red-400">
+                <div class="mb-2 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-red-600"></span>
+                    <span class="text-gray-500 text-sm">Não Votaram</span>
                 </div>
-                <div class="text-gray-500 text-sm">Não Votaram</div>
                 <div class="text-3xl font-bold text-red-600 dark:text-red-400">
                     <?php $nao_votaram = $total_vereadores - $total_geral; echo $nao_votaram >= 0 ? $nao_votaram : 0; ?>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center border-t-4 border-gray-600 dark:border-gray-400">
-                <div class="mb-2">
-                    <svg class="w-8 h-8 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </div>
+        <!-- Linha 2: Cards de status e última ação -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 flex flex-col items-center border-t-4 border-gray-600 dark:border-gray-400">
+                <div class="mb-2 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-gray-600"></span>
+                    <span class="text-gray-500 text-sm">Última Ação</span>
                 </div>
-                <div class="text-gray-500 text-sm">Última Ação</div>
                 <div class="text-xs text-gray-700 dark:text-gray-200 text-center">
                     <?php $log = @file_get_contents(__DIR__ . '/../logs/auditoria.log'); $ultima_acao = ''; if ($log) { $linhas = explode("\n", trim($log)); $ultima = end($linhas); if ($ultima) { $registro = json_decode($ultima, true); if ($registro) { $ultima_acao = $registro['data'] . ' - ' . $registro['acao']; }}} echo $ultima_acao ?: 'Sem ações registradas'; ?>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 flex flex-col items-center border-t-4 border-green-600 dark:border-green-400">
+                <div class="mb-2 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-green-600"></span>
+                    <span class="text-gray-500 text-sm">SIM (%)</span>
+                </div>
+                <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+                    <?= $percentual_sim ?>%
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 flex flex-col items-center border-t-4 border-red-600 dark:border-red-400">
+                <div class="mb-2 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-red-600"></span>
+                    <span class="text-gray-500 text-sm">NÃO (%)</span>
+                </div>
+                <div class="text-2xl font-bold text-red-600 dark:text-red-400">
+                    <?= $percentual_nao ?>%
                 </div>
             </div>
         </div>
