@@ -1,0 +1,8 @@
+# Log de Auditoria do Sistema de Votação
+
+Este arquivo armazena logs de ações críticas do sistema para fins de auditoria e rastreabilidade.
+
+Formato: JSON por linha, contendo data, IP, usuário, ação e dados adicionais.
+
+Exemplo:
+{"data":"2026-01-16 10:00:00","ip":"127.0.0.1","usuario":"admin","acao":"Login realizado","dados":{}}

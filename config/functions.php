@@ -4,6 +4,49 @@
  */
 
 /**
+ * Registra log de auditoria em arquivo
+ * @param string $acao Descrição da ação
+ * @param array $dados Dados adicionais (opcional)
+ */
+function registrarLog($acao, $dados = []) {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
+    $usuario = $_SESSION['admin_usuario'] ?? $_SESSION['eleitor_cpf'] ?? 'desconhecido';
+    $data = date('Y-m-d H:i:s');
+    $registro = [
+        'data' => $data,
+        'ip' => $ip,
+        'usuario' => $usuario,
+        'acao' => $acao,
+        'dados' => $dados
+    ];
+    $linha = json_encode($registro, JSON_UNESCAPED_UNICODE) . PHP_EOL;
+    file_put_contents(__DIR__ . '/../logs/auditoria.log', $linha, FILE_APPEND);
+}
+
+/**
+ * Gera e armazena um token CSRF na sessão
+ * @return string
+ */
+function gerarCSRFToken() {
+    iniciarSessao();
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+/**
+ * Valida o token CSRF enviado via POST
+ * @return bool
+ */
+function validarCSRFToken() {
+    iniciarSessao();
+    if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token'])) {
+        return false;
+    }
+    return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+}
+/**
  * Inicia sessão se ainda não estiver iniciada
  */
 function iniciarSessao() {

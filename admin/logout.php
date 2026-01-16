@@ -5,10 +5,9 @@
 require_once '../config/functions.php';
 
 iniciarSessao();
-
+registrarLog('Logout admin realizado');
 // Destrói todas as variáveis de sessão
 $_SESSION = array();
-
 // Destrói a sessão
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
@@ -17,8 +16,6 @@ if (ini_get("session.use_cookies")) {
         $params["secure"], $params["httponly"]
     );
 }
-
 session_destroy();
-
 header('Location: login.php');
 exit;

@@ -16,24 +16,30 @@ if (isset($_SESSION['admin_id'])) {
 $erro = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = sanitizar($_POST['usuario'] ?? '');
-    $senha = $_POST['senha'] ?? '';
-    
-    if (empty($usuario) || empty($senha)) {
-        $erro = 'Preencha todos os campos';
+    if (!validarCSRFToken()) {
+        $erro = 'Token de segurança inválido. Recarregue a página.';
+        registrarLog('Login admin falhou', ['motivo' => 'CSRF token inválido']);
     } else {
-        $stmt = $pdo->prepare("SELECT id, usuario, senha, nome FROM administradores WHERE usuario = ?");
-        $stmt->execute([$usuario]);
-        $admin = $stmt->fetch();
-        
-        if ($admin && password_verify($senha, $admin['senha'])) {
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_usuario'] = $admin['usuario'];
-            $_SESSION['admin_nome'] = $admin['nome'];
-            header('Location: dashboard.php');
-            exit;
+        $usuario = sanitizar($_POST['usuario'] ?? '');
+        $senha = $_POST['senha'] ?? '';
+        if (empty($usuario) || empty($senha)) {
+            $erro = 'Preencha todos os campos';
+            registrarLog('Login admin falhou', ['usuario' => $usuario, 'motivo' => 'Campos vazios']);
         } else {
-            $erro = 'Usuário ou senha incorretos';
+            $stmt = $pdo->prepare("SELECT id, usuario, senha, nome FROM administradores WHERE usuario = ?");
+            $stmt->execute([$usuario]);
+            $admin = $stmt->fetch();
+            if ($admin && password_verify($senha, $admin['senha'])) {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_usuario'] = $admin['usuario'];
+                $_SESSION['admin_nome'] = $admin['nome'];
+                registrarLog('Login admin realizado', ['usuario' => $usuario]);
+                header('Location: dashboard.php');
+                exit;
+            } else {
+                $erro = 'Usuário ou senha incorretos';
+                registrarLog('Login admin falhou', ['usuario' => $usuario, 'motivo' => 'Credenciais inválidas']);
+            }
         }
     }
 }
@@ -60,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
         
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
             <div class="mb-4">
                 <label for="usuario" class="block text-gray-700 font-medium mb-2">Usuário</label>
                 <input 

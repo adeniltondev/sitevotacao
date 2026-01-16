@@ -18,33 +18,40 @@ $tipo_mensagem = '';
 
 // Processar login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
-    
-    if (empty($cpf)) {
-        $mensagem = 'Informe seu CPF';
+    if (!validarCSRFToken()) {
+        $mensagem = 'Token de segurança inválido. Recarregue a página.';
         $tipo_mensagem = 'error';
-    } elseif (!validarCPF($cpf)) {
-        $mensagem = 'CPF inválido';
-        $tipo_mensagem = 'error';
+        registrarLog('Login eleitor falhou', ['motivo' => 'CSRF token inválido']);
     } else {
-        // Buscar eleitor pelo CPF
-        $stmt = $pdo->prepare("SELECT * FROM eleitores WHERE cpf = ?");
-        $stmt->execute([$cpf]);
-        $eleitor = $stmt->fetch();
-        
-        if ($eleitor) {
-            // Criar sessão do eleitor
-            $_SESSION['eleitor_id'] = $eleitor['id'];
-            $_SESSION['eleitor_cpf'] = $eleitor['cpf'];
-            $_SESSION['eleitor_nome'] = $eleitor['nome'];
-            $_SESSION['eleitor_cargo'] = $eleitor['cargo'];
-            $_SESSION['eleitor_foto'] = $eleitor['foto'];
-            
-            header('Location: index.php');
-            exit;
-        } else {
-            $mensagem = 'CPF não cadastrado. Entre em contato com o administrador.';
+        $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
+        if (empty($cpf)) {
+            $mensagem = 'Informe seu CPF';
             $tipo_mensagem = 'error';
+            registrarLog('Login eleitor falhou', ['cpf' => $cpf, 'motivo' => 'Campo vazio']);
+        } elseif (!validarCPF($cpf)) {
+            $mensagem = 'CPF inválido';
+            $tipo_mensagem = 'error';
+            registrarLog('Login eleitor falhou', ['cpf' => $cpf, 'motivo' => 'CPF inválido']);
+        } else {
+            // Buscar eleitor pelo CPF
+            $stmt = $pdo->prepare("SELECT * FROM eleitores WHERE cpf = ?");
+            $stmt->execute([$cpf]);
+            $eleitor = $stmt->fetch();
+            if ($eleitor) {
+                // Criar sessão do eleitor
+                $_SESSION['eleitor_id'] = $eleitor['id'];
+                $_SESSION['eleitor_cpf'] = $eleitor['cpf'];
+                $_SESSION['eleitor_nome'] = $eleitor['nome'];
+                $_SESSION['eleitor_cargo'] = $eleitor['cargo'];
+                $_SESSION['eleitor_foto'] = $eleitor['foto'];
+                registrarLog('Login eleitor realizado', ['cpf' => $cpf]);
+                header('Location: index.php');
+                exit;
+            } else {
+                $mensagem = 'CPF não cadastrado. Entre em contato com o administrador.';
+                $tipo_mensagem = 'error';
+                registrarLog('Login eleitor falhou', ['cpf' => $cpf, 'motivo' => 'CPF não cadastrado']);
+            }
         }
     }
 }
@@ -76,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST" action="" class="space-y-6">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
                 <div>
                     <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF</label>
                     <input 
