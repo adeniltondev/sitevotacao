@@ -1,9 +1,12 @@
 <?php
 /**
- * Página Pública de Votação
+ * Página de Votação - Requer Login
  */
 require_once '../config/database.php';
 require_once '../config/functions.php';
+
+// Verificar se eleitor está logado
+verificarEleitor();
 
 // Buscar votação ativa
 $votacao = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIMIT 1")->fetch();
@@ -30,9 +33,22 @@ if (isset($_GET['sucesso'])) {
 <body class="bg-gray-50 min-h-screen">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-blue-600 mb-2">Sistema de Votação</h1>
-            <p class="text-gray-600">Câmara Municipal</p>
+        <div class="flex justify-between items-center mb-8">
+            <div class="text-center flex-1">
+                <h1 class="text-4xl font-bold text-blue-600 mb-2">Sistema de Votação</h1>
+                <p class="text-gray-600">Câmara Municipal</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <div class="text-sm font-semibold text-gray-800"><?= htmlspecialchars($_SESSION['eleitor_nome']) ?></div>
+                    <?php if ($_SESSION['eleitor_cargo']): ?>
+                        <div class="text-xs text-gray-600"><?= htmlspecialchars($_SESSION['eleitor_cargo']) ?></div>
+                    <?php endif; ?>
+                </div>
+                <a href="logout.php" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
+                    Sair
+                </a>
+            </div>
         </div>
 
         <?php if (!$votacao): ?>
@@ -70,20 +86,6 @@ if (isset($_GET['sucesso'])) {
                 <!-- Formulário de Voto -->
                 <form id="formVoto" method="POST" action="votar.php" class="space-y-6">
                     <input type="hidden" name="votacao_id" value="<?= $votacao['id'] ?>">
-                    
-                    <div>
-                        <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF *</label>
-                        <input 
-                            type="text" 
-                            id="cpf" 
-                            name="cpf" 
-                            required
-                            maxlength="14"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                            placeholder="000.000.000-00"
-                        >
-                        <p class="text-sm text-gray-500 mt-1">Informe seu CPF para votar</p>
-                    </div>
                     
                     <div>
                         <label class="block text-gray-700 font-medium mb-4">Seu Voto *</label>
@@ -136,17 +138,5 @@ if (isset($_GET['sucesso'])) {
         <?php endif; ?>
     </div>
 
-    <script>
-        // Máscara para CPF
-        document.getElementById('cpf').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 11) {
-                value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-                e.target.value = value;
-            }
-        });
-    </script>
 </body>
 </html>

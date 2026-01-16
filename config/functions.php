@@ -24,6 +24,23 @@ function verificarAdmin() {
 }
 
 /**
+ * Verifica se o eleitor está autenticado
+ */
+function verificarEleitor() {
+    iniciarSessao();
+    if (!isset($_SESSION['eleitor_id']) || !isset($_SESSION['eleitor_cpf'])) {
+        // Determinar o caminho baseado na localização do arquivo
+        $basePath = dirname($_SERVER['PHP_SELF']);
+        if (strpos($basePath, '/votacao') !== false) {
+            header('Location: login.php');
+        } else {
+            header('Location: votacao/login.php');
+        }
+        exit;
+    }
+}
+
+/**
  * Formata CPF (000.000.000-00)
  */
 function formatarCPF($cpf) {
