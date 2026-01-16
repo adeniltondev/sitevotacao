@@ -177,6 +177,17 @@ $sucesso = $_GET['sucesso'] ?? '';
             </div>
         <?php endif; ?>
 
+        <!-- Gerenciar Eleitores -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Gerenciar Eleitores</h2>
+                <a href="eleitores.php" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Cadastrar Eleitores
+                </a>
+            </div>
+            <p class="text-gray-600">Cadastre os eleitores que poderão votar nas votações.</p>
+        </div>
+
         <!-- Criar Nova Votação -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 class="text-xl font-bold text-gray-800 mb-4">Criar Nova Votação</h2>

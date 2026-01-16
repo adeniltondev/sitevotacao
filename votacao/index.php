@@ -68,57 +68,21 @@ if (isset($_GET['sucesso'])) {
                 <?php endif; ?>
 
                 <!-- Formulário de Voto -->
-                <form id="formVoto" method="POST" action="votar.php" enctype="multipart/form-data" class="space-y-6">
+                <form id="formVoto" method="POST" action="votar.php" class="space-y-6">
                     <input type="hidden" name="votacao_id" value="<?= $votacao['id'] ?>">
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="nome" class="block text-gray-700 font-medium mb-2">Nome Completo *</label>
-                            <input 
-                                type="text" 
-                                id="nome" 
-                                name="nome" 
-                                required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Digite seu nome completo"
-                            >
-                        </div>
-                        
-                        <div>
-                            <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF *</label>
-                            <input 
-                                type="text" 
-                                id="cpf" 
-                                name="cpf" 
-                                required
-                                maxlength="14"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="000.000.000-00"
-                            >
-                        </div>
-                    </div>
-                    
                     <div>
-                        <label for="cargo" class="block text-gray-700 font-medium mb-2">Cargo (Opcional)</label>
+                        <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF *</label>
                         <input 
                             type="text" 
-                            id="cargo" 
-                            name="cargo"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Ex: Vereador, Secretário, etc."
+                            id="cpf" 
+                            name="cpf" 
+                            required
+                            maxlength="14"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                            placeholder="000.000.000-00"
                         >
-                    </div>
-                    
-                    <div>
-                        <label for="foto" class="block text-gray-700 font-medium mb-2">Foto (Opcional)</label>
-                        <input 
-                            type="file" 
-                            id="foto" 
-                            name="foto"
-                            accept="image/jpeg,image/jpg,image/png,image/gif"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                        <p class="text-sm text-gray-500 mt-1">Formatos aceitos: JPG, PNG, GIF (máx. 2MB)</p>
+                        <p class="text-sm text-gray-500 mt-1">Informe seu CPF para votar</p>
                     </div>
                     
                     <div>
