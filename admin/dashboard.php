@@ -1,5 +1,5 @@
 <?php
-echo 'INICIO'; exit;
+
 /**
  * Painel Administrativo - Dashboard
  */
