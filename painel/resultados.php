@@ -226,6 +226,10 @@ foreach ($resultados['votos'] as $voto) {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75v-1.5A2.25 2.25 0 016.75 3h1.5M17.25 3h1.5A2.25 2.25 0 0121 5.25v1.5M21 17.25v1.5A2.25 2.25 0 0118.75 21h-1.5M6.75 21h-1.5A2.25 2.25 0 013 18.75v-1.5" /><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h.008v.008H7.5V7.5zm0 4.5h.008v.008H7.5V12zm0 4.5h.008v.008H7.5v-.008zm4.5-9h.008v.008H12V7.5zm0 4.5h.008v.008H12V12zm0 4.5h.008v.008H12v-.008zm4.5-9h.008v.008H16.5V7.5zm0 4.5h.008v.008H16.5V12z" /></svg>
                         QR Code Público
                     </a>
+                    <a href="api_publica.php" target="_blank" class="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        API Pública (JSON)
+                    </a>
                 </div>
             </div>
         </div>
