@@ -136,168 +136,170 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
         };
     </script>
     <?php require_once 'header.php'; ?>
+    <?php include 'sidebar.php'; ?>
+    <div class="md:ml-64">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <?php if ($mensagem): ?>
+                <div class="mb-6 p-4 rounded-lg <?= $tipo_mensagem === 'success' ? 'bg-green-100 text-green-700 border border-green-400' : 'bg-red-100 text-red-700 border border-red-400' ?>">
+                    <?= htmlspecialchars($mensagem) ?>
+                </div>
+            <?php endif; ?>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <?php if ($mensagem): ?>
-            <div class="mb-6 p-4 rounded-lg <?= $tipo_mensagem === 'success' ? 'bg-green-100 text-green-700 border border-green-400' : 'bg-red-100 text-red-700 border border-red-400' ?>">
-                <?= htmlspecialchars($mensagem) ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Formulário de Cadastro -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Cadastrar Novo Eleitor</h2>
-            <form method="POST" action="" enctype="multipart/form-data" class="space-y-4">
-                <input type="hidden" name="acao" value="cadastrar_eleitor">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="nome" class="block text-gray-700 font-medium mb-2">Nome Completo *</label>
-                        <input 
-                            type="text" 
-                            id="nome" 
-                            name="nome" 
-                            required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="Digite o nome completo"
-                        >
+            <!-- Formulário de Cadastro -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Cadastrar Novo Eleitor</h2>
+                <form method="POST" action="" enctype="multipart/form-data" class="space-y-4">
+                    <input type="hidden" name="acao" value="cadastrar_eleitor">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="nome" class="block text-gray-700 font-medium mb-2">Nome Completo *</label>
+                            <input 
+                                type="text" 
+                                id="nome" 
+                                name="nome" 
+                                required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                placeholder="Digite o nome completo"
+                            >
+                        </div>
+                        
+                        <div>
+                            <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF *</label>
+                            <input 
+                                type="text" 
+                                id="cpf" 
+                                name="cpf" 
+                                required
+                                maxlength="14"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                placeholder="000.000.000-00"
+                            >
+                        </div>
                     </div>
                     
                     <div>
-                        <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF *</label>
+                        <label for="cargo" class="block text-gray-700 font-medium mb-2">Cargo (Opcional)</label>
                         <input 
                             type="text" 
-                            id="cpf" 
-                            name="cpf" 
-                            required
-                            maxlength="14"
+                            id="cargo" 
+                            name="cargo"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="000.000.000-00"
+                            placeholder="Ex: Vereador, Secretário, etc."
                         >
                     </div>
-                </div>
-                
-                <div>
-                    <label for="cargo" class="block text-gray-700 font-medium mb-2">Cargo (Opcional)</label>
-                    <input 
-                        type="text" 
-                        id="cargo" 
-                        name="cargo"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                        placeholder="Ex: Vereador, Secretário, etc."
-                    >
-                </div>
-                <div>
-                    <label for="perfil" class="block text-gray-700 font-medium mb-2">Permissão/Perfil</label>
-                    <select id="perfil" name="perfil" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="vereador">Vereador</option>
-                        <option value="secretario">Secretário</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label for="foto" class="block text-gray-700 font-medium mb-2">Foto (Opcional)</label>
-                    <input 
-                        type="file" 
-                        id="foto" 
-                        name="foto"
-                        accept="image/jpeg,image/jpg,image/png,image/gif"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    >
-                    <p class="text-sm text-gray-500 mt-1">Formatos aceitos: JPG, PNG, GIF (máx. 2MB)</p>
-                </div>
-                
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-                    Cadastrar Eleitor
-                </button>
-            </form>
-        </div>
+                    <div>
+                        <label for="perfil" class="block text-gray-700 font-medium mb-2">Permissão/Perfil</label>
+                        <select id="perfil" name="perfil" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="vereador">Vereador</option>
+                            <option value="secretario">Secretário</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="foto" class="block text-gray-700 font-medium mb-2">Foto (Opcional)</label>
+                        <input 
+                            type="file" 
+                            id="foto" 
+                            name="foto"
+                            accept="image/jpeg,image/jpg,image/png,image/gif"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        >
+                        <p class="text-sm text-gray-500 mt-1">Formatos aceitos: JPG, PNG, GIF (máx. 2MB)</p>
+                    </div>
+                    
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        Cadastrar Eleitor
+                    </button>
+                </form>
+            </div>
 
-        <!-- Lista de Eleitores -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Eleitores Cadastrados (<?= count($eleitores) ?>)</h2>
-            
-            <?php if (count($eleitores) > 0): ?>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Foto</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CPF</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cargo</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Permissão</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <?php foreach ($eleitores as $eleitor): ?>
+            <!-- Lista de Eleitores -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Eleitores Cadastrados (<?= count($eleitores) ?>)</h2>
+                
+                <?php if (count($eleitores) > 0): ?>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <?php if ($eleitor['foto']): ?>
-                                            <img 
-                                                src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
-                                                alt="Foto"
-                                                class="w-12 h-12 rounded-full object-cover"
-                                            >
-                                        <?php else: ?>
-                                            <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-                                                <span class="text-gray-600"><?= strtoupper(substr($eleitor['nome'], 0, 1)) ?></span>
-                                            </div>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        <?= htmlspecialchars($eleitor['nome']) ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?= formatarCPF($eleitor['cpf']) ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?= $eleitor['cargo'] ? htmlspecialchars($eleitor['cargo']) : '-' ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?= htmlspecialchars($eleitor['perfil'] ?? 'vereador') ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        <?php
-                                        // Exemplo: status ativo/inativo (futuro: campo na tabela)
-                                        $ativo = $eleitor['ativo'] ?? 1;
-                                        echo $ativo
-                                            ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">Ativo</span>'
-                                            : '<span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">Inativo</span>';
-                                        ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-2">
-                                        <form method="POST" action="" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este eleitor?')">
-                                            <input type="hidden" name="acao" value="excluir_eleitor">
-                                            <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
-                                            <button type="submit" class="text-red-600 hover:text-red-900">Excluir</button>
-                                        </form>
-                                        <?php if ($eleitor['ativo']): ?>
-                                            <form method="POST" action="" class="inline">
-                                                <input type="hidden" name="acao" value="bloquear_eleitor">
-                                                <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
-                                                <button type="submit" class="text-yellow-600 hover:text-yellow-900">Bloquear</button>
-                                            </form>
-                                        <?php else: ?>
-                                            <form method="POST" action="" class="inline">
-                                                <input type="hidden" name="acao" value="desbloquear_eleitor">
-                                                <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
-                                                <button type="submit" class="text-green-600 hover:text-green-900">Desbloquear</button>
-                                            </form>
-                                        <?php endif; ?>
-                                        <a href="historico.php?cpf=<?= urlencode($eleitor['cpf']) ?>" class="text-blue-600 hover:text-blue-900">Histórico</a>
-                                    </td>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Foto</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CPF</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cargo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Permissão</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php else: ?>
-                <p class="text-gray-600 text-center py-8">Nenhum eleitor cadastrado ainda.</p>
-            <?php endif; ?>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <?php foreach ($eleitores as $eleitor): ?>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <?php if ($eleitor['foto']): ?>
+                                                <img 
+                                                    src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
+                                                    alt="Foto"
+                                                    class="w-12 h-12 rounded-full object-cover"
+                                                >
+                                            <?php else: ?>
+                                                <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <span class="text-gray-600"><?= strtoupper(substr($eleitor['nome'], 0, 1)) ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <?= htmlspecialchars($eleitor['nome']) ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?= formatarCPF($eleitor['cpf']) ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?= $eleitor['cargo'] ? htmlspecialchars($eleitor['cargo']) : '-' ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?= htmlspecialchars($eleitor['perfil'] ?? 'vereador') ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <?php
+                                            // Exemplo: status ativo/inativo (futuro: campo na tabela)
+                                            $ativo = $eleitor['ativo'] ?? 1;
+                                            echo $ativo
+                                                ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">Ativo</span>'
+                                                : '<span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">Inativo</span>';
+                                            ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-2">
+                                            <form method="POST" action="" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este eleitor?')">
+                                                <input type="hidden" name="acao" value="excluir_eleitor">
+                                                <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
+                                                <button type="submit" class="text-red-600 hover:text-red-900">Excluir</button>
+                                            </form>
+                                            <?php if ($eleitor['ativo']): ?>
+                                                <form method="POST" action="" class="inline">
+                                                    <input type="hidden" name="acao" value="bloquear_eleitor">
+                                                    <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
+                                                    <button type="submit" class="text-yellow-600 hover:text-yellow-900">Bloquear</button>
+                                                </form>
+                                            <?php else: ?>
+                                                <form method="POST" action="" class="inline">
+                                                    <input type="hidden" name="acao" value="desbloquear_eleitor">
+                                                    <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
+                                                    <button type="submit" class="text-green-600 hover:text-green-900">Desbloquear</button>
+                                                </form>
+                                            <?php endif; ?>
+                                            <a href="historico.php?cpf=<?= urlencode($eleitor['cpf']) ?>" class="text-blue-600 hover:text-blue-900">Histórico</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <p class="text-gray-600 text-center py-8">Nenhum eleitor cadastrado ainda.</p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 
