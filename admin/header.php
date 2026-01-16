@@ -15,8 +15,8 @@ $admin_nome = $_SESSION['admin_nome'] ?? '';
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
-<header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40 border-b border-gray-100 dark:border-gray-700">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+<header class="bg-white dark:bg-gray-800 shadow-lg shadow-blue-100/30 dark:shadow-blue-900/10 sticky top-0 z-40 border-b border-gray-100 dark:border-gray-700 py-2">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20 gap-4">
         <!-- Logo -->
         <div class="flex items-center gap-2">
             <span class="text-2xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
