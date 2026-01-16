@@ -158,18 +158,9 @@ $sucesso = $_GET['sucesso'] ?? '';
                     <div class="lg:col-span-2">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col">
-                                <div class="flex items-start gap-3 mb-3">
-                                    <div class="p-2 bg-green-50 dark:bg-green-900 rounded-md">
-                                        <!-- Heroicon: chart-pie -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 3.055A9.001 9.001 0 1120.945 13H11V3.055z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-300">Mix</div>
-                                        <div class="text-xl font-semibold">SIM / NÃO</div>
-                                    </div>
-                                    <div class="ml-auto text-sm text-gray-400">Atualizado</div>
+                                <div class="mb-3">
+                                    <div class="text-sm text-gray-500 dark:text-gray-300">Mix</div>
+                                    <div class="text-xl font-semibold">SIM / NÃO</div>
                                 </div>
                                 <div class="flex-1 flex items-center justify-center">
                                     <div class="w-40 h-40">
@@ -195,19 +186,9 @@ $sucesso = $_GET['sucesso'] ?? '';
                             </div>
 
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col">
-                                <div class="flex items-start gap-3 mb-3">
-                                    <div class="p-2 bg-blue-50 dark:bg-blue-900 rounded-md">
-                                        <!-- Heroicon: chart-bar -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 13V8a2 2 0 00-2-2h-1" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-300">Contagem</div>
-                                        <div class="text-xl font-semibold">Absoluta</div>
-                                    </div>
-                                    <div class="ml-auto text-sm text-gray-400">Total</div>
+                                <div class="mb-3">
+                                    <div class="text-sm text-gray-500 dark:text-gray-300">Contagem</div>
+                                    <div class="text-xl font-semibold">Absoluta</div>
                                 </div>
                                 <div class="flex-1 flex items-center justify-center">
                                     <div class="w-full max-w-xs h-36">
@@ -218,19 +199,9 @@ $sucesso = $_GET['sucesso'] ?? '';
                             </div>
 
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col">
-                                <div class="flex items-start gap-3 mb-3">
-                                    <div class="p-2 bg-indigo-50 dark:bg-indigo-900 rounded-md">
-                                        <!-- Heroicon: chart-square-bar (approx) -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 dark:text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 13h4v6H7zM13 9h4v10h-4z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-300">Percentual</div>
-                                        <div class="text-xl font-semibold">Distribuição</div>
-                                    </div>
-                                    <div class="ml-auto text-sm text-gray-400">%</div>
+                                <div class="mb-3">
+                                    <div class="text-sm text-gray-500 dark:text-gray-300">Percentual</div>
+                                    <div class="text-xl font-semibold">Distribuição</div>
                                 </div>
                                 <div class="flex-1 flex items-center justify-center">
                                     <div class="w-40 h-40">
