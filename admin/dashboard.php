@@ -5,6 +5,7 @@ echo 'INICIO'; exit;
  */
 
 require_once '../config/database.php';
+echo 'APOS DATABASE'; exit;
 require_once '../config/functions.php';
 
 verificarAdminPerfil('admin');
