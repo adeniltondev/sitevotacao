@@ -77,6 +77,90 @@ if ($votacao_ativa) {
 }
 
 $sucesso = $_GET['sucesso'] ?? '';
+
+// Filtro de período (GET)
+$start_date = isset($_GET['start']) && $_GET['start'] !== '' ? $_GET['start'] : null;
+$end_date = isset($_GET['end']) && $_GET['end'] !== '' ? $_GET['end'] : null;
+
+// Endpoint AJAX para atualizações dinâmicas
+if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
+    header('Content-Type: application/json');
+    if (!$votacao_ativa) {
+        echo json_encode(["sim"=>0,"nao"=>0,"total"=>0,"percentual_sim"=>0,"percentual_nao"=>0,"trend_labels"=>[],"trend_sim"=>[],"trend_nao"=>[],"last_votes"=>[]]);
+        exit;
+    }
+
+    // preparar filtro de datas
+    $whereDate = "";
+    $params = [$votacao_ativa['id']];
+    if ($start_date && $end_date) {
+        $whereDate = " AND criado_em BETWEEN ? AND ?";
+        $params[] = $start_date . ' 00:00:00';
+        $params[] = $end_date . ' 23:59:59';
+    }
+
+    $total_sim_stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'sim'" . $whereDate);
+    $total_sim_stmt->execute($params);
+    $total_sim_ajax = (int)$total_sim_stmt->fetch()['total'];
+
+    $total_nao_stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'nao'" . $whereDate);
+    $total_nao_stmt->execute($params);
+    $total_nao_ajax = (int)$total_nao_stmt->fetch()['total'];
+
+    $total_geral_ajax = $total_sim_ajax + $total_nao_ajax;
+    $percentual_sim_ajax = $total_geral_ajax > 0 ? round(($total_sim_ajax / $total_geral_ajax) * 100, 1) : 0;
+    $percentual_nao_ajax = $total_geral_ajax > 0 ? round(($total_nao_ajax / $total_geral_ajax) * 100, 1) : 0;
+
+    // trend (últimos 14 dias)
+    $days = 14;
+    $trend_labels = [];
+    $trend_sim = array_fill(0, $days, 0);
+    $trend_nao = array_fill(0, $days, 0);
+    $today = new DateTime();
+    $interval = new DateInterval('P1D');
+    $period = new DatePeriod((clone $today)->sub(new DateInterval('P' . ($days-1) . 'D')), $interval, $days);
+    foreach ($period as $i => $dt) {
+        $trend_labels[] = $dt->format('d/m');
+    }
+
+    $trendQuery = "SELECT DATE(criado_em) as d, SUM(CASE WHEN voto='sim' THEN 1 ELSE 0 END) as sim, SUM(CASE WHEN voto='nao' THEN 1 ELSE 0 END) as nao FROM votos WHERE votacao_id = ?" . $whereDate . " AND criado_em >= DATE_SUB(CURDATE(), INTERVAL ? DAY) GROUP BY DATE(criado_em)";
+    $paramsTrend = $params;
+    $paramsTrend[] = $days - 1;
+    $stmtTrend = $pdo->prepare($trendQuery);
+    $stmtTrend->execute($paramsTrend);
+    $rows = $stmtTrend->fetchAll();
+    $map = [];
+    foreach ($rows as $r) {
+        $map[$r['d']] = ['sim' => (int)$r['sim'], 'nao' => (int)$r['nao']];
+    }
+    // preencher arrays
+    $start = (clone $today)->sub(new DateInterval('P' . ($days-1) . 'D'));
+    for ($i = 0; $i < $days; $i++) {
+        $d = $start->format('Y-m-d');
+        if (isset($map[$d])) { $trend_sim[$i] = $map[$d]['sim']; $trend_nao[$i] = $map[$d]['nao']; }
+        $start->add($interval);
+    }
+
+    // últimos 5 votos
+    $lastParams = $params;
+    $lastQuery = "SELECT nome, cpf, voto, criado_em FROM votos WHERE votacao_id = ?" . $whereDate . " ORDER BY criado_em DESC LIMIT 5";
+    $lastStmt = $pdo->prepare($lastQuery);
+    $lastStmt->execute($lastParams);
+    $last_votes = $lastStmt->fetchAll();
+
+    echo json_encode([
+        'sim' => $total_sim_ajax,
+        'nao' => $total_nao_ajax,
+        'total' => $total_geral_ajax,
+        'percentual_sim' => $percentual_sim_ajax,
+        'percentual_nao' => $percentual_nao_ajax,
+        'trend_labels' => $trend_labels,
+        'trend_sim' => $trend_sim,
+        'trend_nao' => $trend_nao,
+        'last_votes' => $last_votes
+    ]);
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
