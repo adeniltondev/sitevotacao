@@ -7,8 +7,20 @@ if (!$votacao_id) {
     die('ID da votação não informado.');
 }
 
-$stmt = $pdo->prepare('SELECT v.*, vt.titulo FROM votos v JOIN votacoes vt ON v.votacao_id = vt.id WHERE v.votacao_id = ? ORDER BY v.criado_em ASC');
-$stmt->execute([$votacao_id]);
+// filtros opcionais
+$start = isset($_GET['start']) && $_GET['start'] !== '' ? $_GET['start'] . ' 00:00:00' : null;
+$end = isset($_GET['end']) && $_GET['end'] !== '' ? $_GET['end'] . ' 23:59:59' : null;
+
+$where = '';
+$params = [$votacao_id];
+if ($start && $end) {
+    $where = ' AND v.criado_em BETWEEN ? AND ?';
+    $params[] = $start;
+    $params[] = $end;
+}
+
+$stmt = $pdo->prepare('SELECT v.*, vt.titulo FROM votos v JOIN votacoes vt ON v.votacao_id = vt.id WHERE v.votacao_id = ?' . $where . ' ORDER BY v.criado_em ASC');
+$stmt->execute($params);
 $votos = $stmt->fetchAll();
 
 header('Content-Type: text/csv; charset=utf-8');
