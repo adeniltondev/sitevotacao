@@ -1,6 +1,8 @@
 <?php
 iniciarSessao();
 $admin_nome = $_SESSION['admin_nome'] ?? '';
+require_once __DIR__ . '/../config/database.php';
+$votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIMIT 1")->fetch();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -20,6 +22,11 @@ $admin_nome = $_SESSION['admin_nome'] ?? '';
         <!-- Logo -->
         <div class="flex items-center gap-2">
             <span class="text-2xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
+            <?php if ($votacao_ativa): ?>
+                <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Votação ABERTA</span>
+            <?php else: ?>
+                <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300">Nenhuma votação aberta</span>
+            <?php endif; ?>
         </div>
         <!-- Menu -->
         <nav class="flex gap-2 md:gap-4">
