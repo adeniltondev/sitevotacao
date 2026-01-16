@@ -572,7 +572,22 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
             if(chartMix){ chartMix.data.datasets[0].data = [data.sim, data.nao]; chartMix.update(); }
             if(chartCount){ chartCount.data.datasets[0].data = [data.sim, data.nao]; chartCount.update(); }
             if(chartPerc){ chartPerc.data.datasets[0].data = [data.percentual_sim, data.percentual_nao]; chartPerc.update(); }
-            if(chartTrend){ chartTrend.data.labels = data.trend_labels; chartTrend.data.datasets[0].data = data.trend_sim; chartTrend.data.datasets[1].data = data.trend_nao; chartTrend.update(); }
+            if(chartTrend){
+                chartTrend.data.labels = data.trend_labels;
+                chartTrend.data.datasets[0].data = data.trend_sim;
+                chartTrend.data.datasets[1].data = data.trend_nao;
+                // recalcular limite Y dinamicamente (padding 15%) para evitar picos sem escala
+                try{
+                    const maxVal = Math.max.apply(null, data.trend_sim.concat(data.trend_nao));
+                    const newMax = maxVal > 0 ? Math.ceil(maxVal * 1.15) : 1;
+                    if (!chartTrend.options) chartTrend.options = {};
+                    if (!chartTrend.options.scales) chartTrend.options.scales = {};
+                    if (!chartTrend.options.scales.y) chartTrend.options.scales.y = {};
+                    chartTrend.options.scales.y.max = newMax;
+                    chartTrend.options.scales.y.beginAtZero = true;
+                }catch(e){ console.warn('Erro ao recalcular escala do gráfico de tendência', e); }
+                chartTrend.update();
+            }
 
             // badges
             const bVotos = document.getElementById('badge-votos');
