@@ -283,70 +283,71 @@ foreach ($resultados['votos'] as $voto) {
                                 VOTAÇÃO <?= strtoupper(htmlspecialchars($votacao['titulo'])) ?>
                             </h2>
                             
-                            <!-- Grid de Eleitores -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                                <?php 
-                                // Mostrar eleitores cadastrados ou votantes
-                                $eleitores_para_exibir = count($eleitores_cadastrados) > 0 ? $eleitores_cadastrados : [];
-                                
-                                // Se não houver eleitores cadastrados, usar os que votaram
-                                if (count($eleitores_para_exibir) == 0) {
-                                    foreach ($resultados['votos'] as $voto) {
-                                        $eleitores_para_exibir[] = [
-                                            'id' => null,
-                                            'nome' => $voto['nome'],
-                                            'cargo' => $voto['cargo'],
-                                            'foto' => $voto['foto'],
-                                            'cpf' => $voto['cpf']
-                                        ];
+                            <?php if ($temAcessoDetalhado): ?>
+                                <!-- Grid de Eleitores -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                    <?php 
+                                    // Mostrar eleitores cadastrados ou votantes
+                                    $eleitores_para_exibir = count($eleitores_cadastrados) > 0 ? $eleitores_cadastrados : [];
+                                    // Se não houver eleitores cadastrados, usar os que votaram
+                                    if (count($eleitores_para_exibir) == 0) {
+                                        foreach ($resultados['votos'] as $voto) {
+                                            $eleitores_para_exibir[] = [
+                                                'id' => null,
+                                                'nome' => $voto['nome'],
+                                                'cargo' => $voto['cargo'],
+                                                'foto' => $voto['foto'],
+                                                'cpf' => $voto['cpf']
+                                            ];
+                                        }
                                     }
-                                }
-                                
-                                foreach ($eleitores_para_exibir as $eleitor):
-                                    $cpf_limpo = preg_replace('/[^0-9]/', '', $eleitor['cpf']);
-                                    $votou = isset($mapa_votantes[$cpf_limpo]);
-                                    $voto_info = $votou ? $mapa_votantes[$cpf_limpo] : null;
-                                    $status_voto = $votou ? ($voto_info['voto'] == 'sim' ? 'sim' : 'nao') : 'ausente';
-                                    $status_texto = $votou ? ($voto_info['voto'] == 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
-                                ?>
-                                    <div class="voter-card rounded-lg p-4 fade-in">
-                                        <!-- Foto e Informações -->
-                                        <div class="flex items-center gap-3 mb-3">
-                                            <?php if ($eleitor['foto']): ?>
-                                                <img 
-                                                    src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
-                                                    alt="<?= htmlspecialchars($eleitor['nome']) ?>"
-                                                    class="w-14 h-14 rounded-full object-cover border-2 border-gray-300"
-                                                >
-                                            <?php else: ?>
-                                                <div class="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-400">
-                                                    <span class="text-gray-700 text-lg font-bold">
-                                                        <?= strtoupper(substr($eleitor['nome'], 0, 1)) ?>
-                                                    </span>
-                                                </div>
-                                            <?php endif; ?>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="text-sm font-semibold text-gray-800 truncate">
-                                                    <?= htmlspecialchars($eleitor['nome']) ?>
-                                                </div>
-                                                <?php if ($eleitor['cargo']): ?>
-                                                    <div class="text-xs text-gray-500 truncate">
-                                                        <?= htmlspecialchars($eleitor['cargo']) ?>
+                                    foreach ($eleitores_para_exibir as $eleitor):
+                                        $cpf_limpo = preg_replace('/[^0-9]/', '', $eleitor['cpf']);
+                                        $votou = isset($mapa_votantes[$cpf_limpo]);
+                                        $voto_info = $votou ? $mapa_votantes[$cpf_limpo] : null;
+                                        $status_voto = $votou ? ($voto_info['voto'] == 'sim' ? 'sim' : 'nao') : 'ausente';
+                                        $status_texto = $votou ? ($voto_info['voto'] == 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
+                                    ?>
+                                        <div class="voter-card rounded-lg p-4 fade-in">
+                                            <!-- Foto e Informações -->
+                                            <div class="flex items-center gap-3 mb-3">
+                                                <?php if ($eleitor['foto']): ?>
+                                                    <img 
+                                                        src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
+                                                        alt="<?= htmlspecialchars($eleitor['nome']) ?>"
+                                                        class="w-14 h-14 rounded-full object-cover border-2 border-gray-300"
+                                                    >
+                                                <?php else: ?>
+                                                    <div class="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-400">
+                                                        <span class="text-gray-700 text-lg font-bold">
+                                                            <?= strtoupper(substr($eleitor['nome'], 0, 1)) ?>
+                                                        </span>
                                                     </div>
                                                 <?php endif; ?>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="text-sm font-semibold text-gray-800 truncate">
+                                                        <?= htmlspecialchars($eleitor['nome']) ?>
+                                                    </div>
+                                                    <?php if ($eleitor['cargo']): ?>
+                                                        <div class="text-xs text-gray-500 truncate">
+                                                            <?= htmlspecialchars($eleitor['cargo']) ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                            <!-- Barra de Status -->
+                                            <div class="mt-3">
+                                                <div class="status-bar <?= $status_voto ?> mb-2"></div>
+                                                <div class="text-xs font-semibold text-gray-700 text-center">
+                                                    <?= $status_texto ?>
+                                                </div>
                                             </div>
                                         </div>
-                                        
-                                        <!-- Barra de Status -->
-                                        <div class="mt-3">
-                                            <div class="status-bar <?= $status_voto ?> mb-2"></div>
-                                            <div class="text-xs font-semibold text-gray-700 text-center">
-                                                <?= $status_texto ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-center text-gray-500 text-sm my-8">Acesse com login de vereador ou secretário para ver o detalhamento dos votantes.</div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Status de Atualização -->
