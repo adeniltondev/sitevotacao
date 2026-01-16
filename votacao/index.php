@@ -50,7 +50,24 @@ if (isset($_GET['sucesso'])) {
         .dark .bg-red-50 { background: #7f1d1d !important; color: #fecaca !important; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
+        <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
+    </button>
+    <script>
+        function alternarModoEscuro() {
+            const html = document.documentElement;
+            const dark = html.classList.toggle('dark');
+            localStorage.setItem('darkMode', dark ? '1' : '0');
+            document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+            document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+        }
+        window.onload = function() {
+            const dark = document.documentElement.classList.contains('dark');
+            document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+            document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+        };
+    </script>
     <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
         <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
     </button>

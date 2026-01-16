@@ -147,19 +147,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     </script>
-<script>
-    function alternarModoEscuro() {
-        const html = document.documentElement;
-        const dark = html.classList.toggle('dark');
-        localStorage.setItem('darkMode', dark ? '1' : '0');
-        document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-        document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        const dark = document.documentElement.classList.contains('dark');
-        document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-        document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
-    });
-</script>
+    <script>
+        function alternarModoEscuro() {
+            const html = document.documentElement;
+            const dark = html.classList.toggle('dark');
+            localStorage.setItem('darkMode', dark ? '1' : '0');
+            document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+            document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+        }
+        window.onload = function() {
+            const dark = document.documentElement.classList.contains('dark');
+            document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+            document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+        };
+    </script>
 </body>
 </html>

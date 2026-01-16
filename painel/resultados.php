@@ -110,33 +110,50 @@ foreach ($resultados['votos'] as $voto) {
             50% { opacity: 0.5; }
         }
         
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        .pulse-dot {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        body {
-            background: #f9fafb;
-            min-height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            color: #1f2937;
-        }
-        .dark body {
-            background: #18181b;
-            color: #f3f4f6;
-        }
-        .dark .bg-white, .dark .stat-box, .dark .voter-card {
-            background: #23232a !important;
-            color: #f3f4f6 !important;
-            border-color: #333 !important;
-        }
-        .dark .bg-gray-800 { background: #18181b !important; }
-        .dark .text-gray-800 { color: #f3f4f6 !important; }
-        .dark .text-gray-600 { color: #d1d5db !important; }
-        .dark .text-gray-500 { color: #a1a1aa !important; }
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Painel de Resultados - Sistema de Votação</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script>
+                if (localStorage.getItem('darkMode') === '1' ||
+                        (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            </script>
+            <style>
+                .dark body { background: #18181b !important; color: #f3f4f6 !important; }
+                .dark .bg-white { background: #23232a !important; color: #f3f4f6 !important; }
+                .dark .text-gray-800 { color: #f3f4f6 !important; }
+                .dark .text-gray-600 { color: #d1d5db !important; }
+                .dark .bg-gray-50 { background: #23232a !important; }
+                .dark .bg-green-100 { background: #14532d !important; color: #bbf7d0 !important; }
+                .dark .bg-red-100 { background: #7f1d1d !important; color: #fecaca !important; }
+                .dark .bg-blue-600 { background: #1e40af !important; }
+                .dark .bg-green-50 { background: #14532d !important; color: #bbf7d0 !important; }
+                .dark .bg-red-50 { background: #7f1d1d !important; color: #fecaca !important; }
+            </style>
+        </head>
+        <body class="bg-gray-900 dark:bg-gray-900 min-h-screen">
+            <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
+                <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
+            </button>
+            <script>
+                function alternarModoEscuro() {
+                    const html = document.documentElement;
+                    const dark = html.classList.toggle('dark');
+                    localStorage.setItem('darkMode', dark ? '1' : '0');
+                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+                }
+                window.onload = function() {
+                    const dark = document.documentElement.classList.contains('dark');
+                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+                };
+            </script>
         .dark .bg-gray-50 { background: #23232a !important; }
         .dark .bg-gray-100 { background: #23232a !important; }
         .dark .border-gray-300 { border-color: #333 !important; }
