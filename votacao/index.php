@@ -29,8 +29,31 @@ if (isset($_GET['sucesso'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Votação - Câmara</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (localStorage.getItem('darkMode') === '1' ||
+                (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <style>
+        .dark body { background: #18181b !important; color: #f3f4f6 !important; }
+        .dark .bg-white { background: #23232a !important; color: #f3f4f6 !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-600 { color: #d1d5db !important; }
+        .dark .bg-gray-50 { background: #23232a !important; }
+        .dark .bg-green-100 { background: #14532d !important; color: #bbf7d0 !important; }
+        .dark .bg-red-100 { background: #7f1d1d !important; color: #fecaca !important; }
+        .dark .bg-blue-600 { background: #1e40af !important; }
+        .dark .bg-green-50 { background: #14532d !important; color: #bbf7d0 !important; }
+        .dark .bg-red-50 { background: #7f1d1d !important; color: #fecaca !important; }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+    <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
+        <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
+    </button>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
@@ -63,6 +86,17 @@ if (isset($_GET['sucesso'])) {
                 <p class="text-gray-600">Não há votação aberta no momento.</p>
             </div>
         <?php else: ?>
+            <!-- QR Code para painel de resultados -->
+            <div class="flex justify-end mb-4">
+                <?php
+                $url_resultados = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/../painel/resultados.php';
+                $qr_url = 'https://chart.googleapis.com/chart?chs=120x120&cht=qr&chl=' . urlencode($url_resultados);
+                ?>
+                <div class="flex flex-col items-center">
+                    <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="w-20 h-20 border rounded bg-white shadow" loading="lazy">
+                    <span class="text-xs text-gray-400 mt-1">Resultados em tempo real</span>
+                </div>
+            </div>
             <!-- Votação Ativa -->
             <div class="bg-white rounded-lg shadow-md p-8 mb-6">
                 <div class="flex items-center justify-between mb-6">
@@ -140,4 +174,18 @@ if (isset($_GET['sucesso'])) {
     </div>
 
 </body>
+<script>
+    function alternarModoEscuro() {
+        const html = document.documentElement;
+        const dark = html.classList.toggle('dark');
+        localStorage.setItem('darkMode', dark ? '1' : '0');
+        document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+        document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const dark = document.documentElement.classList.contains('dark');
+        document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
+        document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+    });
+</script>
 </html>
