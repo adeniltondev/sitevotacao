@@ -2,35 +2,30 @@
 iniciarSessao();
 $admin_nome = $_SESSION['admin_nome'] ?? '';
 ?>
-<header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div class="flex flex-col md:flex-row md:items-center gap-4 flex-1">
-            <a href="dashboard.php" class="text-2xl font-bold text-blue-600 dark:text-blue-400 hover:underline">Câmara Municipal</a>
-            <nav class="flex flex-wrap gap-2 md:gap-4 ml-0 md:ml-8">
-                <a href="dashboard.php" class="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Dashboard</a>
-                <a href="eleitores.php" class="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Eleitores</a>
-                <a href="historico.php?cpf=" class="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Histórico</a>
-                <a href="../painel/resultados.php" target="_blank" class="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Painel Público</a>
-            </nav>
+<header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40 border-b border-gray-100 dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <span class="text-2xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
         </div>
+        <!-- Menu -->
+        <nav class="flex gap-2 md:gap-4">
+            <a href="dashboard.php" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400 <?= basename($_SERVER['PHP_SELF']) === 'dashboard.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">Dashboard</a>
+            <a href="eleitores.php" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400 <?= basename($_SERVER['PHP_SELF']) === 'eleitores.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">Eleitores</a>
+            <a href="historico.php?cpf=" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400 <?= basename($_SERVER['PHP_SELF']) === 'historico.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">Histórico</a>
+            <a href="../painel/resultados.php" target="_blank" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400">Painel Público</a>
+        </nav>
+        <!-- Avatar e Sair -->
         <div class="flex items-center gap-4">
-            <div class="text-right">
-                <div class="text-sm font-semibold text-gray-800 dark:text-gray-100">
-                    <?= htmlspecialchars($admin_nome) ?>
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-lg">
+                    <?= strtoupper(mb_substr($admin_nome, 0, 1, 'UTF-8')) ?>
                 </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400" id="relogio"></div>
+                <span class="hidden md:block text-gray-800 dark:text-gray-100 font-semibold text-sm">
+                    <?= htmlspecialchars($admin_nome) ?>
+                </span>
             </div>
-            <a href="logout.php" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Sair</a>
+            <a href="logout.php" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition font-semibold">Sair</a>
         </div>
     </div>
-    <script>
-    function atualizarRelogio() {
-        const agora = new Date();
-        const data = agora.toLocaleDateString('pt-BR');
-        const hora = agora.toLocaleTimeString('pt-BR');
-        document.getElementById('relogio').textContent = `${data} ${hora}`;
-    }
-    setInterval(atualizarRelogio, 1000);
-    atualizarRelogio();
-    </script>
 </header>
