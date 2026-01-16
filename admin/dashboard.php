@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$titulo, $descricao]);
             header('Location: dashboard.php?sucesso=votacao_criada');
             $sucesso = $_GET['sucesso'] ?? '';
-            require_once 'header.php';
             ?>
             <!DOCTYPE html>
             <html lang="pt-BR">
