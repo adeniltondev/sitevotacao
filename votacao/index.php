@@ -95,10 +95,14 @@ if (isset($_GET['sucesso'])) {
         <div class="bg-gray-800 border-b border-gray-700 py-4 px-4 sm:px-8 fade-in shadow-lg z-10">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div>
-                        <h1 class="text-xl md:text-2xl font-bold text-white tracking-tight">CÂMARA MUNICIPAL</h1>
-                        <p class="text-xs md:text-sm text-gray-400 font-medium tracking-wide uppercase">Sistema de Votação</p>
-                    </div>
+                    <?php if (!empty($settings['logo_path']) && file_exists('../' . $settings['logo_path'])): ?>
+                        <img src="../<?= htmlspecialchars($settings['logo_path']) ?>" alt="<?= htmlspecialchars($settings['sistema_nome'] ?? 'Câmara Municipal') ?>" class="h-12 w-auto">
+                    <?php else: ?>
+                        <div>
+                            <h1 class="text-xl md:text-2xl font-bold text-white tracking-tight">CÂMARA MUNICIPAL</h1>
+                            <p class="text-xs md:text-sm text-gray-400 font-medium tracking-wide uppercase">Sistema de Votação</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="flex items-center gap-4 justify-between md:justify-end w-full md:w-auto">
