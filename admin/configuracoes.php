@@ -3,6 +3,9 @@ require_once '../config/database.php';
 require_once '../config/functions.php';
 verificarAdmin();
 
+// Gerar token CSRF
+$csrf_token = gerarCSRFToken();
+
 $configFile = __DIR__ . '/../config/settings.json';
 $mensagem = '';
 $tipo_mensagem = '';
@@ -24,17 +27,22 @@ if (file_exists($configFile)) {
 
 // Salvar configurações
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $settings['sistema_nome'] = sanitizar($_POST['sistema_nome'] ?? 'VotaCâmara');
-    $settings['sistema_cor'] = sanitizar($_POST['sistema_cor'] ?? 'blue');
-    $settings['modo_escuro'] = isset($_POST['modo_escuro']);
-
-    if (file_put_contents($configFile, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
-        $mensagem = 'Configurações salvas com sucesso!';
-        $tipo_mensagem = 'success';
-        registrarLog('atualizar_configuracoes', $settings);
-    } else {
-        $mensagem = 'Erro ao salvar configurações.';
+    if (!validarCSRFToken()) {
+        $mensagem = 'Erro de segurança: Token CSRF inválido.';
         $tipo_mensagem = 'error';
+    } else {
+        $settings['sistema_nome'] = sanitizar($_POST['sistema_nome'] ?? 'VotaCâmara');
+        $settings['sistema_cor'] = sanitizar($_POST['sistema_cor'] ?? 'blue');
+        $settings['modo_escuro'] = isset($_POST['modo_escuro']);
+    
+        if (file_put_contents($configFile, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+            $mensagem = 'Configurações salvas com sucesso!';
+            $tipo_mensagem = 'success';
+            registrarLog('atualizar_configuracoes', $settings);
+        } else {
+            $mensagem = 'Erro ao salvar configurações.';
+            $tipo_mensagem = 'error';
+        }
     }
 }
 

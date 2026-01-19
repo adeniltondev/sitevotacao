@@ -110,84 +110,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Buscar todos os eleitores
 $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll();
+
+require_once 'header.php';
+require_once 'sidebar.php';
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Eleitores - VotaCâmara</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-</head>
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-    <!-- Sidebar -->
-    <?php include 'sidebar.php'; ?>
 
-    <!-- Mobile Header -->
-    <div class="md:hidden bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
-        <span class="text-xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
-        <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 dark:text-gray-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-        </button>
-    </div>
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-b dark:border-gray-700 p-4 space-y-2">
-        <a href="dashboard.php" class="block text-gray-700 dark:text-gray-200 py-2">Dashboard</a>
-        <a href="eleitores.php" class="block text-blue-600 font-bold py-2">Eleitores</a>
-        <a href="relatorios.php" class="block text-gray-700 dark:text-gray-200 py-2">Relatórios</a>
-        <a href="auditoria.php" class="block text-gray-700 dark:text-gray-200 py-2">Auditoria</a>
-        <a href="configuracoes.php" class="block text-gray-700 dark:text-gray-200 py-2">Configurações</a>
-        <a href="logout.php" class="block text-red-600 py-2">Sair</a>
-    </div>
-
-    <!-- Main Content -->
-    <div class="md:ml-64 min-h-screen">
-        <!-- Top Bar (Desktop) -->
-        <header class="hidden md:flex justify-between items-center bg-white dark:bg-gray-800 shadow-sm px-8 py-4">
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Gerenciar Eleitores</h1>
-            <div class="flex items-center gap-4">
-                <button onclick="alternarModoEscuro()" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
-                    <span id="icone-modo" class="text-xl">🌙</span>
-                </button>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <div class="text-sm font-semibold text-gray-800 dark:text-gray-200"><?= htmlspecialchars($_SESSION['admin_nome'] ?? 'Admin') ?></div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Administrador</div>
-                    </div>
-                    <a href="logout.php" class="text-sm text-red-600 hover:text-red-800 font-medium">Sair</a>
-                </div>
+<main class="md:ml-64 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">Gerenciar Eleitores</h1>
+                <p class="text-gray-500 dark:text-gray-400 mt-1">Cadastre e gerencie os vereadores aptos a votar.</p>
             </div>
-        </header>
+        </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <?php if ($mensagem): ?>
-                <div class="mb-6 p-4 rounded-lg flex items-center gap-3 <?= $tipo_mensagem === 'success' ? 'bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' : 'bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' ?>">
-                    <?php if ($tipo_mensagem === 'success'): ?>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <?php else: ?>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <?php endif; ?>
-                    <?= htmlspecialchars($mensagem) ?>
-                </div>
-            <?php endif; ?>
+        <?php if ($mensagem): ?>
+            <div class="mb-6 p-4 rounded-lg flex items-center gap-3 <?= $tipo_mensagem === 'success' ? 'bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' : 'bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' ?>">
+                <?php if ($tipo_mensagem === 'success'): ?>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <?php else: ?>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <?php endif; ?>
+                <?= htmlspecialchars($mensagem) ?>
+            </div>
+        <?php endif; ?>
 
-            <!-- Formulário de Cadastro -->
+        <!-- Formulário de Cadastro -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg text-blue-600 dark:text-blue-300">
