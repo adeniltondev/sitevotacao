@@ -121,12 +121,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="max-w-md w-full">
         <!-- Header -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center p-3 bg-blue-600 rounded-xl mb-4 shadow-lg shadow-blue-600/20">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Vota<span class="text-blue-600">Câmara</span></h1>
+            <?php if (!empty($settings['logo_path']) && file_exists('../' . $settings['logo_path'])): ?>
+                <img src="../<?= htmlspecialchars($settings['logo_path']) ?>" alt="<?= htmlspecialchars($settings['sistema_nome'] ?? 'Logo') ?>" class="h-20 w-auto mx-auto mb-4">
+            <?php else: ?>
+                <div class="inline-flex items-center justify-center p-3 bg-blue-600 rounded-xl mb-4 shadow-lg shadow-blue-600/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            <?php endif; ?>
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+                <?php if (!empty($settings['logo_path']) && file_exists('../' . $settings['logo_path'])): ?>
+                    <?= htmlspecialchars($settings['sistema_nome'] ?? 'Área de Votação') ?>
+                <?php else: ?>
+                    Vota<span class="text-blue-600">Câmara</span>
+                <?php endif; ?>
+            </h1>
             <p class="text-gray-500 dark:text-gray-400">Área de Votação</p>
         </div>
 
