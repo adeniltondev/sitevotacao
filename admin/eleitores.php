@@ -332,7 +332,7 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                             </span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="px-6 py-4 text-right">
+                                    <td class="px-6 py-4 w-auto text-right">
                                         <div class="flex items-center justify-end gap-2">
                                             <button type="button" onclick='editarEleitor(<?= json_encode([
                                                 "id" => $eleitor["id"],
