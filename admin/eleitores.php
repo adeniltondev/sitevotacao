@@ -321,21 +321,9 @@ require_once 'sidebar.php';
             </div>
         </div>
     </div>
+</main>
 
-    <script>
-        function alternarModoEscuro() {
-            const html = document.documentElement;
-            const dark = html.classList.toggle('dark');
-            localStorage.setItem('darkMode', dark ? '1' : '0');
-            document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-        }
-        
-        // Inicializar modo escuro
-        if (localStorage.getItem('darkMode') === '1' ||
-            (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            document.getElementById('icone-modo').textContent = '☀️';
-        }
+<script>
 
         function mascaraCPF(i) {
             var v = i.value;
