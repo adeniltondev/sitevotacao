@@ -98,12 +98,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="max-w-md w-full">
         <!-- Header -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center p-3 bg-red-600 rounded-xl mb-4 shadow-lg shadow-red-600/20">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Vota<span class="text-red-600">Admin</span></h1>
+            <?php if (!empty($settings['logo_path']) && file_exists('../' . $settings['logo_path'])): ?>
+                <img src="../<?= htmlspecialchars($settings['logo_path']) ?>" alt="<?= htmlspecialchars($settings['sistema_nome'] ?? 'Logo') ?>" class="h-20 w-auto mx-auto mb-4">
+            <?php else: ?>
+                <div class="inline-flex items-center justify-center p-3 bg-red-600 rounded-xl mb-4 shadow-lg shadow-red-600/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+            <?php endif; ?>
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+                <?php if (!empty($settings['logo_path']) && file_exists('../' . $settings['logo_path'])): ?>
+                    <?= htmlspecialchars($settings['sistema_nome'] ?? 'Painel Administrativo') ?>
+                <?php else: ?>
+                    Vota<span class="text-red-600">Admin</span>
+                <?php endif; ?>
+            </h1>
             <p class="text-gray-500 dark:text-gray-400">Painel Administrativo</p>
         </div>
 
