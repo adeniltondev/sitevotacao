@@ -333,6 +333,15 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
+                                            <button type="button" onclick='editarEleitor(<?= json_encode([
+                                                "id" => $eleitor["id"],
+                                                "nome" => $eleitor["nome"],
+                                                "cpf" => $eleitor["cpf"],
+                                                "cargo" => $eleitor["cargo"],
+                                                "perfil" => $eleitor["perfil"] ?? "vereador"
+                                            ]) ?>)' class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">
+                                                Editar
+                                            </button>
                                             <a href="historico.php?cpf=<?= $eleitor['cpf'] ?>" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium">Histórico</a>
                                             <form method="POST" action="" class="inline" onsubmit="return confirm('Tem certeza?')">
                                                 <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
