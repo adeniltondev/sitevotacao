@@ -222,17 +222,18 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                 </div>
             <?php endif; ?>
 
-            <!-- Formulário de Cadastro -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8">
+            <!-- Formulário de Cadastro/Edição -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8 transition-all duration-300" id="card-formulario">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg text-blue-600 dark:text-blue-300">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Cadastrar Novo Eleitor</h2>
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white" id="form-titulo">Cadastrar Novo Eleitor</h2>
                 </div>
                 
-                <form method="POST" action="" enctype="multipart/form-data" class="space-y-6">
-                    <input type="hidden" name="acao" value="cadastrar_eleitor">
+                <form method="POST" action="" enctype="multipart/form-data" class="space-y-6" id="form-eleitor">
+                    <input type="hidden" name="acao" id="acao" value="cadastrar_eleitor">
+                    <input type="hidden" name="eleitor_id" id="eleitor_id" value="">
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -263,10 +264,14 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                     <div>
                         <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Foto (Opcional)</label>
                         <input type="file" id="foto" name="foto" accept="image/*" class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-foto-edit" style="display:none;">Deixe em branco para manter a foto atual.</p>
                     </div>
 
-                    <div class="flex justify-end">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition transform hover:scale-105">
+                    <div class="flex justify-end gap-3">
+                        <button type="button" id="btn-cancelar" onclick="cancelarEdicao()" class="hidden px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btn-submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition transform hover:scale-105">
                             Cadastrar Eleitor
                         </button>
                     </div>
