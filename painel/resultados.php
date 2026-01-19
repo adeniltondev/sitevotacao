@@ -6,6 +6,7 @@
 
 require_once '../config/database.php';
 require_once '../config/functions.php';
+iniciarSessao();
 
 // Permitir acesso público para leitura dos totais, mas grid detalhado só para vereador/secretario
 $temAcessoDetalhado = false;
