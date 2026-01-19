@@ -197,41 +197,62 @@ foreach ($resultados['votos'] as $voto) {
                     <!-- Coluna Esquerda - Informações da Votação -->
                     <div class="lg:col-span-1 space-y-4">
                         <!-- Detalhes da Proposição -->
-                        <div class="stat-box rounded-lg p-6 fade-in">
-                                                        <!-- Exportação CSV -->
-                                                        <div class="mt-4 flex flex-col items-center">
-                                                            <div class="flex gap-2">
-                                                                <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">Exportar CSV</a>
-                                                                <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">Exportar PDF</a>
-                                                                <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition text-sm font-semibold">Exportar Ata</a>
-                                                            </div>
-                                                            <span class="text-xs text-gray-400 mt-1">Exporta todos os votos desta votação</span>
-                                                        </div>
-                            <div class="text-xs text-gray-500 uppercase mb-2">VOTAÇÃO ÚNICA</div>
-                            <h2 class="text-xl font-bold text-gray-800 mb-3">
-                                <?= htmlspecialchars($votacao['titulo']) ?>
-                            </h2>
+                        <div class="stat-box rounded-2xl p-6 md:p-7 fade-in">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="min-w-0">
+                                    <div class="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-gray-500 dark:text-gray-400">
+                                        <span class="inline-block h-2 w-2 rounded-full bg-blue-500/80"></span>
+                                        VOTAÇÃO ÚNICA
+                                    </div>
+                                    <h2 class="mt-3 text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-snug">
+                                        <?= htmlspecialchars($votacao['titulo']) ?>
+                                    </h2>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-[11px] text-gray-500 dark:text-gray-400 uppercase tracking-wide">Data</div>
+                                    <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                                        <?= date('d/m/Y', strtotime($votacao['criada_em'])) ?>
+                                    </div>
+                                </div>
+                            </div>
+
                             <?php if ($votacao['descricao']): ?>
-                                <p class="text-sm text-gray-600 mb-4">
+                                <p class="mt-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                     <?= htmlspecialchars($votacao['descricao']) ?>
                                 </p>
                             <?php endif; ?>
-                            <div class="text-xs text-gray-500 mb-2">
-                                DATA: <?= date('d/m/Y', strtotime($votacao['criada_em'])) ?>
-                            </div>
-                            <!-- QR Code Público -->
-                            <div class="flex flex-col items-center mt-4">
-                                <div class="text-xs text-gray-500 mb-1">Acesse pelo celular:</div>
-                                <?php
-                                $url_resultados = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-                                // Usar api.qrserver.com como alternativa (mais estável que chart.googleapis)
-                                $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' . urlencode($url_resultados);
-                                ?>
-                                <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="w-32 h-32 border rounded bg-white shadow" loading="lazy" onerror="this.style.display='none'">
-                                <noscript>
-                                    <a href="<?= htmlspecialchars($qr_url) ?>" target="_blank">Gerar QR Code</a>
-                                </noscript>
-                                <div class="text-[10px] text-gray-400 mt-1 break-all text-center"><?= htmlspecialchars($url_resultados) ?></div>
+
+                            <div class="mt-6 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-start">
+                                <div>
+                                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Exportação</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                            CSV
+                                        </a>
+                                        <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                            PDF
+                                        </a>
+                                        <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                            Ata
+                                        </a>
+                                    </div>
+                                    <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Exporta todos os votos desta votação.</div>
+                                </div>
+
+                                <div class="flex md:justify-end">
+                                    <div class="rounded-xl bg-white/70 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700 p-3">
+                                        <div class="text-[11px] font-semibold text-gray-600 dark:text-gray-400 text-center mb-2">Acesse pelo celular</div>
+                                        <?php
+                                        $url_resultados = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                                        $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=' . urlencode($url_resultados);
+                                        $url_display = preg_replace('#^https?://#', '', $url_resultados);
+                                        ?>
+                                        <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="w-28 h-28 rounded-lg bg-white" loading="lazy" onerror="this.style.display='none'">
+                                        <div class="mt-2 text-[10px] text-gray-400 dark:text-gray-500 text-center max-w-[140px] truncate" title="<?= htmlspecialchars($url_display) ?>">
+                                            <?= htmlspecialchars($url_display) ?>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
