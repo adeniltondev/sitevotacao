@@ -27,23 +27,44 @@ $stmt = $pdo->prepare('SELECT v.*, vt.titulo FROM votos v JOIN votacoes vt ON v.
 $stmt->execute($params);
 $votos = $stmt->fetchAll();
 
-$html = '<h2>Relatório de Votação</h2>';
+$html = '
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; font-size: 12px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
+        th { background-color: #f5f5f5; font-weight: bold; }
+        .sim { color: green; font-weight: bold; }
+        .nao { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        ' . $logo_html . '
+        <h2>' . htmlspecialchars($sistema_nome) . '</h2>
+        <h3>Relatório de Votação</h3>
+    </div>
+';
+
 $html .= '<table border="1" cellpadding="5" cellspacing="0"><thead><tr>';
 $html .= '<th>ID</th><th>Votação</th><th>Nome</th><th>CPF</th><th>Cargo</th><th>Voto</th><th>Data/Hora</th><th>IP</th>';
 $html .= '</tr></thead><tbody>';
 foreach ($votos as $voto) {
+    $class_voto = strtolower($voto['voto']) == 'sim' ? 'sim' : 'nao';
     $html .= '<tr>';
     $html .= '<td>' . $voto['id'] . '</td>';
     $html .= '<td>' . htmlspecialchars($voto['titulo']) . '</td>';
     $html .= '<td>' . htmlspecialchars($voto['nome']) . '</td>';
     $html .= '<td>' . htmlspecialchars($voto['cpf']) . '</td>';
     $html .= '<td>' . htmlspecialchars($voto['cargo']) . '</td>';
-    $html .= '<td>' . strtoupper($voto['voto']) . '</td>';
+    $html .= '<td class="' . $class_voto . '">' . strtoupper($voto['voto']) . '</td>';
     $html .= '<td>' . date('d/m/Y H:i', strtotime($voto['criado_em'])) . '</td>';
     $html .= '<td>' . htmlspecialchars($voto['ip_address']) . '</td>';
     $html .= '</tr>';
 }
-$html .= '</tbody></table>';
+$html .= '</tbody></table></body></html>';
 
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);
