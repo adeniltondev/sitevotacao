@@ -1,10 +1,5 @@
 # Configurações gerais do sistema
 
-# Proteger arquivos sensíveis
-<FilesMatch "^(config|sql)">
-    Order Deny,Allow
-    Deny from all
-</FilesMatch>
 
 # Prevenir listagem de diretórios
 Options -Indexes

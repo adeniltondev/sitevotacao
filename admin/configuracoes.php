@@ -3,9 +3,6 @@ require_once '../config/database.php';
 require_once '../config/functions.php';
 verificarAdmin();
 
-// Gerar token CSRF
-$csrf_token = gerarCSRFToken();
-
 $configFile = __DIR__ . '/../config/settings.json';
 $mensagem = '';
 $tipo_mensagem = '';
@@ -27,22 +24,17 @@ if (file_exists($configFile)) {
 
 // Salvar configurações
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!validarCSRFToken()) {
-        $mensagem = 'Erro de segurança: Token CSRF inválido.';
-        $tipo_mensagem = 'error';
+    $settings['sistema_nome'] = sanitizar($_POST['sistema_nome'] ?? 'VotaCâmara');
+    $settings['sistema_cor'] = sanitizar($_POST['sistema_cor'] ?? 'blue');
+    $settings['modo_escuro'] = isset($_POST['modo_escuro']);
+
+    if (file_put_contents($configFile, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        $mensagem = 'Configurações salvas com sucesso!';
+        $tipo_mensagem = 'success';
+        registrarLog('atualizar_configuracoes', $settings);
     } else {
-        $settings['sistema_nome'] = sanitizar($_POST['sistema_nome'] ?? 'VotaCâmara');
-        $settings['sistema_cor'] = sanitizar($_POST['sistema_cor'] ?? 'blue');
-        $settings['modo_escuro'] = isset($_POST['modo_escuro']);
-    
-        if (file_put_contents($configFile, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
-            $mensagem = 'Configurações salvas com sucesso!';
-            $tipo_mensagem = 'success';
-            registrarLog('atualizar_configuracoes', $settings);
-        } else {
-            $mensagem = 'Erro ao salvar configurações.';
-            $tipo_mensagem = 'error';
-        }
+        $mensagem = 'Erro ao salvar configurações.';
+        $tipo_mensagem = 'error';
     }
 }
 
@@ -50,7 +42,7 @@ require_once 'header.php';
 require_once 'sidebar.php';
 ?>
 
-<main class="md:ml-72 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
+<main class="md:ml-64 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
     <div class="p-6 md:p-10 space-y-8">
         <!-- Cabeçalho -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">

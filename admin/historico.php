@@ -25,22 +25,78 @@ $stmt->execute([$cpf]);
 $votos = $stmt->fetchAll();
 
 ?>
-<?php
-$page_title = 'Histórico de Votos - ' . ($eleitor['nome'] ?? 'Eleitor');
-require_once 'header.php';
-require_once 'sidebar.php';
-?>
-<main class="md:ml-72 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex items-center gap-4 mb-8">
-            <a href="eleitores.php" class="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800 transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            </a>
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Histórico do Eleitor</h1>
-        </div>
-        
-        <!-- Card do Eleitor -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8 flex flex-col md:flex-row items-center gap-6">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Votos - <?= htmlspecialchars($eleitor['nome']) ?></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <!-- Sidebar -->
+    <?php include 'sidebar.php'; ?>
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
+        <span class="text-xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
+        <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 dark:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-b dark:border-gray-700 p-4 space-y-2">
+        <a href="dashboard.php" class="block text-gray-700 dark:text-gray-200 py-2">Dashboard</a>
+        <a href="eleitores.php" class="block text-blue-600 font-bold py-2">Eleitores</a>
+        <a href="relatorios.php" class="block text-gray-700 dark:text-gray-200 py-2">Relatórios</a>
+        <a href="auditoria.php" class="block text-gray-700 dark:text-gray-200 py-2">Auditoria</a>
+        <a href="configuracoes.php" class="block text-gray-700 dark:text-gray-200 py-2">Configurações</a>
+        <a href="logout.php" class="block text-red-600 py-2">Sair</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64 min-h-screen">
+        <!-- Top Bar (Desktop) -->
+        <header class="hidden md:flex justify-between items-center bg-white dark:bg-gray-800 shadow-sm px-8 py-4">
+            <div class="flex items-center gap-4">
+                <a href="eleitores.php" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </a>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Histórico do Eleitor</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="alternarModoEscuro()" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                    <span id="icone-modo" class="text-xl">🌙</span>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div class="text-right">
+                        <div class="text-sm font-semibold text-gray-800 dark:text-gray-200"><?= htmlspecialchars($_SESSION['admin_nome'] ?? 'Admin') ?></div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Administrador</div>
+                    </div>
+                    <a href="logout.php" class="text-sm text-red-600 hover:text-red-800 font-medium">Sair</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Card do Eleitor -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8 flex flex-col md:flex-row items-center gap-6">
                 <?php if ($eleitor['foto']): ?>
                     <img src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" alt="Foto" class="w-24 h-24 rounded-full object-cover ring-4 ring-gray-50 dark:ring-gray-700 shadow-md">
                 <?php else: ?>

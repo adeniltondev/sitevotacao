@@ -1,3 +1,4 @@
+@ -1,82 +0,0 @@
 <?php
 require_once '../config/database.php';
 require_once '../config/functions.php';
