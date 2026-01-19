@@ -123,51 +123,57 @@ if (isset($_GET['sucesso'])) {
                     </div>
                 <?php endif; ?>
 
-                <!-- Formulário de Voto -->
-                <form id="formVoto" method="POST" action="votar.php" class="space-y-6">
-                    <input type="hidden" name="votacao_id" value="<?= $votacao['id'] ?>">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
-                    
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300 font-medium mb-4">Seu Voto *</label>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <label class="relative cursor-pointer group">
-                                <input 
-                                    type="radio" 
-                                    name="voto" 
-                                    value="sim" 
-                                    required
-                                    class="peer sr-only"
-                                >
-                                <div class="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-lg p-6 text-center hover:bg-green-100 dark:hover:bg-green-900/30 transition peer-checked:bg-green-500 peer-checked:border-green-600 peer-checked:text-white dark:peer-checked:bg-green-600">
-                                    <div class="text-4xl font-bold mb-2 text-green-700 dark:text-green-400 peer-checked:text-white group-hover:text-green-800 dark:group-hover:text-green-300">SIM</div>
-                                    <div class="text-sm text-green-600 dark:text-green-500 peer-checked:text-white">Aprovar</div>
-                                </div>
-                            </label>
-                            
-                            <label class="relative cursor-pointer group">
-                                <input 
-                                    type="radio" 
-                                    name="voto" 
-                                    value="nao" 
-                                    required
-                                    class="peer sr-only"
-                                >
-                                <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-6 text-center hover:bg-red-100 dark:hover:bg-red-900/30 transition peer-checked:bg-red-500 peer-checked:border-red-600 peer-checked:text-white dark:peer-checked:bg-red-600">
-                                    <div class="text-4xl font-bold mb-2 text-red-700 dark:text-red-400 peer-checked:text-white group-hover:text-red-800 dark:group-hover:text-red-300">NÃO</div>
-                                    <div class="text-sm text-red-600 dark:text-red-500 peer-checked:text-white">Rejeitar</div>
-                                </div>
-                            </label>
-                        </div>
+                <?php if (($_SESSION['eleitor_perfil'] ?? 'vereador') !== 'vereador'): ?>
+                    <div class="p-4 rounded-lg bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800">
+                        Você está logado como <strong><?= htmlspecialchars($_SESSION['eleitor_perfil'] ?? 'desconhecido') ?></strong> e não tem permissão para votar.
                     </div>
-                    
-                    <button 
-                        type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white py-4 px-6 rounded-lg transition duration-200 font-bold text-lg shadow-md"
-                    >
-                        Confirmar Voto
-                    </button>
-                </form>
+                <?php else: ?>
+                    <!-- Formulário de Voto -->
+                    <form id="formVoto" method="POST" action="votar.php" class="space-y-6">
+                        <input type="hidden" name="votacao_id" value="<?= $votacao['id'] ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
+                        
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-4">Seu Voto *</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="relative cursor-pointer group">
+                                    <input 
+                                        type="radio" 
+                                        name="voto" 
+                                        value="sim" 
+                                        required
+                                        class="peer sr-only"
+                                    >
+                                    <div class="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-lg p-6 text-center hover:bg-green-100 dark:hover:bg-green-900/30 transition peer-checked:bg-green-500 peer-checked:border-green-600 peer-checked:text-white dark:peer-checked:bg-green-600">
+                                        <div class="text-4xl font-bold mb-2 text-green-700 dark:text-green-400 peer-checked:text-white group-hover:text-green-800 dark:group-hover:text-green-300">SIM</div>
+                                        <div class="text-sm text-green-600 dark:text-green-500 peer-checked:text-white">Aprovar</div>
+                                    </div>
+                                </label>
+                                
+                                <label class="relative cursor-pointer group">
+                                    <input 
+                                        type="radio" 
+                                        name="voto" 
+                                        value="nao" 
+                                        required
+                                        class="peer sr-only"
+                                    >
+                                    <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-6 text-center hover:bg-red-100 dark:hover:bg-red-900/30 transition peer-checked:bg-red-500 peer-checked:border-red-600 peer-checked:text-white dark:peer-checked:bg-red-600">
+                                        <div class="text-4xl font-bold mb-2 text-red-700 dark:text-red-400 peer-checked:text-white group-hover:text-red-800 dark:group-hover:text-red-300">NÃO</div>
+                                        <div class="text-sm text-red-600 dark:text-red-500 peer-checked:text-white">Rejeitar</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            type="submit"
+                            class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white py-4 px-6 rounded-lg transition duration-200 font-bold text-lg shadow-md"
+                        >
+                            Confirmar Voto
+                        </button>
+                    </form>
+                <?php endif; ?>
             </div>
 
             <!-- Link para resultados -->
