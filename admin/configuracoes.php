@@ -11,7 +11,9 @@ $tipo_mensagem = '';
 $settings = [
     'sistema_nome' => 'VotaCâmara',
     'sistema_cor' => 'blue',
-    'modo_escuro' => false
+    'modo_escuro' => false,
+    'logo_path' => '',
+    'favicon_path' => ''
 ];
 
 // Carregar configurações existentes
@@ -28,13 +30,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $settings['sistema_cor'] = sanitizar($_POST['sistema_cor'] ?? 'blue');
     $settings['modo_escuro'] = isset($_POST['modo_escuro']);
 
-    if (file_put_contents($configFile, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
-        $mensagem = 'Configurações salvas com sucesso!';
-        $tipo_mensagem = 'success';
-        registrarLog('atualizar_configuracoes', $settings);
-    } else {
-        $mensagem = 'Erro ao salvar configurações.';
-        $tipo_mensagem = 'error';
+    // Configuração de Upload
+    $uploadDir = '../assets/uploads/';
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'];
+
+    // Upload Logo
+    if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $fileType = $finfo->file($_FILES['logo']['tmp_name']);
+        
+        if (in_array($fileType, $allowedTypes)) {
+            $ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
+            $filename = 'logo_' . time() . '.' . $ext;
+            if (move_uploaded_file($_FILES['logo']['tmp_name'], $uploadDir . $filename)) {
+                if (!empty($settings['logo_path']) && file_exists('../' . $settings['logo_path'])) {
+                    unlink('../' . $settings['logo_path']);
+                }
+                $settings['logo_path'] = 'assets/uploads/' . $filename;
+            }
+        } else {
+            $mensagem = 'Tipo de arquivo inválido para Logo.';
+            $tipo_mensagem = 'error';
+        }
+    }
+
+    // Upload Favicon
+    if (isset($_FILES['favicon']) && $_FILES['favicon']['error'] === UPLOAD_ERR_OK) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $fileType = $finfo->file($_FILES['favicon']['tmp_name']);
+        
+        if (in_array($fileType, $allowedTypes)) {
+            $ext = pathinfo($_FILES['favicon']['name'], PATHINFO_EXTENSION);
+            $filename = 'favicon_' . time() . '.' . $ext;
+            if (move_uploaded_file($_FILES['favicon']['tmp_name'], $uploadDir . $filename)) {
+                if (!empty($settings['favicon_path']) && file_exists('../' . $settings['favicon_path'])) {
+                    unlink('../' . $settings['favicon_path']);
+                }
+                $settings['favicon_path'] = 'assets/uploads/' . $filename;
+            }
+        } else {
+            $mensagem = 'Tipo de arquivo inválido para Favicon.';
+            $tipo_mensagem = 'error';
+        }
+    }
+
+    if ($tipo_mensagem !== 'error') {
+        if (file_put_contents($configFile, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+            $mensagem = 'Configurações salvas com sucesso!';
+            $tipo_mensagem = 'success';
+            registrarLog('atualizar_configuracoes', $settings);
+        } else {
+            $mensagem = 'Erro ao salvar configurações.';
+            $tipo_mensagem = 'error';
+        }
     }
 }
 
