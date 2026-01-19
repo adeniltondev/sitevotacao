@@ -116,32 +116,47 @@ foreach ($resultados['votos'] as $voto) {
     <style>
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in, .pulse-dot, .voter-card, .status-bar { animation: none !important; transition: none !important; }
+        }
 
-        /* Dark-mode overrides */
-        .dark body { background: #18181b !important; color: #f3f4f6 !important; }
-        .dark .bg-white { background: #23232a !important; color: #f3f4f6 !important; }
-        .dark .text-gray-800 { color: #f3f4f6 !important; }
-        .dark .text-gray-600 { color: #d1d5db !important; }
-        .dark .bg-gray-50 { background: #23232a !important; }
-        .dark .bg-green-100 { background: #14532d !important; color: #bbf7d0 !important; }
-        .dark .bg-red-100 { background: #7f1d1d !important; color: #fecaca !important; }
-        .dark .bg-blue-600 { background: #1e40af !important; }
-        .dark .bg-green-50 { background: #14532d !important; color: #bbf7d0 !important; }
-        .dark .bg-red-50 { background: #7f1d1d !important; color: #fecaca !important; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .pulse-dot { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-        .dark .bg-gray-100 { background: #23232a !important; }
-        .dark .border-gray-300 { border-color: #333 !important; }
-        .dark .border-gray-400 { border-color: #444 !important; }
-        .dark .border-gray-700 { border-color: #333 !important; }
-        .dark .bg-yellow-100 { background: #78350f !important; color: #fde68a !important; }
+        /* Modern cards */
+        .stat-box {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(17, 24, 39, 0.08);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 10px 30px rgba(0,0,0,0.06);
+            backdrop-filter: blur(6px);
+        }
+        .dark .stat-box {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.35);
+        }
 
-        .stat-box { background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
-        .voter-card { background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
-        .voter-card:hover { background: #f9fafb; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        .status-bar { height: 8px; width: 100%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-        .status-bar.sim { background: #22c55e; }
-        .status-bar.nao { background: #ef4444; }
-        .status-bar.ausente { background: #9ca3af; }
+        .voter-card {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(17, 24, 39, 0.08);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+        }
+        .voter-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .dark .voter-card {
+            background: rgba(17, 24, 39, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.35);
+        }
+
+        .status-bar { height: 6px; width: 100%; border-radius: 9999px; transition: all 0.5s ease; }
+        .status-bar.sim { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .status-bar.nao { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .status-bar.ausente { background: linear-gradient(90deg, #cbd5e1, #94a3b8); }
+        .dark .status-bar.ausente { background: linear-gradient(90deg, #334155, #475569); }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
