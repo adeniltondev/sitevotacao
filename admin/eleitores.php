@@ -182,23 +182,23 @@ require_once 'sidebar.php';
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome Completo *</label>
-                            <input type="text" id="nome" name="nome" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="Ex: João da Silva">
+                            <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nome Completo *</label>
+                            <input type="text" id="nome" name="nome" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Ex: João da Silva">
                         </div>
                         
                         <div>
-                            <label for="cpf" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CPF *</label>
-                            <input type="text" id="cpf" name="cpf" required maxlength="14" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="000.000.000-00" oninput="mascaraCPF(this)">
+                            <label for="cpf" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CPF *</label>
+                            <input type="text" id="cpf" name="cpf" required maxlength="14" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="000.000.000-00" oninput="mascaraCPF(this)">
                         </div>
                         
                         <div>
-                            <label for="cargo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cargo</label>
-                            <input type="text" id="cargo" name="cargo" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="Ex: Vereador">
+                            <label for="cargo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cargo</label>
+                            <input type="text" id="cargo" name="cargo" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Ex: Vereador">
                         </div>
 
                         <div>
-                            <label for="perfil" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Perfil de Acesso</label>
-                            <select id="perfil" name="perfil" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <label for="perfil" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Perfil de Acesso</label>
+                            <select id="perfil" name="perfil" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                                 <option value="vereador">Vereador</option>
                                 <option value="secretario">Secretário</option>
                                 <option value="presidente">Presidente</option>
