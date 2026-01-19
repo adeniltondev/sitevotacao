@@ -160,25 +160,20 @@ require_once 'sidebar.php';
                 <p class="text-gray-500 dark:text-gray-400 mt-1">Cadastre e gerencie os eleitores do sistema.</p>
             </div>
         </div>
-            <?php if ($mensagem): ?>
-                <div class="mb-6 p-4 rounded-lg flex items-center gap-3 <?= $tipo_mensagem === 'success' ? 'bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' : 'bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' ?>">
-                    <?php if ($tipo_mensagem === 'success'): ?>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <?php else: ?>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <?php endif; ?>
-                    <?= htmlspecialchars($mensagem) ?>
-                </div>
-            <?php endif; ?>
+        <?php if ($mensagem): ?>
+            <div class="p-4 rounded-lg mb-6 <?= $tipo_mensagem === 'success' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' ?>">
+                <?= htmlspecialchars($mensagem) ?>
+            </div>
+        <?php endif; ?>
 
-            <!-- Formulário de Cadastro/Edição -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8 transition-all duration-300" id="card-formulario">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg text-blue-600 dark:text-blue-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-white" id="form-titulo">Cadastrar Novo Eleitor</h2>
+        <!-- Formulário de Cadastro/Edição -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-blue-100/20 dark:shadow-black/20 overflow-hidden border border-gray-100 dark:border-gray-700 p-8 transition-all duration-300" id="card-formulario">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                 </div>
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white" id="form-titulo">Cadastrar Novo Eleitor</h2>
+            </div>
                 
                 <form method="POST" action="" enctype="multipart/form-data" class="space-y-6" id="form-eleitor">
                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
