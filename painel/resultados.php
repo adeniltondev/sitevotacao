@@ -174,9 +174,6 @@ foreach ($resultados['votos'] as $voto) {
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-900 dark:from-gray-950 dark:to-gray-900 dark:text-gray-100">
     <div class="min-h-screen w-full">
-        <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
-            <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
-        </button>
         <!-- Header -->
         <div class="bg-gray-800 border-b border-gray-700 py-4 px-8 fade-in">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
@@ -200,6 +197,10 @@ foreach ($resultados['votos'] as $voto) {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         API Pública (JSON)
                     </a>
+                    <button type="button" onclick="alternarModoEscuro()" class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/15 hover:bg-white/15 transition">
+                        <span id="icone-modo">🌙</span>
+                        <span id="texto-modo">Modo Escuro</span>
+                    </button>
                 </div>
             </div>
         </div>
