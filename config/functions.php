@@ -9,6 +9,7 @@
  * @param array $dados Dados adicionais (opcional)
  */
 function registrarLog($acao, $dados = []) {
+    iniciarSessao();
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
     $usuario = $_SESSION['admin_usuario'] ?? $_SESSION['eleitor_cpf'] ?? 'desconhecido';
     $data = date('Y-m-d H:i:s');
@@ -20,7 +21,11 @@ function registrarLog($acao, $dados = []) {
         'dados' => $dados
     ];
     $linha = json_encode($registro, JSON_UNESCAPED_UNICODE) . PHP_EOL;
-    file_put_contents(__DIR__ . '/../logs/auditoria.log', $linha, FILE_APPEND);
+    $dirLogs = __DIR__ . '/../logs';
+    if (!is_dir($dirLogs)) {
+        @mkdir($dirLogs, 0755, true);
+    }
+    @file_put_contents($dirLogs . '/auditoria.log', $linha, FILE_APPEND);
 }
 
 /**
@@ -79,6 +84,30 @@ function verificarEleitor() {
         } else {
             header('Location: votacao/login.php');
         }
+        exit;
+    }
+}
+
+/**
+ * Restringe acesso por perfil de eleitor (ex: vereador, secretario)
+ * @param string|array $perfisPermitidos
+ */
+function protegerPorPerfil($perfisPermitidos) {
+    iniciarSessao();
+
+    // Garante que está logado
+    verificarEleitor();
+
+    $perfil = $_SESSION['eleitor_perfil'] ?? null;
+    $permitidos = is_array($perfisPermitidos) ? $perfisPermitidos : [$perfisPermitidos];
+
+    if (!$perfil || !in_array($perfil, $permitidos, true)) {
+        registrarLog('Acesso negado por perfil', [
+            'perfil' => $perfil,
+            'permitidos' => $permitidos,
+            'rota' => $_SERVER['REQUEST_URI'] ?? null,
+        ]);
+        header('Location: index.php?erro=' . urlencode('Você não tem permissão para executar esta ação.'));
         exit;
     }
 }
