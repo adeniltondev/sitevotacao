@@ -9,6 +9,7 @@ $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIM
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?? 'VotaCâmara - Admin' ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,7 +41,7 @@ $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIM
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
 
-<header class="md:ml-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 transition-all duration-300">
+<header class="md:ml-72 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 transition-all duration-300">
     <div class="px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
         
         <!-- Left: Logo (Mobile) & Status -->

@@ -50,7 +50,7 @@ require_once 'header.php';
 require_once 'sidebar.php';
 ?>
 
-<main class="md:ml-64 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
+<main class="md:ml-72 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
     <div class="p-6 md:p-10 space-y-8">
         <!-- Cabeçalho -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
