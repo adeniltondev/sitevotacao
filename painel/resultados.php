@@ -311,8 +311,8 @@ foreach ($resultados['votos'] as $voto) {
                                             </div>
                                             <!-- Barra de Status -->
                                             <div class="mt-3">
-                                                <div class="status-bar <?= $status_voto ?> mb-2"></div>
-                                                <div class="text-xs font-semibold text-gray-700 text-center">
+                                                <div class="status-bar <?= $status_voto ?> mb-2" data-role="status-bar"></div>
+                                                <div class="text-xs font-semibold text-gray-700 text-center status-text" data-role="status-text">
                                                     <?= $status_texto ?>
                                                 </div>
                                             </div>
