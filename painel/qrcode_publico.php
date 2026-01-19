@@ -4,8 +4,8 @@ require_once '../config/functions.php';
 
 $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/resultados.php';
 
-// Gera QR Code usando Google Chart API
-$qr_url = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlencode($url) . '&choe=UTF-8';
+// Gera QR Code usando api.qrserver.com
+$qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($url);
 ?><!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -14,6 +14,17 @@ $qr_url = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlenco
     <title>QR Code - Painel Público</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+        
         if (localStorage.getItem('darkMode') === '1' ||
                 (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -21,11 +32,9 @@ $qr_url = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlenco
             document.documentElement.classList.remove('dark');
         }
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .dark body { background: #18181b !important; color: #f3f4f6 !important; }
-        .dark .bg-white { background: #23232a !important; color: #f3f4f6 !important; }
-        .dark .text-gray-800 { color: #f3f4f6 !important; }
-        .dark .text-gray-600 { color: #d1d5db !important; }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
