@@ -61,6 +61,7 @@ require_once 'sidebar.php';
         <!-- Formulário -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-blue-100/20 dark:shadow-black/20 overflow-hidden border border-gray-100 dark:border-gray-700 p-8">
             <form method="POST" class="space-y-6 max-w-2xl">
+                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                 <div>
                     <label for="sistema_nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nome do Sistema</label>
                     <input type="text" id="sistema_nome" name="sistema_nome" value="<?= htmlspecialchars($settings['sistema_nome']) ?>" 

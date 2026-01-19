@@ -5,16 +5,22 @@
 require_once '../config/functions.php';
 verificarAdmin();
 require_once '../config/database.php';
-require_once '../config/functions.php';
+
+// Gerar token CSRF
+$csrf_token = gerarCSRFToken();
 
 $mensagem = '';
 $tipo_mensagem = '';
 
 // Processar ações
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $acao = $_POST['acao'] ?? '';
+    if (!validarCSRFToken()) {
+        $mensagem = 'Erro de segurança: Token CSRF inválido.';
+        $tipo_mensagem = 'error';
+    } else {
+        $acao = $_POST['acao'] ?? '';
     
-    if ($acao === 'cadastrar_eleitor') {
+        if ($acao === 'cadastrar_eleitor') {
         $nome = sanitizar($_POST['nome'] ?? '');
         $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
         $cargo = sanitizar($_POST['cargo'] ?? '');
@@ -98,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $mensagem = 'Eleitor excluído com sucesso!';
         $tipo_mensagem = 'success';
+    }
     }
 }
 
@@ -302,6 +309,7 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                                                 <?php endif; ?>
                                             </form>
                                             <form method="POST" action="" class="inline" onsubmit="return confirm('Excluir permanentemente este eleitor?')">
+                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                                                 <input type="hidden" name="acao" value="excluir_eleitor">
                                                 <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
                                                 <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300" title="Excluir">
