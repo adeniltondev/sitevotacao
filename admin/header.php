@@ -3,13 +3,36 @@ iniciarSessao();
 $admin_nome = $_SESSION['admin_nome'] ?? '';
 require_once __DIR__ . '/../config/database.php';
 $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIMIT 1")->fetch();
+
+// Carregar configurações globais se ainda não estiverem carregadas
+if (!isset($settings)) {
+    $configFile = __DIR__ . '/../config/settings.json';
+    $settings = [
+        'sistema_nome' => 'VotaCâmara',
+        'sistema_cor' => 'blue',
+        'modo_escuro' => false,
+        'logo_path' => '',
+        'favicon_path' => ''
+    ];
+    if (file_exists($configFile)) {
+        $savedSettings = json_decode(file_get_contents($configFile), true);
+        if ($savedSettings) {
+            $settings = array_merge($settings, $savedSettings);
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?? 'VotaCâmara - Admin' ?></title>
+    <title><?= $page_title ?? $settings['sistema_nome'] . ' - Admin' ?></title>
+    
+    <?php if (!empty($settings['favicon_path'])): ?>
+        <link rel="shortcut icon" href="../<?= htmlspecialchars($settings['favicon_path']) ?>">
+    <?php endif; ?>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -48,7 +71,11 @@ $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIM
         <div class="flex items-center gap-4">
             <!-- Mobile Logo -->
             <div class="md:hidden flex items-center gap-2">
-                <span class="text-xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
+                <?php if (!empty($settings['logo_path']) && file_exists(__DIR__ . '/../' . $settings['logo_path'])): ?>
+                    <img src="../<?= htmlspecialchars($settings['logo_path']) ?>" alt="<?= htmlspecialchars($settings['sistema_nome']) ?>" class="h-8 w-auto">
+                <?php else: ?>
+                    <span class="text-xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
+                <?php endif; ?>
             </div>
 
             <!-- Status Badge -->
