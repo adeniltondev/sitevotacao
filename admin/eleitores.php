@@ -20,55 +20,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $acao = $_POST['acao'] ?? '';
     
-        if ($acao === 'cadastrar_eleitor') {
-        $nome = sanitizar($_POST['nome'] ?? '');
-        $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
-        $cargo = sanitizar($_POST['cargo'] ?? '');
-        
-        if (empty($nome) || empty($cpf)) {
-            $mensagem = 'Preencha todos os campos obrigatórios';
-            $tipo_mensagem = 'error';
-        } elseif (!validarCPF($cpf)) {
-            $mensagem = 'CPF inválido';
-            $tipo_mensagem = 'error';
-        } else {
-            try {
-                // Verificar se CPF já existe
-                $stmt = $pdo->prepare("SELECT id FROM eleitores WHERE cpf = ?");
-                $stmt->execute([$cpf]);
-                if ($stmt->fetch()) {
-                    $mensagem = 'CPF já cadastrado';
-                    $tipo_mensagem = 'error';
-                } else {
-                    // Processar upload de foto (usar caminho absoluto para evitar problemas de working dir)
-                    $foto = null;
-                    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-                        $resultado = uploadFoto($_FILES['foto'], __DIR__ . '/../uploads');
-                        if (!isset($resultado['erro'])) {
-                            $foto = $resultado['arquivo'];
-                        } else {
-                            // log do erro de upload, mas não interrompe o cadastro
-                            registrarLog('upload_foto_erro', ['erro' => $resultado['erro']]);
-                        }
-                    }
-
-                    // Inserir eleitor
-                    $perfil = $_POST['perfil'] ?? 'vereador';
-                    $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
-                    $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
-                    $mensagem = 'Eleitor cadastrado com sucesso!';
-                    $tipo_mensagem = 'success';
-                }
-            } catch (Exception $e) {
-                // Registrar erro e mostrar mensagem amigável em vez de 500
-                registrarLog('cadastrar_eleitor_erro', ['mensagem' => $e->getMessage()]);
-                $mensagem = 'Ocorreu um erro ao cadastrar o eleitor. Verifique os logs.';
+        if ($acao === 'cadastrar_eleitor' || $acao === 'editar_eleitor') {
+            $nome = sanitizar($_POST['nome'] ?? '');
+            $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
+            $cargo = sanitizar($_POST['cargo'] ?? '');
+            $perfil = $_POST['perfil'] ?? 'vereador';
+            $eleitor_id = isset($_POST['eleitor_id']) ? intval($_POST['eleitor_id']) : 0;
+            
+            if (empty($nome) || empty($cpf)) {
+                $mensagem = 'Preencha todos os campos obrigatórios';
                 $tipo_mensagem = 'error';
+            } elseif (!validarCPF($cpf)) {
+                $mensagem = 'CPF inválido';
+                $tipo_mensagem = 'error';
+            } else {
+                try {
+                    // Verificar se CPF já existe (ignorando o próprio usuário na edição)
+                    $sql_check = "SELECT id FROM eleitores WHERE cpf = ?";
+                    $params_check = [$cpf];
+                    if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
+                        $sql_check .= " AND id != ?";
+                        $params_check[] = $eleitor_id;
+                    }
+                    
+                    $stmt = $pdo->prepare($sql_check);
+                    $stmt->execute($params_check);
+                    
+                    if ($stmt->fetch()) {
+                        $mensagem = 'CPF já cadastrado para outro eleitor';
+                        $tipo_mensagem = 'error';
+                    } else {
+                        // Processar upload de foto
+                        $foto = null;
+                        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+                            $resultado = uploadFoto($_FILES['foto'], __DIR__ . '/../uploads');
+                            if (!isset($resultado['erro'])) {
+                                $foto = $resultado['arquivo'];
+                                
+                                // Se for edição e tiver foto nova, deletar a antiga se desejar (opcional, mas boa prática)
+                                if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
+                                     $stmt_old = $pdo->prepare("SELECT foto FROM eleitores WHERE id = ?");
+                                     $stmt_old->execute([$eleitor_id]);
+                                     $old = $stmt_old->fetch();
+                                     if ($old && $old['foto'] && file_exists(__DIR__ . '/../uploads/' . $old['foto'])) {
+                                         @unlink(__DIR__ . '/../uploads/' . $old['foto']);
+                                     }
+                                }
+                            } else {
+                                registrarLog('upload_foto_erro', ['erro' => $resultado['erro']]);
+                            }
+                        }
+
+                        if ($acao === 'cadastrar_eleitor') {
+                            $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
+                            $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
+                            $mensagem = 'Eleitor cadastrado com sucesso!';
+                        } else {
+                            // Edição
+                            $sql_update = "UPDATE eleitores SET nome = ?, cpf = ?, cargo = ?, perfil = ?";
+                            $params_update = [$nome, $cpf, $cargo ?: null, $perfil];
+                            
+                            if ($foto) {
+                                $sql_update .= ", foto = ?";
+                                $params_update[] = $foto;
+                            }
+                            
+                            $sql_update .= " WHERE id = ?";
+                            $params_update[] = $eleitor_id;
+                            
+                            $stmt = $pdo->prepare($sql_update);
+                            $stmt->execute($params_update);
+                            $mensagem = 'Eleitor atualizado com sucesso!';
+                        }
+                        
+                        $tipo_mensagem = 'success';
+                    }
+                } catch (Exception $e) {
+                    registrarLog('eleitor_erro', ['mensagem' => $e->getMessage()]);
+                    $mensagem = 'Ocorreu um erro ao processar. Verifique os logs.';
+                    $tipo_mensagem = 'error';
+                }
             }
         }
-    }
     
-    if ($acao === 'bloquear_eleitor') {
+        if ($acao === 'bloquear_eleitor') {
         $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
         $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 0 WHERE id = ?");
         $stmt->execute([$eleitor_id]);
