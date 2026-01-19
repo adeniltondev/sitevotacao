@@ -219,9 +219,41 @@ if ($votacao_ativa) {
 require_once 'header.php';
 require_once 'sidebar.php';
 ?>
+<style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    
+    /* Modern cards */
+    .stat-box {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(17, 24, 39, 0.08);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 10px 30px rgba(0,0,0,0.06);
+        backdrop-filter: blur(6px);
+    }
+    .dark .stat-box {
+        background: rgba(17, 24, 39, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.35);
+    }
+
+    /* Better dark-mode text colors (readability) */
+    .dark .text-gray-900 { color: #f9fafb !important; }
+    .dark .text-gray-800 { color: #f3f4f6 !important; }
+    .dark .text-gray-700 { color: #e5e7eb !important; }
+    .dark .text-gray-600 { color: #d1d5db !important; }
+    .dark .text-gray-500 { color: #9ca3af !important; }
+    .dark .text-gray-400 { color: #9ca3af !important; }
+
+    .dark .text-blue-600 { color: #60a5fa !important; }
+    .dark .text-green-600 { color: #34d399 !important; }
+    .dark .text-red-600 { color: #fb7185 !important; }
+    .dark .text-purple-600 { color: #c084fc !important; }
+</style>
 
 <main class="md:ml-64 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
-    <div class="p-6 md:p-10 space-y-8">
+    <div class="p-6 md:p-10 space-y-8 fade-in">
         
         <!-- Header da Página -->
         <header class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -231,7 +263,7 @@ require_once 'sidebar.php';
             </div>
             
             <div class="flex flex-wrap items-center gap-3">
-                <form method="GET" class="flex items-center gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                <form method="GET" class="flex items-center gap-2 stat-box p-1 rounded-lg">
                     <?php if($votacao_ativa): ?><input type="hidden" name="votacao_id" value="<?= $votacao_ativa['id'] ?>"><?php endif; ?>
                     <input type="date" name="start" value="<?= htmlspecialchars($start_date ?? '') ?>" class="bg-transparent border-none text-sm text-gray-600 dark:text-gray-300 focus:ring-0 rounded-md">
                     <span class="text-gray-400">-</span>
@@ -257,7 +289,7 @@ require_once 'sidebar.php';
             ?>
             
             <!-- Card Eleitores -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl shadow-blue-100/10 dark:shadow-none border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+            <div class="stat-box rounded-2xl p-6 relative overflow-hidden group">
                 <div class="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start">
                     <div>
@@ -271,7 +303,7 @@ require_once 'sidebar.php';
             </div>
 
             <!-- Card Votos -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl shadow-green-100/10 dark:shadow-none border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+            <div class="stat-box rounded-2xl p-6 relative overflow-hidden group">
                 <div class="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-green-400 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start">
                     <div>
@@ -285,7 +317,7 @@ require_once 'sidebar.php';
             </div>
 
             <!-- Card Pendentes -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl shadow-red-100/10 dark:shadow-none border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+            <div class="stat-box rounded-2xl p-6 relative overflow-hidden group">
                 <div class="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-red-400 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start">
                     <div>
@@ -299,7 +331,7 @@ require_once 'sidebar.php';
             </div>
 
             <!-- Card Status -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl shadow-purple-100/10 dark:shadow-none border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+            <div class="stat-box rounded-2xl p-6 relative overflow-hidden group">
                 <div class="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-purple-400 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start">
                     <div>
@@ -321,7 +353,7 @@ require_once 'sidebar.php';
             <!-- Gráficos -->
             <div class="xl:col-span-2 space-y-8">
                 <!-- Gráfico de Tendência -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                <div class="stat-box rounded-2xl p-6">
                     <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Tendência de Votos (Últimos 14 dias)</h3>
                     <div class="h-64 w-full">
                         <canvas id="graficoTendencia"></canvas>
@@ -330,13 +362,13 @@ require_once 'sidebar.php';
 
                 <!-- Gráficos de Distribuição -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                    <div class="stat-box rounded-2xl p-6">
                         <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 text-center">Distribuição (Pie)</h3>
                         <div class="h-48 flex justify-center">
                             <canvas id="graficoSimNao"></canvas>
                         </div>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                    <div class="stat-box rounded-2xl p-6">
                         <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 text-center">Contagem Absoluta</h3>
                         <div class="h-48 flex justify-center w-full">
                             <canvas id="graficoContagem"></canvas>
@@ -348,7 +380,7 @@ require_once 'sidebar.php';
             <!-- Ações e Lista Rápida -->
             <div class="space-y-8">
                 <!-- Controle da Votação -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                <div class="stat-box rounded-2xl p-6">
                     <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Controle da Sessão</h3>
                     <p class="text-sm text-gray-500 mb-6">Gerencie o estado da votação atual.</p>
                     
@@ -364,270 +396,276 @@ require_once 'sidebar.php';
                         </form>
                         
                         <div class="grid grid-cols-2 gap-3">
-                            <a href="../painel/resultados.php" target="_blank" class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 py-3 rounded-xl font-medium transition-colors text-sm">
-                                Painel Público
-                            </a>
-                            <a href="exportar_pdf.php?votacao_id=<?= $votacao_ativa['id'] ?>" target="_blank" class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 py-3 rounded-xl font-medium transition-colors text-sm">
-                                Relatório PDF
+                            <form method="POST" action="" onsubmit="return confirm('ATENÇÃO: Isso apagará TODOS os votos desta votação. Tem certeza?')">
+                                <input type="hidden" name="acao" value="resetar_votos">
+                                <input type="hidden" name="votacao_id" value="<?= $votacao_ativa['id'] ?>">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
+                                <button type="submit" class="w-full flex items-center justify-center gap-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:hover:bg-yellow-900/50 dark:text-yellow-400 py-3 rounded-xl font-semibold transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" /></svg>
+                                    Resetar
+                                </button>
+                            </form>
+                            
+                            <a href="../painel/resultados.php" target="_blank" class="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 py-3 rounded-xl font-semibold transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                                Telão
                             </a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Últimos Votos -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                <div class="stat-box rounded-2xl p-6">
                     <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Últimos Votos</h3>
-                    <div class="space-y-4">
-                        <?php
-                            $lastStmt = $pdo->prepare("SELECT nome, cpf, voto, criado_em FROM votos WHERE votacao_id = ?" . (isset($whereDate) ? $whereDate : "") . " ORDER BY criado_em DESC LIMIT 5");
-                            $lastParams = [$votacao_ativa['id']];
-                            if ($start_date && $end_date) { $lastParams[] = $start_date . ' 00:00:00'; $lastParams[] = $end_date . ' 23:59:59'; }
-                            $lastStmt->execute($lastParams);
-                            $ultimos = $lastStmt->fetchAll();
-                        ?>
-                        <?php if(empty($ultimos)): ?>
-                            <p class="text-center text-gray-500 py-4">Nenhum voto registrado ainda.</p>
-                        <?php else: ?>
-                            <?php foreach($ultimos as $u): ?>
-                                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/30 rounded-xl">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-700 dark:text-blue-300 font-bold text-sm">
-                                            <?= strtoupper(substr($u['nome'],0,1)) ?>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-200"><?= htmlspecialchars($u['nome']) ?></p>
-                                            <p class="text-xs text-gray-500"><?= date('H:i:s', strtotime($u['criado_em'])) ?></p>
-                                        </div>
-                                    </div>
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold <?= $u['voto'] === 'sim' ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400' ?>">
-                                        <?= strtoupper($u['voto']) ?>
-                                    </span>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                    <div class="space-y-4" id="lista-ultimos-votos">
+                        <!-- Preenchido via AJAX -->
+                        <div class="animate-pulse space-y-3">
+                            <div class="h-10 bg-gray-100 dark:bg-gray-700 rounded-lg"></div>
+                            <div class="h-10 bg-gray-100 dark:bg-gray-700 rounded-lg"></div>
+                            <div class="h-10 bg-gray-100 dark:bg-gray-700 rounded-lg"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <?php else: ?>
-            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl p-8 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-blue-400 dark:text-blue-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Nenhuma votação ativa</h2>
-                <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">Inicie uma nova votação para começar a coletar votos dos vereadores em tempo real.</p>
-                <button onclick="document.getElementById('modalNovaVotacao').classList.remove('hidden')" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-blue-600/20 transition-all">
-                    Criar Nova Votação
-                </button>
+        <!-- Estado vazio / criar votação -->
+        <div class="stat-box rounded-2xl p-12 text-center">
+            <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
             </div>
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Nenhuma votação ativa</h3>
+            <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">Inicie uma nova votação para começar a receber votos dos vereadores em tempo real.</p>
+            <button onclick="document.getElementById('modalNovaVotacao').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium shadow-lg shadow-blue-600/20 transition-all hover:scale-105">
+                Iniciar Votação
+            </button>
+        </div>
         <?php endif; ?>
-
-        <!-- Histórico Recente (Tabela) -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Histórico de Votações</h3>
-                <a href="relatorios.php" class="text-blue-600 hover:text-blue-700 text-sm font-medium">Ver todos</a>
+        
+        <!-- Lista de Histórico -->
+        <div class="mt-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Histórico Recente</h3>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50 dark:bg-gray-700/50">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Título</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</th>
-                            <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        <?php foreach (array_slice($votacoes, 0, 5) as $v): ?>
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($v['titulo']) ?></td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?= $v['status'] === 'aberta' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' ?>">
-                                        <?= ucfirst($v['status']) ?>
-                                    </span>
+            <div class="stat-box rounded-2xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
+                                <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Título</th>
+                                <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</th>
+                                <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                            <?php foreach($votacoes as $v): ?>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                <td class="p-4">
+                                    <div class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($v['titulo']) ?></div>
+                                    <div class="text-xs text-gray-500 truncate max-w-xs"><?= htmlspecialchars($v['descricao']) ?></div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400"><?= date('d/m/Y', strtotime($v['criada_em'])) ?></td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <?php if ($v['status'] === 'encerrada'): ?>
-                                            <form method="POST" action="" class="inline">
-                                                <input type="hidden" name="acao" value="abrir_votacao">
-                                                <input type="hidden" name="votacao_id" value="<?= $v['id'] ?>">
-                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
-                                                <button type="submit" class="text-green-600 hover:text-green-800 font-medium text-sm">Reabrir</button>
-                                            </form>
-                                        <?php endif; ?>
-                                        <a href="exportar_pdf.php?votacao_id=<?= $v['id'] ?>" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Relatório</a>
-                                    </div>
+                                <td class="p-4">
+                                    <?php if($v['status'] === 'aberta'): ?>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                            Aberta
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                            Encerrada
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="p-4 text-sm text-gray-500 dark:text-gray-400">
+                                    <?= date('d/m/Y H:i', strtotime($v['criada_em'])) ?>
+                                </td>
+                                <td class="p-4 text-right">
+                                    <?php if($v['status'] === 'encerrada'): ?>
+                                    <form method="POST" action="" class="inline-block" onsubmit="return confirm('Reabrir esta votação encerrará a atual. Continuar?')">
+                                        <input type="hidden" name="acao" value="abrir_votacao">
+                                        <input type="hidden" name="votacao_id" value="<?= $v['id'] ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
+                                        <button type="submit" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium">Reabrir</button>
+                                    </form>
+                                    <?php endif; ?>
+                                    <a href="../painel/exportar_pdf.php?votacao_id=<?= $v['id'] ?>" target="_blank" class="ml-3 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 text-sm font-medium">PDF</a>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </main>
 
 <!-- Modal Nova Votação -->
-<div id="modalNovaVotacao" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="document.getElementById('modalNovaVotacao').classList.add('hidden')"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <form method="POST" action="">
+<div id="modalNovaVotacao" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 dark:border-gray-700">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Nova Votação</h3>
+            <button onclick="document.getElementById('modalNovaVotacao').classList.add('hidden')" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <form method="POST" action="">
+            <div class="p-6 space-y-4">
                 <input type="hidden" name="acao" value="criar_votacao">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
-                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 sm:mx-0 sm:h-10 sm:w-10">
-                            <svg class="h-6 w-6 text-blue-600 dark:text-blue-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">Nova Votação</h3>
-                            <div class="mt-4 space-y-4">
-                                <div>
-                                    <label for="titulo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
-                                    <input type="text" name="titulo" id="titulo" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3" placeholder="Ex: PL 123/2024">
-                                </div>
-                                <div>
-                                    <label for="descricao" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descrição</label>
-                                    <textarea name="descricao" id="descricao" rows="3" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3" placeholder="Detalhes da votação..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título / Proposição</label>
+                    <input type="text" name="titulo" required class="w-full rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: PL 001/2024 - Aprovação do Orçamento">
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        Criar
-                    </button>
-                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="document.getElementById('modalNovaVotacao').classList.add('hidden')">
-                        Cancelar
-                    </button>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição (Opcional)</label>
+                    <textarea name="descricao" rows="3" class="w-full rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Detalhes adicionais sobre a votação..."></textarea>
                 </div>
-            </form>
-        </div>
+            </div>
+            <div class="p-6 bg-gray-50 dark:bg-gray-700/30 flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('modalNovaVotacao').classList.add('hidden')" class="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">Cancelar</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 rounded-lg shadow-lg shadow-blue-600/20 transition-all">Criar Votação</button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Dados iniciais gerados pelo servidor
-    const sim = <?= $total_sim ?>;
-    const nao = <?= $total_nao ?>;
-    const total = <?= $total_geral ?>;
-    const percSim = <?= $percentual_sim ?>;
-    const percNao = <?= $percentual_nao ?>;
-
-    // Configuração comum para Charts
+    // Configuração Charts
     Chart.defaults.color = '#9ca3af';
-    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.borderColor = 'rgba(156, 163, 175, 0.1)';
 
-    // Pie (Mix)
-    const ctx1 = document.getElementById('graficoSimNao')?.getContext('2d');
-    let chartMix = null;
-    if (ctx1) {
-        chartMix = new Chart(ctx1, {
-            type: 'pie',
-            data: { labels: ['SIM', 'NÃO'], datasets: [{ data: [sim, nao], backgroundColor: ['#2563eb', '#dc2626'], borderWidth: 0 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-        });
-    }
-
-    // Bar (Contagem)
-    const ctx2 = document.getElementById('graficoContagem')?.getContext('2d');
-    let chartCount = null;
-    if (ctx2) {
-        chartCount = new Chart(ctx2, {
-            type: 'bar',
-            data: { labels: ['SIM', 'NÃO'], datasets: [{ label: 'Votos', data: [sim, nao], backgroundColor: ['#2563eb', '#dc2626'], borderRadius: 4 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
-        });
-    }
-
-    // Trend (linha)
-    const ctxT = document.getElementById('graficoTendencia')?.getContext('2d');
-    let chartTrend = null;
-    const trend_labels = <?= json_encode(array_map(function($d){ return $d; }, (isset($trend_labels) ? $trend_labels : []))) ?>;
-    const trend_sim = <?= json_encode(isset($trend_sim) ? $trend_sim : array_fill(0,14,0)) ?>;
-    const trend_nao = <?= json_encode(isset($trend_nao) ? $trend_nao : array_fill(0,14,0)) ?>;
-    
-    if (ctxT) {
-        chartTrend = new Chart(ctxT, {
-            type: 'line',
-            data: { 
-                labels: trend_labels, 
-                datasets: [
-                    { label: 'SIM', data: trend_sim, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.4 }, 
-                    { label: 'NÃO', data: trend_nao, borderColor: '#dc2626', backgroundColor: 'rgba(220, 38, 38, 0.1)', fill: true, tension: 0.4 }
-                ] 
-            },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                plugins: { legend: { position: 'top', align: 'end' } }, 
-                scales: { 
-                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { stepSize: 1 } },
-                    x: { grid: { display: false } }
-                },
-                interaction: { intersect: false, mode: 'index' }
-            }
-        });
-    }
-
-    // SSE (Server-Sent Events) para atualizações em tempo real
-    const electors = <?= isset($total_vereadores) ? (int)$total_vereadores : 0 ?>;
-    function animateBadge(id){
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.classList.add('scale-110', 'text-blue-600');
-        setTimeout(()=> el.classList.remove('scale-110', 'text-blue-600'), 300);
-    }
-
-    function updateFromPayload(data){
-        if(chartMix){ chartMix.data.datasets[0].data = [data.sim, data.nao]; chartMix.update(); }
-        if(chartCount){ chartCount.data.datasets[0].data = [data.sim, data.nao]; chartCount.update(); }
-        if(chartTrend){
-            chartTrend.data.labels = data.trend_labels;
-            chartTrend.data.datasets[0].data = data.trend_sim;
-            chartTrend.data.datasets[1].data = data.trend_nao;
-            chartTrend.update();
-        }
-
-        // badges
-        const bVotos = document.getElementById('badge-votos');
-        const bNao = document.getElementById('badge-nao');
-        if(bVotos && bVotos.textContent != data.total) { bVotos.textContent = data.total; animateBadge('badge-votos'); }
-        if(bNao) { bNao.textContent = Math.max(0, electors - data.total); }
-    }
-
-    const sseUrl = 'stream_votes.php?votacao_id=<?= $votacao_ativa ? $votacao_ativa['id'] : 0 ?><?= $start_date ? '&start=' . urlencode($start_date) : '' ?><?= $end_date ? '&end=' . urlencode($end_date) : '' ?>';
-    
     <?php if($votacao_ativa): ?>
-    if (!!window.EventSource) {
-        try {
-            const es = new EventSource(sseUrl);
-            es.onmessage = function(e){
-                if (!e.data) return;
-                try{ const data = JSON.parse(e.data); updateFromPayload(data); } catch(err) { /* ignore */ }
-            };
-        } catch(err){ console.error('SSE error', err); }
-    } else {
-        // Fallback polling
-        setInterval(async () => {
-            try {
-                const params = new URLSearchParams(window.location.search);
-                params.set('ajax','1');
-                const res = await fetch(window.location.pathname + '?' + params.toString());
-                const data = await res.json();
-                updateFromPayload(data);
-            } catch(e){}
-        }, 5000);
+    // Gráfico Tendência
+    const ctxTrend = document.getElementById('graficoTendencia').getContext('2d');
+    const trendChart = new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+            labels: <?= json_encode($trend_labels) ?>,
+            datasets: [
+                {
+                    label: 'Sim',
+                    data: <?= json_encode($trend_sim) ?>,
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Não',
+                    data: <?= json_encode($trend_nao) ?>,
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
+
+    // Gráfico Pizza
+    const ctxPie = document.getElementById('graficoSimNao').getContext('2d');
+    const pieChart = new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+            labels: ['Sim', 'Não'],
+            datasets: [{
+                data: [<?= $total_sim ?>, <?= $total_nao ?>],
+                backgroundColor: ['#22c55e', '#ef4444'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+
+    // Gráfico Barra
+    const ctxBar = document.getElementById('graficoContagem').getContext('2d');
+    const barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: ['Votos'],
+            datasets: [
+                { label: 'Sim', data: [<?= $total_sim ?>], backgroundColor: '#22c55e', borderRadius: 6 },
+                { label: 'Não', data: [<?= $total_nao ?>], backgroundColor: '#ef4444', borderRadius: 6 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
+
+    // Atualização em Tempo Real
+    function updateDashboard() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let url = 'dashboard.php?ajax=1';
+        if (urlParams.has('start')) url += '&start=' + urlParams.get('start');
+        if (urlParams.has('end')) url += '&end=' + urlParams.get('end');
+
+        fetch(url)
+            .then(r => r.json())
+            .then(data => {
+                // Atualizar Badges
+                document.getElementById('badge-votos').innerText = data.total;
+                const totalEleitores = <?= $total_vereadores ?>;
+                const pendentes = totalEleitores - data.total;
+                document.getElementById('badge-nao').innerText = pendentes < 0 ? 0 : pendentes;
+
+                // Atualizar Charts
+                trendChart.data.datasets[0].data = data.trend_sim;
+                trendChart.data.datasets[1].data = data.trend_nao;
+                trendChart.update('none');
+
+                pieChart.data.datasets[0].data = [data.sim, data.nao];
+                pieChart.update('none');
+
+                barChart.data.datasets[0].data = [data.sim];
+                barChart.data.datasets[1].data = [data.nao];
+                barChart.update('none');
+
+                // Atualizar Lista Últimos Votos
+                const listaContainer = document.getElementById('lista-ultimos-votos');
+                if (data.last_votes.length === 0) {
+                    listaContainer.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">Nenhum voto registrado ainda.</p>';
+                } else {
+                    listaContainer.innerHTML = data.last_votes.map(v => `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg animate-fade-in">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center font-bold text-xs">
+                                    ${v.nome.charAt(0)}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-white">${v.nome}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">${new Date(v.criado_em).toLocaleTimeString()}</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 rounded text-xs font-bold uppercase ${v.voto === 'sim' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}">
+                                ${v.voto}
+                            </span>
+                        </div>
+                    `).join('');
+                }
+            });
     }
+
+    setInterval(updateDashboard, 3000);
+    updateDashboard(); // Initial call
     <?php endif; ?>
 </script>
-
-</body>
-</html>
+<?php require_once 'footer.php'; ?>
