@@ -401,6 +401,47 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
             if (v.length == 3 || v.length == 7) i.value += ".";
             if (v.length == 11) i.value += "-";
         }
+
+        function editarEleitor(dados) {
+            document.getElementById('form-titulo').textContent = 'Editar Eleitor';
+            document.getElementById('acao').value = 'editar_eleitor';
+            document.getElementById('eleitor_id').value = dados.id;
+            
+            document.getElementById('nome').value = dados.nome;
+            document.getElementById('cpf').value = dados.cpf;
+            document.getElementById('cargo').value = dados.cargo;
+            document.getElementById('perfil').value = dados.perfil;
+            
+            document.getElementById('btn-submit').textContent = 'Salvar Alterações';
+            document.getElementById('btn-submit').classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            document.getElementById('btn-submit').classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            
+            document.getElementById('btn-cancelar').classList.remove('hidden');
+            document.getElementById('aviso-foto-edit').style.display = 'block';
+            
+            // Rolar para o formulário
+            document.getElementById('card-formulario').scrollIntoView({ behavior: 'smooth' });
+            
+            // Atualizar visual do card para indicar edição
+            document.getElementById('card-formulario').classList.add('ring-2', 'ring-indigo-500');
+        }
+
+        function cancelarEdicao() {
+            document.getElementById('form-titulo').textContent = 'Cadastrar Novo Eleitor';
+            document.getElementById('acao').value = 'cadastrar_eleitor';
+            document.getElementById('eleitor_id').value = '';
+            
+            document.getElementById('form-eleitor').reset();
+            
+            document.getElementById('btn-submit').textContent = 'Cadastrar Eleitor';
+            document.getElementById('btn-submit').classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+            document.getElementById('btn-submit').classList.add('bg-blue-600', 'hover:bg-blue-700');
+            
+            document.getElementById('btn-cancelar').classList.add('hidden');
+            document.getElementById('aviso-foto-edit').style.display = 'none';
+            
+            document.getElementById('card-formulario').classList.remove('ring-2', 'ring-indigo-500');
+        }
     </script>
 </body>
 </html>
