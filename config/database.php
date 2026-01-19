@@ -5,9 +5,9 @@
  */
 
  define('DB_HOST', 'localhost');
- define('DB_NAME', 'alunofaculdadepr_tess');
- define('DB_USER', 'alunofaculdadepr_dasdsads');
- define('DB_PASS', 'p7xZrhk51#Wd*BXe');
+ define('DB_NAME', 'votacaocamaradsf_voadaso');
+ define('DB_USER', 'votacaocamaradsf_dasdsrw');
+ define('DB_PASS', '%8a@$Jn^fFwR$cDL');
  define('DB_CHARSET', 'utf8mb4');
 
 /**
