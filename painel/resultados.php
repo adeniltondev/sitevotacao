@@ -152,6 +152,19 @@ foreach ($resultados['votos'] as $voto) {
             box-shadow: 0 1px 2px rgba(0,0,0,0.35);
         }
 
+        /* Better dark-mode text colors (readability) */
+        .dark .text-gray-900 { color: #f9fafb !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-700 { color: #e5e7eb !important; }
+        .dark .text-gray-600 { color: #d1d5db !important; }
+        .dark .text-gray-500 { color: #9ca3af !important; }
+        .dark .text-gray-400 { color: #9ca3af !important; }
+
+        .dark .text-blue-600 { color: #60a5fa !important; }
+        .dark .text-green-600 { color: #34d399 !important; }
+        .dark .text-red-600 { color: #fb7185 !important; }
+        .dark .text-yellow-600 { color: #fbbf24 !important; }
+
         .status-bar { height: 6px; width: 100%; border-radius: 9999px; transition: all 0.5s ease; }
         .status-bar.sim { background: linear-gradient(90deg, #22c55e, #16a34a); }
         .status-bar.nao { background: linear-gradient(90deg, #ef4444, #dc2626); }
