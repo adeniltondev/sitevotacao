@@ -159,7 +159,7 @@ foreach ($resultados['votos'] as $voto) {
         .dark .status-bar.ausente { background: linear-gradient(90deg, #334155, #475569); }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+<body class="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-900 dark:from-gray-950 dark:to-gray-900 dark:text-gray-100">
     <div class="min-h-screen w-full">
         <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-700 dark:hover:bg-gray-300 transition">
             <span id="icone-modo">🌙</span> <span id="texto-modo">Modo Escuro</span>
