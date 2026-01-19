@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] flex items-center justify-center p-4">
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300  flex items-center justify-center p-4">
     
     <!-- Dark Mode Toggle -->
     <button onclick="alternarModoEscuro()" class="fixed top-4 right-4 z-50 p-2 rounded-lg glass hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all duration-300">
