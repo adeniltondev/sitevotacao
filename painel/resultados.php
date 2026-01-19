@@ -89,7 +89,8 @@ foreach ($resultados['votos'] as $voto) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados - Sistema de Votação</title>
+    <link rel="icon" href="<?= !empty($settings['favicon_path']) ? '../' . htmlspecialchars($settings['favicon_path']) : '../assets/favicon.ico' ?>" type="image/x-icon">
+    <title>Resultados - <?= htmlspecialchars($settings['sistema_nome'] ?? 'Sistema de Votação') ?></title>
     <!-- <meta http-equiv="refresh" content="300"> Removed in favor of AJAX -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
