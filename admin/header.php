@@ -46,13 +46,6 @@ $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIM
         
         <!-- Left: Logo (Mobile) & Status -->
         <div class="flex items-center gap-4">
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-
             <!-- Mobile Logo -->
             <div class="md:hidden flex items-center gap-2">
                 <span class="text-xl font-bold text-green-600">Vota<span class="text-blue-600">Câmara</span></span>
@@ -118,66 +111,78 @@ $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIM
         </div>
     </div>
     
-    <!-- Mobile Navigation (Scrollable) -->
-    <div class="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
-        <nav class="flex px-4 py-3 gap-3 overflow-x-auto no-scrollbar">
-            <?php
-            $links = [
-                'dashboard.php' => 'Dashboard',
-                'eleitores.php' => 'Eleitores',
-                '../painel/resultados.php' => 'Painel Público',
-                'configuracoes.php' => 'Configurações'
-            ];
-            foreach ($links as $url => $label):
-                $active = basename($_SERVER['PHP_SELF']) === basename($url);
-            ?>
-            <a href="<?= $url ?>" class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $active ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400' ?>">
-                <?= $label ?>
-            </a>
-            <?php endforeach; ?>
-        </nav>
-    </div>
-</header>
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden glass transition-opacity duration-300 opacity-0"></div>
 
-<script>
-    var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-    var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    <script>
+        // Sidebar Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
 
-    // Change the icons inside the button based on previous settings
-    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        themeToggleLightIcon.classList.remove('hidden');
-    } else {
-        themeToggleDarkIcon.classList.remove('hidden');
-    }
-
-    var themeToggleBtn = document.getElementById('theme-toggle');
-
-    themeToggleBtn.addEventListener('click', function() {
-
-        // toggle icons inside button
-        themeToggleDarkIcon.classList.toggle('hidden');
-        themeToggleLightIcon.classList.toggle('hidden');
-
-        // if set via local storage previously
-        if (localStorage.getItem('color-theme')) {
-            if (localStorage.getItem('color-theme') === 'light') {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            
+            if (isClosed) {
+                // Open sidebar
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                // Small delay to allow display:block to apply before opacity transition
+                setTimeout(() => {
+                    overlay.classList.remove('opacity-0');
+                }, 10);
             } else {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-            }
-
-        // if NOT set via local storage previously
-        } else {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
+                // Close sidebar
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
             }
         }
-        
-    });
-</script>
+
+        if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleSidebar);
+        if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', toggleSidebar);
+        if (overlay) overlay.addEventListener('click', toggleSidebar);
+
+        // Dark Mode Logic (already in head, but adding toggle listener here if needed or relying on existing)
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Set initial icon based on current theme
+        if (document.documentElement.classList.contains('dark')) {
+            lightIcon.classList.remove('hidden');
+        } else {
+            darkIcon.classList.remove('hidden');
+        }
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                // Toggle icons
+                darkIcon.classList.toggle('hidden');
+                lightIcon.classList.toggle('hidden');
+
+                // Toggle theme
+                if (localStorage.getItem('color-theme')) {
+                    if (localStorage.getItem('color-theme') === 'light') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                } else {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    }
+                }
+            });
+        }
+    </script>
+</header>
