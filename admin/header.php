@@ -64,7 +64,7 @@ if (!isset($settings)) {
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
 
-<header class="md:ml-72 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 transition-all duration-300">
+<header class="md:ml-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 transition-all duration-300">
     <div class="px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
         
         <!-- Left: Logo (Mobile) & Status -->

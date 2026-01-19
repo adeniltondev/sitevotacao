@@ -1,4 +1,4 @@
-<aside id="sidebar" class="flex flex-col w-72 h-screen bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 shadow-2xl fixed top-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 font-sans antialiased">
+<aside id="sidebar" class="flex flex-col w-64 h-screen bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 shadow-2xl fixed top-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 font-sans antialiased">
     <div class="flex items-center justify-between h-24 px-8 border-b border-gray-100 dark:border-gray-800">
         <?php if (!empty($settings['logo_path']) && file_exists(__DIR__ . '/../' . $settings['logo_path'])): ?>
             <img src="../<?= htmlspecialchars($settings['logo_path']) ?>" alt="<?= htmlspecialchars($settings['sistema_nome'] ?? 'Logo') ?>" class="h-10 w-auto object-contain">
