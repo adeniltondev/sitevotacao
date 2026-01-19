@@ -257,7 +257,7 @@ foreach ($resultados['votos'] as $voto) {
                         </div>
 
                         <!-- Status da Votação -->
-                        <div class="stat-box rounded-lg p-6 fade-in bg-gray-50">
+                        <div class="stat-box rounded-2xl p-6 md:p-7 fade-in bg-gray-50 dark:bg-gray-900/30">
                             <div class="text-xs text-gray-500 uppercase mb-2">FASE</div>
                             <div class="text-lg font-semibold text-gray-800 mb-4"><?= $status_fase ?></div>
                             <?php if ($status_resultado): ?>
@@ -268,19 +268,19 @@ foreach ($resultados['votos'] as $voto) {
 
                         <!-- Estatísticas -->
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="stat-box rounded-lg p-4 text-center">
+                            <div class="stat-box rounded-xl p-4 text-center">
                                 <div class="text-xs text-gray-500 uppercase mb-1">QUÓR.</div>
                                 <div class="text-3xl font-bold text-blue-600" id="total-geral"><?= $resultados['total_geral'] ?></div>
                             </div>
-                            <div class="stat-box rounded-lg p-4 text-center">
+                            <div class="stat-box rounded-xl p-4 text-center">
                                 <div class="text-xs text-gray-500 uppercase mb-1">FAVOR.</div>
                                 <div class="text-3xl font-bold text-green-600" id="total-sim"><?= $resultados['total_sim'] ?></div>
                             </div>
-                            <div class="stat-box rounded-lg p-4 text-center">
+                            <div class="stat-box rounded-xl p-4 text-center">
                                 <div class="text-xs text-gray-500 uppercase mb-1">CONTRA</div>
                                 <div class="text-3xl font-bold text-red-600" id="total-nao"><?= $resultados['total_nao'] ?></div>
                             </div>
-                            <div class="stat-box rounded-lg p-4 text-center">
+                            <div class="stat-box rounded-xl p-4 text-center">
                                 <div class="text-xs text-gray-500 uppercase mb-1">ABST.</div>
                                 <div class="text-3xl font-bold text-yellow-600">0</div>
                             </div>
@@ -289,7 +289,7 @@ foreach ($resultados['votos'] as $voto) {
 
                     <!-- Coluna Direita - Grid de Eleitores -->
                     <div class="lg:col-span-2">
-                        <div class="stat-box rounded-lg p-6 fade-in mb-4">
+                        <div class="stat-box rounded-2xl p-6 md:p-7 fade-in mb-4">
                             <h2 class="text-xl font-bold text-gray-800 mb-6">
                                 VOTAÇÃO <?= strtoupper(htmlspecialchars($votacao['titulo'])) ?>
                             </h2>
@@ -319,7 +319,7 @@ foreach ($resultados['votos'] as $voto) {
                                         $status_voto = $votou ? ($voto_info['voto'] == 'sim' ? 'sim' : 'nao') : 'ausente';
                                         $status_texto = $votou ? ($voto_info['voto'] == 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
                                     ?>
-                                        <div class="voter-card rounded-lg p-4 fade-in" data-cpf="<?= $cpf_limpo ?>">
+                                        <div class="voter-card rounded-xl p-4 fade-in" data-cpf="<?= $cpf_limpo ?>">
                                             <!-- Foto e Informações -->
                                             <div class="flex items-center gap-3 mb-3">
                                                 <?php if ($eleitor['foto']): ?>
@@ -371,7 +371,7 @@ foreach ($resultados['votos'] as $voto) {
                     </div>
                 </div>
             <?php else: ?>
-                <div class="stat-box rounded-lg p-12 text-center fade-in">
+                <div class="stat-box rounded-2xl p-12 text-center fade-in">
                     <div class="text-5xl text-gray-400 mb-4">📋</div>
                     <h2 class="text-2xl font-semibold text-gray-800 mb-2">Nenhuma Votação Ativa</h2>
                     <p class="text-gray-500">Aguardando abertura de nova votação...</p>
