@@ -89,8 +89,20 @@ foreach ($resultados['votos'] as $voto) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados - Sistema de Votação</title>
-    <meta http-equiv="refresh" content="300">
+    <!-- <meta http-equiv="refresh" content="300"> Removed in favor of AJAX -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <script>
         // Inicializa tema a partir de localStorage ou preferência do sistema
         if (localStorage.getItem('darkMode') === '1' ||
@@ -247,7 +259,7 @@ foreach ($resultados['votos'] as $voto) {
                             
                             <?php if ($temAcessoDetalhado): ?>
                                 <!-- Grid de Eleitores -->
-                                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                <div id="grid-eleitores" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                                     <?php 
                                     // Mostrar eleitores cadastrados ou votantes
                                     $eleitores_para_exibir = count($eleitores_cadastrados) > 0 ? $eleitores_cadastrados : [];
@@ -270,7 +282,7 @@ foreach ($resultados['votos'] as $voto) {
                                         $status_voto = $votou ? ($voto_info['voto'] == 'sim' ? 'sim' : 'nao') : 'ausente';
                                         $status_texto = $votou ? ($voto_info['voto'] == 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
                                     ?>
-                                        <div class="voter-card rounded-lg p-4 fade-in">
+                                        <div class="voter-card rounded-lg p-4 fade-in" data-cpf="<?= $cpf_limpo ?>">
                                             <!-- Foto e Informações -->
                                             <div class="flex items-center gap-3 mb-3">
                                                 <?php if ($eleitor['foto']): ?>
