@@ -232,6 +232,7 @@ $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll(
                 </div>
                 
                 <form method="POST" action="" enctype="multipart/form-data" class="space-y-6" id="form-eleitor">
+                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                     <input type="hidden" name="acao" id="acao" value="cadastrar_eleitor">
                     <input type="hidden" name="eleitor_id" id="eleitor_id" value="">
                     
