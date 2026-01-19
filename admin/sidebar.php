@@ -35,7 +35,7 @@
             </svg>
             Resultados
         </a>
-        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-400 dark:text-gray-600 cursor-not-allowed">
+        <a href="relatorios.php" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 transition <?= basename($_SERVER['PHP_SELF']) === 'relatorios.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">
             <!-- Heroicon: Document -->
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M7 2h6l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z" />
@@ -43,7 +43,7 @@
             </svg>
             Relatórios
         </a>
-        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-400 dark:text-gray-600 cursor-not-allowed">
+        <a href="auditoria.php" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 transition <?= basename($_SERVER['PHP_SELF']) === 'auditoria.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">
             <!-- Heroicon: Shield Check -->
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -51,7 +51,7 @@
             </svg>
             Auditoria
         </a>
-        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-400 dark:text-gray-600 cursor-not-allowed">
+        <a href="configuracoes.php" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 transition <?= basename($_SERVER['PHP_SELF']) === 'configuracoes.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">
             <!-- Heroicon: Cog -->
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z" />
