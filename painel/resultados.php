@@ -413,9 +413,42 @@ foreach ($resultados['votos'] as $voto) {
                     if (totalSimEl) animarNumero(totalSimEl, totalSimAntigo, resultados.total_sim);
                     if (totalNaoEl) animarNumero(totalNaoEl, totalNaoAntigo, resultados.total_nao);
                     
-                    // Recarregar página para atualizar grid de eleitores
-                    if (totalGeralAntigo !== resultados.total_geral) {
-                        setTimeout(() => location.reload(), 1000);
+                    // Atualizar Grid de Eleitores sem recarregar
+                    const grid = document.getElementById('grid-eleitores');
+                    if (grid) {
+                        const votosMap = {};
+                        resultados.votos.forEach(v => {
+                            const cpfLimpo = v.cpf.replace(/\D/g, '');
+                            votosMap[cpfLimpo] = v;
+                        });
+
+                        const cards = document.querySelectorAll('.voter-card');
+                        cards.forEach(card => {
+                            const cpf = card.getAttribute('data-cpf');
+                            const statusBar = card.querySelector('[data-role="status-bar"]');
+                            const statusText = card.querySelector('[data-role="status-text"]');
+                            
+                            if (cpf && votosMap[cpf]) {
+                                const voto = votosMap[cpf].voto;
+                                statusBar.classList.remove('ausente', 'sim', 'nao');
+                                statusBar.classList.add(voto);
+                                statusText.textContent = voto === 'sim' ? 'A FAVOR' : 'CONTRA';
+                            } else if (cpf) {
+                                statusBar.classList.remove('sim', 'nao');
+                                statusBar.classList.add('ausente');
+                                statusText.textContent = 'AUSENTE';
+                            }
+                        });
+                        
+                        // Se houver votos de quem não tem card (ex: novo cadastro), recarregar
+                        const temVotoSemCard = resultados.votos.some(v => {
+                            const cpfLimpo = v.cpf.replace(/\D/g, '');
+                            return !document.querySelector(`.voter-card[data-cpf="${cpfLimpo}"]`);
+                        });
+                        
+                        if (temVotoSemCard) {
+                            location.reload();
+                        }
                     }
                 }
             } catch (error) {
