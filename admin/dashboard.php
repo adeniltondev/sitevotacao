@@ -9,9 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
     $csrf_token = $_POST['csrf_token'] ?? '';
     
-    // Validar CSRF (implementar se necessário, por enquanto simulado)
+    // Validar CSRF
     if (!validarCSRFToken()) {
-        // die('Token CSRF inválido'); // Comentado para evitar bloqueio se a sessão não estiver ok, mas idealmente deve estar
+        die('Token CSRF inválido');
     }
 
     if ($acao === 'criar_votacao') {

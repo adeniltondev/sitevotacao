@@ -45,7 +45,6 @@ $votacao_ativa = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIM
         <nav class="flex gap-2 md:gap-4">
             <a href="dashboard.php" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400 <?= basename($_SERVER['PHP_SELF']) === 'dashboard.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">Dashboard</a>
             <a href="eleitores.php" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400 <?= basename($_SERVER['PHP_SELF']) === 'eleitores.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">Eleitores</a>
-            <a href="historico.php?cpf=" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400 <?= basename($_SERVER['PHP_SELF']) === 'historico.php' ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white' : '' ?>">Histórico</a>
             <a href="../painel/resultados.php" target="_blank" class="px-4 py-2 rounded-full font-semibold transition text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-400">Painel Público</a>
         </nav>
         <!-- Avatar e Sair -->
