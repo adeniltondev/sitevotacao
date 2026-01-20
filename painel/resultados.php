@@ -542,61 +542,66 @@ foreach ($resultados['votos'] as $voto) {
                 // Novo container na área principal
                 const container = document.getElementById('area-discurso-destaque');
                 
-                if (data.sucesso && (data.status === 'ativo' || data.status === 'pausado')) {
-                    const corTempo = data.tempo_restante < 30 ? 'text-red-500 animate-pulse' : 'text-gray-900 dark:text-white';
-                    const bgStatus = data.status === 'pausado' ? 'bg-yellow-100 border-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-700' : 'bg-white dark:bg-gray-800 border-blue-100 dark:border-blue-900';
-                    
-                    const m = Math.floor(data.tempo_restante / 60);
-                    const s = data.tempo_restante % 60;
-                    const tempoFormatado = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                    
-                    const nome = data.nome || 'Orador';
-                    const inicial = nome.charAt(0);
-                    const cargo = data.cargo || 'Vereador';
+                if (data.sucesso && data.status) {
+                    const status = data.status.toLowerCase();
+                    if (status === 'ativo' || status === 'pausado') {
+                        const corTempo = data.tempo_restante < 30 ? 'text-red-500 animate-pulse' : 'text-gray-900 dark:text-white';
+                        const bgStatus = status === 'pausado' ? 'bg-yellow-100 border-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-700' : 'bg-white dark:bg-gray-800 border-blue-100 dark:border-blue-900';
+                        
+                        const m = Math.floor(data.tempo_restante / 60);
+                        const s = data.tempo_restante % 60;
+                        const tempoFormatado = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                        
+                        const nome = data.nome || 'Orador';
+                        const inicial = nome.charAt(0);
+                        const cargo = data.cargo || 'Vereador';
 
-                    // Layout Card Grande
-                    let html = `
-                        <div class="stat-box rounded-2xl p-6 relative overflow-hidden border-l-8 ${data.status === 'pausado' ? 'border-yellow-500' : 'border-blue-600'}">
-                            <div class="flex items-center gap-6">
-                                <!-- Foto -->
-                                <div class="relative shrink-0">
-                                    ${data.foto ? 
-                                        `<img src="../uploads/${data.foto}" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg">` : 
-                                        `<div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-4xl border-4 border-white dark:border-gray-700 shadow-lg">${inicial}</div>`
-                                    }
-                                    ${data.logo_partido ? 
-                                        `<img src="../uploads/${data.logo_partido}" class="absolute -bottom-2 -right-2 w-10 h-10 object-contain bg-white rounded-full p-1 border border-gray-200 shadow-sm">` : ''
-                                    }
-                                </div>
-                                
-                                <!-- Info -->
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-3 mb-1">
-                                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${data.status === 'pausado' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}">
-                                            ${data.status === 'pausado' ? 'Discurso Pausado' : 'Tribuna em Uso'}
-                                        </span>
-                                        ${data.partido ? `<span class="text-sm font-semibold text-gray-500 dark:text-gray-400">${data.partido}</span>` : ''}
+                        // Layout Card Grande
+                        let html = `
+                            <div class="stat-box rounded-2xl p-6 relative overflow-hidden border-l-8 ${status === 'pausado' ? 'border-yellow-500' : 'border-blue-600'}">
+                                <div class="flex items-center gap-6">
+                                    <!-- Foto -->
+                                    <div class="relative shrink-0">
+                                        ${data.foto ? 
+                                            `<img src="../uploads/${data.foto}" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg">` : 
+                                            `<div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-4xl border-4 border-white dark:border-gray-700 shadow-lg">${inicial}</div>`
+                                        }
+                                        ${data.logo_partido ? 
+                                            `<img src="../uploads/${data.logo_partido}" class="absolute -bottom-2 -right-2 w-10 h-10 object-contain bg-white rounded-full p-1 border border-gray-200 shadow-sm">` : ''
+                                        }
                                     </div>
-                                    <h3 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-1 truncate">
-                                        ${nome}
-                                    </h3>
-                                    <p class="text-gray-500 dark:text-gray-400 font-medium text-lg">${cargo}</p>
-                                </div>
+                                    
+                                    <!-- Info -->
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-3 mb-1">
+                                            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${status === 'pausado' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}">
+                                                ${status === 'pausado' ? 'Discurso Pausado' : 'Tribuna em Uso'}
+                                            </span>
+                                            ${data.partido ? `<span class="text-sm font-semibold text-gray-500 dark:text-gray-400">${data.partido}</span>` : ''}
+                                        </div>
+                                        <h3 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-1 truncate">
+                                            ${nome}
+                                        </h3>
+                                        <p class="text-gray-500 dark:text-gray-400 font-medium text-lg">${cargo}</p>
+                                    </div>
 
-                                <!-- Cronômetro Gigante -->
-                                <div class="text-right shrink-0 pl-4 border-l border-gray-200 dark:border-gray-700">
-                                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-1 text-center">Tempo Restante</div>
-                                    <div class="font-mono text-5xl md:text-7xl font-bold ${corTempo} tabular-nums leading-none tracking-tight">
-                                        ${tempoFormatado}
+                                    <!-- Cronômetro Gigante -->
+                                    <div class="text-right shrink-0 pl-4 border-l border-gray-200 dark:border-gray-700">
+                                        <div class="text-xs text-gray-400 uppercase tracking-widest mb-1 text-center">Tempo Restante</div>
+                                        <div class="font-mono text-5xl md:text-7xl font-bold ${corTempo} tabular-nums leading-none tracking-tight">
+                                            ${tempoFormatado}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
-                    
-                    container.innerHTML = html;
-                    container.classList.remove('hidden');
-                    
+                        `;
+                        
+                        container.innerHTML = html;
+                        container.classList.remove('hidden');
+                    } else {
+                        container.innerHTML = '';
+                        container.classList.add('hidden');
+                    }
                 } else {
                     container.innerHTML = '';
                     container.classList.add('hidden');
