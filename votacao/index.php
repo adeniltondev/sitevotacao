@@ -106,6 +106,12 @@ if (isset($_GET['sucesso'])) {
                 </div>
                 
                 <div class="flex items-center gap-4 justify-between md:justify-end w-full md:w-auto">
+                    <!-- Menu Navegação -->
+                    <nav class="flex gap-4 text-sm font-medium text-gray-300 mr-4">
+                        <a href="index.php" class="text-white border-b-2 border-blue-500 pb-1">Votação</a>
+                        <a href="pauta.php" class="hover:text-white transition-colors">Pauta do Dia</a>
+                    </nav>
+
                     <div class="flex items-center gap-3">
                         <!-- Foto do Eleitor -->
                         <?php if (!empty($_SESSION['eleitor_foto']) && file_exists('../uploads/' . $_SESSION['eleitor_foto'])): ?>
