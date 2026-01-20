@@ -342,6 +342,13 @@ foreach ($resultados['votos'] as $voto) {
                                         <div class="voter-card rounded-xl p-4 fade-in" data-cpf="<?= $cpf_limpo ?>">
                                             <!-- Foto e Informações -->
                                             <div class="flex items-center gap-3 mb-3">
+                                                <?php if (isset($eleitor['logo_partido']) && $eleitor['logo_partido']): ?>
+                                                    <img 
+                                                        src="../uploads/<?= htmlspecialchars($eleitor['logo_partido']) ?>" 
+                                                        alt="Partido"
+                                                        class="w-8 h-8 object-contain rounded-sm bg-gray-50 dark:bg-gray-800 p-0.5"
+                                                    >
+                                                <?php endif; ?>
                                                 <?php if ($eleitor['foto']): ?>
                                                     <img 
                                                         src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
