@@ -1,5 +1,9 @@
 <?php
 header('Content-Type: application/json');
+// Desativar exibição de erros no output para não quebrar o JSON
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
 require_once '../config/database.php';
 
 try {
@@ -36,10 +40,22 @@ try {
 
         echo json_encode($response);
     } else {
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Nenhum registro encontrado']);
+        // Tabela existe mas registro 1 não encontrado
+        echo json_encode(['sucesso' => false, 'status' => 'encerrado', 'mensagem' => 'Sistema aguardando']);
     }
 
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
+    // Captura erro de tabela inexistente ou outros erros de banco
+    // Retorna JSON válido em vez de erro 500 para não quebrar o JS
+    echo json_encode([
+        'sucesso' => false, 
+        'status' => 'erro', 
+        'erro' => $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    echo json_encode([
+        'sucesso' => false, 
+        'status' => 'erro', 
+        'erro' => $e->getMessage()
+    ]);
 }
