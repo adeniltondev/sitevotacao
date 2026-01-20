@@ -190,11 +190,7 @@ foreach ($resultados['votos'] as $voto) {
                     <?php endif; ?>
                 </div>
 
-                <!-- Timer de Discurso (Injetado via JS) -->
-                <div id="speech-timer-container" class="hidden md:flex flex-1 justify-center mx-4">
-                    <!-- O conteúdo será preenchido dinamicamente -->
-                </div>
-
+                <!-- Timer removido do header -->
                 <div class="mt-4 md:mt-0 flex flex-wrap gap-2 justify-start md:justify-end shrink-0">
                     <a href="qrcode_publico.php" target="_blank" class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/15 hover:bg-white/15 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75v-1.5A2.25 2.25 0 016.75 3h1.5M17.25 3h1.5A2.25 2.25 0 0121 5.25v1.5M21 17.25v1.5A2.25 2.25 0 0118.75 21h-1.5M6.75 21h-1.5A2.25 2.25 0 013 18.75v-1.5" /><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h.008v.008H7.5V7.5zm0 4.5h.008v.008H7.5V12zm0 4.5h.008v.008H7.5v-.008zm4.5-9h.008v.008H12V7.5zm0 4.5h.008v.008H12V12zm0 4.5h.008v.008H12v-.008zm4.5-9h.008v.008H16.5V7.5zm0 4.5h.008v.008H16.5V12z" /></svg>
