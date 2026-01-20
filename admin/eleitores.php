@@ -437,6 +437,7 @@ require_once 'sidebar.php';
             
             document.getElementById('btn-cancelar').classList.add('hidden');
             document.getElementById('aviso-foto-edit').style.display = 'none';
+            document.getElementById('aviso-logo-edit').style.display = 'none';
             
             document.getElementById('card-formulario').classList.remove('ring-2', 'ring-indigo-500');
         }
