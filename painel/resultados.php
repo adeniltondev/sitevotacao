@@ -311,6 +311,11 @@ foreach ($resultados['votos'] as $voto) {
 
                     <!-- Coluna Direita - Grid de Eleitores -->
                     <div class="lg:col-span-2">
+                        <!-- Card de Discurso (Nova Posição) -->
+                        <div id="area-discurso-destaque" class="hidden mb-6 transform transition-all duration-500">
+                            <!-- Injetado via JS -->
+                        </div>
+
                         <div class="stat-box rounded-2xl p-6 md:p-7 fade-in mb-4">
                             <h2 class="text-xl font-bold text-gray-800 mb-6">
                                 VOTAÇÃO <?= strtoupper(htmlspecialchars($votacao['titulo'])) ?>
