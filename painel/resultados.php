@@ -363,7 +363,7 @@ foreach ($resultados['votos'] as $voto) {
                                                     </div>
                                                 <?php endif; ?>
                                                 <div class="flex-1 min-w-0">
-                                                    <div class="text-sm font-semibold text-gray-800 truncate">
+                                                    <div class="text-sm font-semibold text-gray-800 leading-tight">
                                                         <?= htmlspecialchars($eleitor['nome']) ?>
                                                     </div>
                                                     <?php if ($eleitor['cargo']): ?>
