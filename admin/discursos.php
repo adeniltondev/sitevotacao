@@ -13,7 +13,46 @@ $mensagem = '';
 $tipo_mensagem = '';
 
 // Buscar estado atual
-$discurso = $pdo->query("SELECT d.*, e.nome, e.foto, e.logo_partido FROM controle_discurso d LEFT JOIN eleitores e ON d.eleitor_id = e.id WHERE d.id = 1")->fetch();
+try {
+    $stmt = $pdo->query("SELECT d.*, e.nome, e.foto, e.logo_partido FROM controle_discurso d LEFT JOIN eleitores e ON d.eleitor_id = e.id WHERE d.id = 1");
+    $discurso = $stmt->fetch();
+} catch (PDOException $e) {
+    // Se a tabela não existir, redirecionar para setup ou mostrar erro
+    if (strpos($e->getMessage(), "doesn't exist") !== false) {
+        die("
+            <div style='font-family: sans-serif; padding: 2rem; text-align: center;'>
+                <h1 style='color: #e11d48;'>Tabela de Discursos não encontrada!</h1>
+                <p>É necessário atualizar o banco de dados para usar esta funcionalidade.</p>
+                <a href='../setup_updates.php' style='display: inline-block; background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px;'>
+                    Clique aqui para atualizar o Banco de Dados
+                </a>
+            </div>
+        ");
+    }
+    die("Erro no banco de dados: " . $e->getMessage());
+}
+
+// Se não houver registro (tabela vazia), inicializar com padrão
+if (!$discurso) {
+    $discurso = [
+        'id' => 1,
+        'status' => 'encerrado',
+        'eleitor_id' => null,
+        'inicio' => null,
+        'duracao_segundos' => 0,
+        'tempo_restante_pausa' => 0,
+        'nome' => null,
+        'foto' => null,
+        'logo_partido' => null
+    ];
+    
+    // Tentar criar o registro automaticamente
+    try {
+        $pdo->exec("INSERT INTO controle_discurso (id, status) VALUES (1, 'encerrado')");
+    } catch (Exception $e) {
+        // Ignorar erro de insert se falhar
+    }
+}
 
 // Processar ações
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
