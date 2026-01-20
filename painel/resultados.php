@@ -189,9 +189,7 @@ foreach ($resultados['votos'] as $voto) {
                         </p>
                     <?php endif; ?>
                 </div>
-
-                <!-- Timer removido do header -->
-                <div class="mt-4 md:mt-0 flex flex-wrap gap-2 justify-start md:justify-end shrink-0">
+                <div class="mt-4 md:mt-0 flex flex-wrap gap-2 justify-start md:justify-end">
                     <a href="qrcode_publico.php" target="_blank" class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/15 hover:bg-white/15 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75v-1.5A2.25 2.25 0 016.75 3h1.5M17.25 3h1.5A2.25 2.25 0 0121 5.25v1.5M21 17.25v1.5A2.25 2.25 0 0118.75 21h-1.5M6.75 21h-1.5A2.25 2.25 0 013 18.75v-1.5" /><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h.008v.008H7.5V7.5zm0 4.5h.008v.008H7.5V12zm0 4.5h.008v.008H7.5v-.008zm4.5-9h.008v.008H12V7.5zm0 4.5h.008v.008H12V12zm0 4.5h.008v.008H12v-.008zm4.5-9h.008v.008H16.5V7.5zm0 4.5h.008v.008H16.5V12z" /></svg>
                         QR Code Público
@@ -239,23 +237,14 @@ foreach ($resultados['votos'] as $voto) {
                                 <div>
                                     <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Exportação</div>
                                     <div class="flex flex-wrap gap-2">
-                                        <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 text-sm font-bold shadow-md hover:shadow-lg transition-all transform hover:scale-105">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                            </svg>
-                                            PDF
-                                        </a>
-                                        <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 text-sm font-bold shadow-md hover:shadow-lg transition-all transform hover:scale-105">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                            </svg>
+                                        <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
                                             CSV
                                         </a>
-                                        <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 text-sm font-bold shadow-md hover:shadow-lg transition-all transform hover:scale-105">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                            </svg>
-                                            ATA
+                                        <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                            PDF
+                                        </a>
+                                        <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                            Ata
                                         </a>
                                     </div>
                                     <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Exporta todos os votos desta votação.</div>
@@ -311,11 +300,6 @@ foreach ($resultados['votos'] as $voto) {
 
                     <!-- Coluna Direita - Grid de Eleitores -->
                     <div class="lg:col-span-2">
-                        <!-- Card de Discurso (Nova Posição) -->
-                        <div id="area-discurso-destaque" class="hidden mb-6 transform transition-all duration-500">
-                            <!-- Injetado via JS -->
-                        </div>
-
                         <div class="stat-box rounded-2xl p-6 md:p-7 fade-in mb-4">
                             <h2 class="text-xl font-bold text-gray-800 mb-6">
                                 VOTAÇÃO <?= strtoupper(htmlspecialchars($votacao['titulo'])) ?>
@@ -349,13 +333,6 @@ foreach ($resultados['votos'] as $voto) {
                                         <div class="voter-card rounded-xl p-4 fade-in" data-cpf="<?= $cpf_limpo ?>">
                                             <!-- Foto e Informações -->
                                             <div class="flex items-center gap-3 mb-3">
-                                                <?php if (isset($eleitor['logo_partido']) && $eleitor['logo_partido']): ?>
-                                                    <img 
-                                                        src="../uploads/<?= htmlspecialchars($eleitor['logo_partido']) ?>" 
-                                                        alt="Partido"
-                                                        class="w-8 h-8 object-contain rounded-sm bg-gray-50 dark:bg-gray-800 p-0.5"
-                                                    >
-                                                <?php endif; ?>
                                                 <?php if ($eleitor['foto']): ?>
                                                     <img 
                                                         src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
@@ -370,7 +347,7 @@ foreach ($resultados['votos'] as $voto) {
                                                     </div>
                                                 <?php endif; ?>
                                                 <div class="flex-1 min-w-0">
-                                                    <div class="text-sm font-semibold text-gray-800 leading-tight">
+                                                    <div class="text-sm font-semibold text-gray-800 truncate">
                                                         <?= htmlspecialchars($eleitor['nome']) ?>
                                                     </div>
                                                     <?php if ($eleitor['cargo']): ?>
@@ -532,89 +509,6 @@ foreach ($resultados['votos'] as $voto) {
         
         // Atualizar imediatamente ao carregar
         setTimeout(atualizarResultados, 500);
-
-        // Controle de Discurso
-        async function atualizarDiscurso() {
-            try {
-                const response = await fetch('api_discurso.php');
-                const data = await response.json();
-                
-                // Novo container na área principal
-                const container = document.getElementById('area-discurso-destaque');
-                
-                if (data.sucesso && data.status) {
-                    const status = data.status.toLowerCase();
-                    if (status === 'ativo' || status === 'pausado') {
-                        const corTempo = data.tempo_restante < 30 ? 'text-red-500 animate-pulse' : 'text-gray-900 dark:text-white';
-                        const bgStatus = status === 'pausado' ? 'bg-yellow-100 border-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-700' : 'bg-white dark:bg-gray-800 border-blue-100 dark:border-blue-900';
-                        
-                        const m = Math.floor(data.tempo_restante / 60);
-                        const s = data.tempo_restante % 60;
-                        const tempoFormatado = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                        
-                        const nome = data.nome || 'Orador';
-                        const inicial = nome.charAt(0);
-                        const cargo = data.cargo || 'Vereador';
-
-                        // Layout Card Grande
-                        let html = `
-                            <div class="stat-box rounded-2xl p-6 relative overflow-hidden border-l-8 ${status === 'pausado' ? 'border-yellow-500' : 'border-blue-600'}">
-                                <div class="flex items-center gap-6">
-                                    <!-- Foto -->
-                                    <div class="relative shrink-0">
-                                        ${data.foto ? 
-                                            `<img src="../uploads/${data.foto}" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg">` : 
-                                            `<div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-4xl border-4 border-white dark:border-gray-700 shadow-lg">${inicial}</div>`
-                                        }
-                                        ${data.logo_partido ? 
-                                            `<img src="../uploads/${data.logo_partido}" class="absolute -bottom-2 -right-2 w-10 h-10 object-contain bg-white rounded-full p-1 border border-gray-200 shadow-sm">` : ''
-                                        }
-                                    </div>
-                                    
-                                    <!-- Info -->
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-3 mb-1">
-                                            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${status === 'pausado' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}">
-                                                ${status === 'pausado' ? 'Discurso Pausado' : 'Tribuna em Uso'}
-                                            </span>
-                                            ${data.partido ? `<span class="text-sm font-semibold text-gray-500 dark:text-gray-400">${data.partido}</span>` : ''}
-                                        </div>
-                                        <h3 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-1 truncate">
-                                            ${nome}
-                                        </h3>
-                                        <p class="text-gray-500 dark:text-gray-400 font-medium text-lg">${cargo}</p>
-                                    </div>
-
-                                    <!-- Cronômetro Gigante -->
-                                    <div class="text-right shrink-0 pl-4 border-l border-gray-200 dark:border-gray-700">
-                                        <div class="text-xs text-gray-400 uppercase tracking-widest mb-1 text-center">Tempo Restante</div>
-                                        <div class="font-mono text-5xl md:text-7xl font-bold ${corTempo} tabular-nums leading-none tracking-tight">
-                                            ${tempoFormatado}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        
-                        container.innerHTML = html;
-                        container.classList.remove('hidden');
-                    } else {
-                        container.innerHTML = '';
-                        container.classList.add('hidden');
-                    }
-                } else {
-                    container.innerHTML = '';
-                    container.classList.add('hidden');
-                }
-                
-            } catch (error) {
-                console.error('Erro ao atualizar discurso:', error);
-            }
-        }
-        
-        // Atualizar discurso a cada 1 segundo
-        setInterval(atualizarDiscurso, 1000);
-        setTimeout(atualizarDiscurso, 100);
     </script>
 </body>
 </html>
