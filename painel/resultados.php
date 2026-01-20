@@ -531,6 +531,62 @@ foreach ($resultados['votos'] as $voto) {
         
         // Atualizar imediatamente ao carregar
         setTimeout(atualizarResultados, 500);
+
+        // Controle de Discurso
+        async function atualizarDiscurso() {
+            try {
+                const response = await fetch('api_discurso.php');
+                const data = await response.json();
+                
+                const container = document.getElementById('speech-timer-container');
+                
+                if (data.sucesso && (data.status === 'ativo' || data.status === 'pausado')) {
+                    const corTempo = data.tempo_restante < 30 ? 'text-red-400 animate-pulse' : 'text-white';
+                    const m = Math.floor(data.tempo_restante / 60);
+                    const s = data.tempo_restante % 60;
+                    const tempoFormatado = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                    
+                    let html = `
+                        <div class="flex items-center gap-4 bg-gray-900/80 rounded-xl px-6 py-2 border border-gray-600/50 shadow-lg backdrop-blur-sm transition-all transform duration-500">
+                            <div class="relative">
+                                ${data.foto ? 
+                                    `<img src="../uploads/${data.foto}" class="w-12 h-12 rounded-full object-cover border-2 border-white/20">` : 
+                                    `<div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg border-2 border-white/20">${data.nome.charAt(0)}</div>`
+                                }
+                                ${data.logo_partido ? 
+                                    `<img src="../uploads/${data.logo_partido}" class="absolute -bottom-1 -right-1 w-5 h-5 object-contain bg-white rounded-full p-0.5 border border-gray-200">` : ''
+                                }
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Orador</span>
+                                <span class="text-sm font-bold text-white truncate max-w-[150px] leading-tight">${data.nome}</span>
+                            </div>
+                            <div class="w-px h-8 bg-gray-700 mx-2"></div>
+                            <div class="font-mono text-3xl font-bold ${corTempo} tabular-nums tracking-widest">
+                                ${tempoFormatado}
+                            </div>
+                            ${data.status === 'pausado' ? '<div class="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-yellow-500 text-[10px] font-bold uppercase rounded ml-2 border border-yellow-500/30">Pausado</div>' : ''}
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                    container.classList.remove('hidden');
+                    container.classList.add('flex');
+                    
+                } else {
+                    container.innerHTML = '';
+                    container.classList.add('hidden');
+                    container.classList.remove('flex');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao atualizar discurso:', error);
+            }
+        }
+        
+        // Atualizar discurso a cada 1 segundo
+        setInterval(atualizarDiscurso, 1000);
+        setTimeout(atualizarDiscurso, 100);
     </script>
 </body>
 </html>
