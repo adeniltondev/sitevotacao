@@ -113,6 +113,11 @@ if (isset($_GET['sucesso'])) {
                     </nav>
 
                     <div class="flex items-center gap-3">
+                        <!-- Logo do Partido -->
+                        <?php if (!empty($_SESSION['eleitor_logo_partido']) && file_exists('../uploads/' . $_SESSION['eleitor_logo_partido'])): ?>
+                            <img src="../uploads/<?= htmlspecialchars($_SESSION['eleitor_logo_partido']) ?>" alt="Partido" class="w-10 h-10 object-contain bg-white/10 rounded-lg p-1 backdrop-blur-sm" title="Partido">
+                        <?php endif; ?>
+
                         <!-- Foto do Eleitor -->
                         <?php if (!empty($_SESSION['eleitor_foto']) && file_exists('../uploads/' . $_SESSION['eleitor_foto'])): ?>
                             <img src="../uploads/<?= htmlspecialchars($_SESSION['eleitor_foto']) ?>" alt="Foto do Eleitor" class="w-12 h-12 rounded-full object-cover ring-2 ring-gray-300 dark:ring-gray-600 shadow-md">

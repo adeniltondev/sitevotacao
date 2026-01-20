@@ -100,8 +100,25 @@ if (isset($_GET['id'])) {
                     </nav>
 
                     <div class="flex items-center gap-3">
+                        <!-- Logo do Partido -->
+                        <?php if (!empty($_SESSION['eleitor_logo_partido']) && file_exists('../uploads/' . $_SESSION['eleitor_logo_partido'])): ?>
+                            <img src="../uploads/<?= htmlspecialchars($_SESSION['eleitor_logo_partido']) ?>" alt="Partido" class="w-10 h-10 object-contain bg-white/10 rounded-lg p-1 backdrop-blur-sm" title="Partido">
+                        <?php endif; ?>
+
+                        <!-- Foto do Eleitor -->
+                        <?php if (!empty($_SESSION['eleitor_foto']) && file_exists('../uploads/' . $_SESSION['eleitor_foto'])): ?>
+                            <img src="../uploads/<?= htmlspecialchars($_SESSION['eleitor_foto']) ?>" alt="Foto do Eleitor" class="w-12 h-12 rounded-full object-cover ring-2 ring-gray-300 dark:ring-gray-600 shadow-md">
+                        <?php else: ?>
+                            <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md ring-2 ring-gray-300 dark:ring-gray-600">
+                                <?= strtoupper(mb_substr($_SESSION['eleitor_nome'] ?? 'E', 0, 1, 'UTF-8')) ?>
+                            </div>
+                        <?php endif; ?>
+                        
                         <div class="text-right hidden sm:block">
                             <div class="text-sm font-semibold text-white"><?= htmlspecialchars($_SESSION['eleitor_nome']) ?></div>
+                             <?php if (isset($_SESSION['eleitor_cargo']) && $_SESSION['eleitor_cargo']): ?>
+                                <div class="text-xs text-gray-400"><?= htmlspecialchars($_SESSION['eleitor_cargo']) ?></div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     
