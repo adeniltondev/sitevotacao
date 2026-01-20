@@ -71,9 +71,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
 
+                        // Processar upload de logo do partido
+                        $logo_partido = null;
+                        if (isset($_FILES['logo_partido']) && $_FILES['logo_partido']['error'] === UPLOAD_ERR_OK) {
+                            $resultado = uploadFoto($_FILES['logo_partido'], __DIR__ . '/../uploads'); // Reutilizando uploadFoto pois é imagem
+                            if (!isset($resultado['erro'])) {
+                                $logo_partido = $resultado['arquivo'];
+                                
+                                // Se for edição e tiver logo nova, deletar a antiga
+                                if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
+                                     $stmt_old = $pdo->prepare("SELECT logo_partido FROM eleitores WHERE id = ?");
+                                     $stmt_old->execute([$eleitor_id]);
+                                     $old = $stmt_old->fetch();
+                                     if ($old && isset($old['logo_partido']) && $old['logo_partido'] && file_exists(__DIR__ . '/../uploads/' . $old['logo_partido'])) {
+                                         @unlink(__DIR__ . '/../uploads/' . $old['logo_partido']);
+                                     }
+                                }
+                            } else {
+                                registrarLog('upload_logo_erro', ['erro' => $resultado['erro']]);
+                            }
+                        }
+
                         if ($acao === 'cadastrar_eleitor') {
-                            $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
-                            $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
+                            $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, logo_partido, perfil) VALUES (?, ?, ?, ?, ?, ?)");
+                            $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $logo_partido, $perfil]);
                             $mensagem = 'Eleitor cadastrado com sucesso!';
                         } else {
                             // Edição
@@ -83,6 +104,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if ($foto) {
                                 $sql_update .= ", foto = ?";
                                 $params_update[] = $foto;
+                            }
+                            if ($logo_partido) {
+                                $sql_update .= ", logo_partido = ?";
+                                $params_update[] = $logo_partido;
                             }
                             
                             $sql_update .= " WHERE id = ?";
@@ -123,14 +148,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
 
         // Buscar foto para excluir
-        $stmt = $pdo->prepare("SELECT foto FROM eleitores WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT foto, logo_partido FROM eleitores WHERE id = ?");
         $stmt->execute([$eleitor_id]);
         $eleitor = $stmt->fetch();
 
-        if ($eleitor && $eleitor['foto']) {
-            $caminho_foto = __DIR__ . '/../uploads/' . $eleitor['foto'];
-            if (file_exists($caminho_foto)) {
-                @unlink($caminho_foto);
+        if ($eleitor) {
+            if ($eleitor['foto']) {
+                $caminho_foto = __DIR__ . '/../uploads/' . $eleitor['foto'];
+                if (file_exists($caminho_foto)) {
+                    @unlink($caminho_foto);
+                }
+            }
+            if (isset($eleitor['logo_partido']) && $eleitor['logo_partido']) {
+                $caminho_logo = __DIR__ . '/../uploads/' . $eleitor['logo_partido'];
+                if (file_exists($caminho_logo)) {
+                    @unlink($caminho_logo);
+                }
             }
         }
 
@@ -210,6 +243,12 @@ require_once 'sidebar.php';
                         <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto (Opcional)</label>
                         <input type="file" id="foto" name="foto" accept="image/*" class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-foto-edit" style="display:none;">Deixe em branco para manter a foto atual.</p>
+                    </div>
+
+                    <div>
+                        <label for="logo_partido" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo do Partido (Opcional)</label>
+                        <input type="file" id="logo_partido" name="logo_partido" accept="image/*" class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-logo-edit" style="display:none;">Deixe em branco para manter a logo atual.</p>
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4">
@@ -307,7 +346,8 @@ require_once 'sidebar.php';
                                                 "nome" => $eleitor["nome"],
                                                 "cpf" => $eleitor["cpf"],
                                                 "cargo" => $eleitor["cargo"],
-                                                "perfil" => $eleitor["perfil"] ?? "vereador"
+                                                "perfil" => $eleitor["perfil"] ?? "vereador",
+                                                "logo_partido" => $eleitor["logo_partido"] ?? null
                                             ]) ?>)' class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">
                                                 Editar
                                             </button>
