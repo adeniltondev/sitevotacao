@@ -550,6 +550,10 @@ foreach ($resultados['votos'] as $voto) {
                     const s = data.tempo_restante % 60;
                     const tempoFormatado = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
                     
+                    const nome = data.nome || 'Orador';
+                    const inicial = nome.charAt(0);
+                    const cargo = data.cargo || 'Vereador';
+
                     // Layout Card Grande
                     let html = `
                         <div class="stat-box rounded-2xl p-6 relative overflow-hidden border-l-8 ${data.status === 'pausado' ? 'border-yellow-500' : 'border-blue-600'}">
@@ -558,7 +562,7 @@ foreach ($resultados['votos'] as $voto) {
                                 <div class="relative shrink-0">
                                     ${data.foto ? 
                                         `<img src="../uploads/${data.foto}" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg">` : 
-                                        `<div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-4xl border-4 border-white dark:border-gray-700 shadow-lg">${data.nome.charAt(0)}</div>`
+                                        `<div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-4xl border-4 border-white dark:border-gray-700 shadow-lg">${inicial}</div>`
                                     }
                                     ${data.logo_partido ? 
                                         `<img src="../uploads/${data.logo_partido}" class="absolute -bottom-2 -right-2 w-10 h-10 object-contain bg-white rounded-full p-1 border border-gray-200 shadow-sm">` : ''
@@ -574,9 +578,9 @@ foreach ($resultados['votos'] as $voto) {
                                         ${data.partido ? `<span class="text-sm font-semibold text-gray-500 dark:text-gray-400">${data.partido}</span>` : ''}
                                     </div>
                                     <h3 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-1 truncate">
-                                        ${data.nome}
+                                        ${nome}
                                     </h3>
-                                    <p class="text-gray-500 dark:text-gray-400 font-medium text-lg">${data.cargo || 'Vereador'}</p>
+                                    <p class="text-gray-500 dark:text-gray-400 font-medium text-lg">${cargo}</p>
                                 </div>
 
                                 <!-- Cronômetro Gigante -->
