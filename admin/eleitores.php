@@ -379,25 +379,4 @@ require_once 'sidebar.php';
     </script>
 </body>
 </html>
-            document.getElementById('aviso-logo-edit').style.display = 'block';
-            
-            // Rolar para o formulário
-            document.getElementById('card-formulario').scrollIntoView({ behavior: 'smooth' });
-            
-            // Atualizar visual do card para indicar edição
-            document.getElementById('card-formulario').classList.add('ring-2', 'ring-indigo-500');
-        }
-
-        function cancelarEdicao() {
-            document.getElementById('form-titulo').textContent = 'Cadastrar Novo Eleitor';
-            document.getElementById('acao').value = 'cadastrar_eleitor';
-            document.getElementById('eleitor_id').value = '';
-            
-            document.getElementById('form-eleitor').reset();
-            
-            document.getElementById('btn-submit').textContent = 'Cadastrar Eleitor';
-            document.getElementById('btn-submit').classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-            document.getElementById('btn-submit').classList.add('bg-blue-600', 'hover:bg-blue-700');
-            
-            document.getElementById('btn-cancelar').classList.add('hidden');
-            document.getElementById('aviso-foto-edit').style.display = 'none';
+          
