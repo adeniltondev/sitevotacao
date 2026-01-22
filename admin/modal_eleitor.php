@@ -34,10 +34,17 @@
           </select>
         </div>
       </div>
-      <div>
-        <label for="foto-modal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto (Opcional)</label>
-        <input type="file" id="foto-modal" name="foto" accept="image/*" class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-foto-edit-modal" style="display:none;">Deixe em branco para manter a foto atual.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="foto-modal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto (Opcional)</label>
+          <input type="file" id="foto-modal" name="foto" accept="image/*" class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-foto-edit-modal" style="display:none;">Deixe em branco para manter a foto atual.</p>
+        </div>
+        <div>
+          <label for="logo_partido-modal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo do Partido (Opcional)</label>
+          <input type="file" id="logo_partido-modal" name="logo_partido" accept="image/*" class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-logo-partido-edit-modal" style="display:none;">Deixe em branco para manter a logo atual.</p>
+        </div>
       </div>
       <div class="flex justify-end gap-3 pt-4">
         <button type="button" onclick="fecharModalEleitor()" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">Cancelar</button>

@@ -56,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $resultado = uploadFoto($_FILES['foto'], __DIR__ . '/../uploads');
                             if (!isset($resultado['erro'])) {
                                 $foto = $resultado['arquivo'];
-                                
                                 // Se for edição e tiver foto nova, deletar a antiga se desejar (opcional, mas boa prática)
                                 if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
                                      $stmt_old = $pdo->prepare("SELECT foto FROM eleitores WHERE id = ?");
@@ -71,23 +70,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
 
+                        // Processar upload de logo do partido
+                        $logo_partido = null;
+                        if (isset($_FILES['logo_partido']) && $_FILES['logo_partido']['error'] === UPLOAD_ERR_OK) {
+                            $resultado_logo = uploadFoto($_FILES['logo_partido'], __DIR__ . '/../uploads');
+                            if (!isset($resultado_logo['erro'])) {
+                                $logo_partido = $resultado_logo['arquivo'];
+                                // Se for edição e tiver logo nova, deletar a antiga se desejar
+                                if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
+                                     $stmt_old = $pdo->prepare("SELECT logo_partido FROM eleitores WHERE id = ?");
+                                     $stmt_old->execute([$eleitor_id]);
+                                     $old = $stmt_old->fetch();
+                                     if ($old && $old['logo_partido'] && file_exists(__DIR__ . '/../uploads/' . $old['logo_partido'])) {
+                                         @unlink(__DIR__ . '/../uploads/' . $old['logo_partido']);
+                                     }
+                                }
+                            } else {
+                                registrarLog('upload_logo_partido_erro', ['erro' => $resultado_logo['erro']]);
+                            }
+                        }
+
                         if ($acao === 'cadastrar_eleitor') {
-                            $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
-                            $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
+                            $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, logo_partido, perfil) VALUES (?, ?, ?, ?, ?, ?)");
+                            $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $logo_partido, $perfil]);
                             $mensagem = 'Eleitor cadastrado com sucesso!';
                         } else {
                             // Edição
                             $sql_update = "UPDATE eleitores SET nome = ?, cpf = ?, cargo = ?, perfil = ?";
                             $params_update = [$nome, $cpf, $cargo ?: null, $perfil];
-                            
                             if ($foto) {
                                 $sql_update .= ", foto = ?";
                                 $params_update[] = $foto;
                             }
-                            
+                            if ($logo_partido) {
+                                $sql_update .= ", logo_partido = ?";
+                                $params_update[] = $logo_partido;
+                            }
                             $sql_update .= " WHERE id = ?";
                             $params_update[] = $eleitor_id;
-                            
                             $stmt = $pdo->prepare($sql_update);
                             $stmt->execute($params_update);
                             $mensagem = 'Eleitor atualizado com sucesso!';
@@ -207,6 +227,9 @@ require_once 'sidebar.php';
                                             <div>
                                                 <div class="font-semibold text-gray-900 dark:text-white"><?= htmlspecialchars($eleitor['nome']) ?></div>
                                                 <div class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($eleitor['perfil'] ?? 'vereador') ?></div>
+                                                <?php if (!empty($eleitor['logo_partido'])): ?>
+                                                    <img src="../uploads/<?= htmlspecialchars($eleitor['logo_partido']) ?>" alt="Logo do Partido" class="w-8 h-8 rounded object-contain mt-1 border border-gray-200 dark:border-gray-700" title="Logo do Partido">
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </td>
