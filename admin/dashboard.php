@@ -283,17 +283,17 @@ require_once 'sidebar.php';
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <?php 
-            $total_vereadores = $pdo->query("SELECT COUNT(*) FROM eleitores")->fetchColumn();
+            $total_vereadores = $pdo->query("SELECT COUNT(*) FROM eleitores")->fetchColumn(); // candidatos
             $nao_votaram = $total_vereadores - $total_geral;
             $nao_votaram = $nao_votaram >= 0 ? $nao_votaram : 0;
             ?>
             
-            <!-- Card Eleitores -->
+            <!-- Card Candidatos -->
             <div class="stat-box rounded-2xl p-6 relative overflow-hidden group">
                 <div class="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Eleitores</p>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Candidatos</p>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mt-2"><?= $total_vereadores ?></h3>
                     </div>
                     <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
@@ -623,8 +623,8 @@ require_once 'sidebar.php';
             .then(data => {
                 // Atualizar Badges
                 document.getElementById('badge-votos').innerText = data.total;
-                const totalEleitores = <?= $total_vereadores ?>;
-                const pendentes = totalEleitores - data.total;
+                const totalCandidatos = <?= $total_vereadores ?>;
+                const pendentes = totalCandidatos - data.total;
                 document.getElementById('badge-nao').innerText = pendentes < 0 ? 0 : pendentes;
 
                 // Atualizar Charts

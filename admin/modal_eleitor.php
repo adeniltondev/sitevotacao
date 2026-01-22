@@ -1,4 +1,4 @@
-<!-- Modal para Cadastro/Edição de Eleitor -->
+<!-- Modal para Cadastro/Edição de Candidato -->
 <div id="modal-eleitor" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
   <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-blue-100/20 dark:shadow-black/20 overflow-hidden border border-gray-100 dark:border-gray-700 p-8 w-full max-w-3xl relative">
     <button onclick="fecharModalEleitor()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-2xl">&times;</button>
@@ -6,11 +6,11 @@
       <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
       </div>
-      <h2 class="text-xl font-bold text-gray-800 dark:text-white" id="form-titulo-modal">Cadastrar Novo Eleitor</h2>
+      <h2 class="text-xl font-bold text-gray-800 dark:text-white" id="form-titulo-modal">Cadastrar Novo Candidato</h2>
     </div>
     <form method="POST" action="" enctype="multipart/form-data" class="space-y-6" id="form-eleitor-modal">
       <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-      <input type="hidden" name="acao" id="acao-modal" value="cadastrar_eleitor">
+      <input type="hidden" name="acao" id="acao-modal" value="cadastrar_candidato">
       <input type="hidden" name="eleitor_id" id="eleitor_id-modal" value="">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -48,7 +48,7 @@
       </div>
       <div class="flex justify-end gap-3 pt-4">
         <button type="button" onclick="fecharModalEleitor()" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">Cancelar</button>
-        <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg shadow-blue-600/30 transition-all transform hover:scale-[1.02]">Cadastrar Eleitor</button>
+        <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg shadow-blue-600/30 transition-all transform hover:scale-[1.02]">Cadastrar Candidato</button>
       </div>
     </form>
   </div>

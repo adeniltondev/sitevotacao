@@ -1,6 +1,6 @@
 <?php
 /**
- * Gerenciamento de Eleitores
+ * Gerenciamento de Candidatos
  */
 require_once '../config/functions.php';
 verificarAdmin();
@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $acao = $_POST['acao'] ?? '';
     
-        if ($acao === 'cadastrar_eleitor' || $acao === 'editar_eleitor') {
+        if ($acao === 'cadastrar_candidato' || $acao === 'editar_candidato') {
             $nome = sanitizar($_POST['nome'] ?? '');
             $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
             $cargo = sanitizar($_POST['cargo'] ?? '');
             $perfil = $_POST['perfil'] ?? 'vereador';
-            $eleitor_id = isset($_POST['eleitor_id']) ? intval($_POST['eleitor_id']) : 0;
+            $candidato_id = isset($_POST['eleitor_id']) ? intval($_POST['eleitor_id']) : 0;
             
             if (empty($nome) || empty($cpf)) {
                 $mensagem = 'Preencha todos os campos obrigatórios';
@@ -38,16 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Verificar se CPF já existe (ignorando o próprio usuário na edição)
                     $sql_check = "SELECT id FROM eleitores WHERE cpf = ?";
                     $params_check = [$cpf];
-                    if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
+                    if ($acao === 'editar_candidato' && $candidato_id > 0) {
                         $sql_check .= " AND id != ?";
-                        $params_check[] = $eleitor_id;
+                        $params_check[] = $candidato_id;
                     }
                     
                     $stmt = $pdo->prepare($sql_check);
                     $stmt->execute($params_check);
                     
                     if ($stmt->fetch()) {
-                        $mensagem = 'CPF já cadastrado para outro eleitor';
+                        $mensagem = 'CPF já cadastrado para outro candidato';
                         $tipo_mensagem = 'error';
                     } else {
                         // Processar upload de foto
@@ -57,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if (!isset($resultado['erro'])) {
                                 $foto = $resultado['arquivo'];
                                 // Se for edição e tiver foto nova, deletar a antiga se desejar (opcional, mas boa prática)
-                                if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
-                                     $stmt_old = $pdo->prepare("SELECT foto FROM eleitores WHERE id = ?");
-                                     $stmt_old->execute([$eleitor_id]);
+                                  if ($acao === 'editar_candidato' && $candidato_id > 0) {
+                                      $stmt_old = $pdo->prepare("SELECT foto FROM eleitores WHERE id = ?");
+                                      $stmt_old->execute([$candidato_id]);
                                      $old = $stmt_old->fetch();
                                      if ($old && $old['foto'] && file_exists(__DIR__ . '/../uploads/' . $old['foto'])) {
                                          @unlink(__DIR__ . '/../uploads/' . $old['foto']);
@@ -77,9 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if (!isset($resultado_logo['erro'])) {
                                 $logo_partido = $resultado_logo['arquivo'];
                                 // Se for edição e tiver logo nova, deletar a antiga se desejar
-                                if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
-                                     $stmt_old = $pdo->prepare("SELECT logo_partido FROM eleitores WHERE id = ?");
-                                     $stmt_old->execute([$eleitor_id]);
+                                  if ($acao === 'editar_candidato' && $candidato_id > 0) {
+                                      $stmt_old = $pdo->prepare("SELECT logo_partido FROM eleitores WHERE id = ?");
+                                      $stmt_old->execute([$candidato_id]);
                                      $old = $stmt_old->fetch();
                                      if ($old && $old['logo_partido'] && file_exists(__DIR__ . '/../uploads/' . $old['logo_partido'])) {
                                          @unlink(__DIR__ . '/../uploads/' . $old['logo_partido']);
@@ -90,10 +90,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
 
-                        if ($acao === 'cadastrar_eleitor') {
+                        if ($acao === 'cadastrar_candidato') {
                             $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, logo_partido, perfil) VALUES (?, ?, ?, ?, ?, ?)");
                             $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $logo_partido, $perfil]);
-                            $mensagem = 'Eleitor cadastrado com sucesso!';
+                            $mensagem = 'Candidato cadastrado com sucesso!';
                         } else {
                             // Edição
                             $sql_update = "UPDATE eleitores SET nome = ?, cpf = ?, cargo = ?, perfil = ?";
@@ -107,10 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $params_update[] = $logo_partido;
                             }
                             $sql_update .= " WHERE id = ?";
-                            $params_update[] = $eleitor_id;
+                            $params_update[] = $candidato_id;
                             $stmt = $pdo->prepare($sql_update);
                             $stmt->execute($params_update);
-                            $mensagem = 'Eleitor atualizado com sucesso!';
+                            $mensagem = 'Candidato atualizado com sucesso!';
                         }
                         
                         $tipo_mensagem = 'success';
@@ -123,21 +123,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     
-        if ($acao === 'bloquear_eleitor') {
-        $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
-        $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 0 WHERE id = ?");
-        $stmt->execute([$eleitor_id]);
-        $mensagem = 'Eleitor bloqueado com sucesso!';
-        $tipo_mensagem = 'success';
-    }
+        if ($acao === 'bloquear_candidato') {
+            $candidato_id = intval($_POST['eleitor_id'] ?? 0);
+            $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 0 WHERE id = ?");
+            $stmt->execute([$candidato_id]);
+            $mensagem = 'Candidato bloqueado com sucesso!';
+            $tipo_mensagem = 'success';
+        }
 
-    if ($acao === 'desbloquear_eleitor') {
-        $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
-        $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 1 WHERE id = ?");
-        $stmt->execute([$eleitor_id]);
-        $mensagem = 'Eleitor desbloqueado com sucesso!';
-        $tipo_mensagem = 'success';
-    }
+        if ($acao === 'desbloquear_candidato') {
+            $candidato_id = intval($_POST['eleitor_id'] ?? 0);
+            $stmt = $pdo->prepare("UPDATE eleitores SET ativo = 1 WHERE id = ?");
+            $stmt->execute([$candidato_id]);
+            $mensagem = 'Candidato desbloqueado com sucesso!';
+            $tipo_mensagem = 'success';
+        }
 
     if ($acao === 'excluir_eleitor') {
         $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
@@ -163,10 +163,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Buscar todos os eleitores
+// Buscar todos os candidatos
 $eleitores = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll();
 
-$page_title = 'Gerenciar Eleitores';
+$page_title = 'Gerenciar Candidatos';
 require_once 'header.php';
 require_once 'sidebar.php';
 ?>
@@ -176,8 +176,8 @@ require_once 'sidebar.php';
         <!-- Cabeçalho -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">Gerenciar Eleitores</h1>
-                <p class="text-gray-500 dark:text-gray-400 mt-1">Cadastre e gerencie os eleitores do sistema.</p>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">Gerenciar Candidatos</h1>
+                <p class="text-gray-500 dark:text-gray-400 mt-1">Cadastre e gerencie os candidatos do sistema.</p>
             </div>
         </div>
         <?php if ($mensagem): ?>
@@ -189,15 +189,15 @@ require_once 'sidebar.php';
         <!-- Botão para abrir modal de cadastro de eleitor -->
         <div class="flex justify-end">
             <button onclick="abrirModalEleitor()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg shadow-blue-600/30 transition-all transform hover:scale-[1.02]">
-                Cadastrar Novo Eleitor
+                Cadastrar Novo Candidato
             </button>
         </div>
         <?php include 'modal_eleitor.php'; ?>
 
-        <!-- Lista de Eleitores -->
+        <!-- Lista de Candidatos -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-blue-100/20 dark:shadow-black/20 overflow-hidden border border-gray-100 dark:border-gray-700">
             <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Eleitores Cadastrados</h2>
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Candidatos Cadastrados</h2>
                 <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full text-sm font-semibold"><?= count($eleitores) ?> total</span>
             </div>
                 
@@ -266,18 +266,18 @@ require_once 'sidebar.php';
                                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                                                 <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
                                                 <?php if ($eleitor['ativo']): ?>
-                                                    <input type="hidden" name="acao" value="bloquear_eleitor">
+                                                    <input type="hidden" name="acao" value="bloquear_candidato">
                                                     <button type="submit" class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300" title="Bloquear">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                                                     </button>
                                                 <?php else: ?>
-                                                    <input type="hidden" name="acao" value="desbloquear_eleitor">
+                                                    <input type="hidden" name="acao" value="desbloquear_candidato">
                                                     <button type="submit" class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300" title="Desbloquear">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                                                     </button>
                                                 <?php endif; ?>
                                             </form>
-                                            <form method="POST" action="" class="inline" onsubmit="return confirm('Excluir permanentemente este eleitor?')">
+                                            <form method="POST" action="" class="inline" onsubmit="return confirm('Excluir permanentemente este candidato?')">
                                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                                                 <input type="hidden" name="acao" value="excluir_eleitor">
                                                 <input type="hidden" name="eleitor_id" value="<?= $eleitor['id'] ?>">
