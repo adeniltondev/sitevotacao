@@ -13,11 +13,11 @@ if (!$cpf) {
     die('CPF não informado.');
 }
 
-$stmt = $pdo->prepare('SELECT * FROM eleitores WHERE cpf = ?');
+$stmt = $pdo->prepare('SELECT * FROM eleitores WHERE cpf = ?'); // candidatos
 $stmt->execute([$cpf]);
-$eleitor = $stmt->fetch();
-if (!$eleitor) {
-    die('Eleitor não encontrado.');
+$candidato = $stmt->fetch();
+if (!$candidato) {
+    die('Candidato não encontrado.');
 }
 
 $stmt = $pdo->prepare('SELECT v.*, vt.titulo FROM votos v JOIN votacoes vt ON v.votacao_id = vt.id WHERE v.cpf = ? ORDER BY v.criado_em DESC');
@@ -30,7 +30,7 @@ $votos = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico de Votos - <?= htmlspecialchars($eleitor['nome']) ?></title>
+    <title>Histórico de Votos - <?= htmlspecialchars($candidato['nome']) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -63,7 +63,7 @@ $votos = $stmt->fetchAll();
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-b dark:border-gray-700 p-4 space-y-2">
         <a href="dashboard.php" class="block text-gray-700 dark:text-gray-200 py-2">Dashboard</a>
-        <a href="eleitores.php" class="block text-blue-600 font-bold py-2">Eleitores</a>
+        <a href="eleitores.php" class="block text-blue-600 font-bold py-2">Candidatos</a>
         <a href="relatorios.php" class="block text-gray-700 dark:text-gray-200 py-2">Relatórios</a>
         <a href="auditoria.php" class="block text-gray-700 dark:text-gray-200 py-2">Auditoria</a>
         <a href="configuracoes.php" class="block text-gray-700 dark:text-gray-200 py-2">Configurações</a>
@@ -78,7 +78,7 @@ $votos = $stmt->fetchAll();
                 <a href="eleitores.php" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </a>
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Histórico do Eleitor</h1>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Histórico do Candidato</h1>
             </div>
             <div class="flex items-center gap-4">
                 <button onclick="alternarModoEscuro()" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
@@ -95,27 +95,27 @@ $votos = $stmt->fetchAll();
         </header>
 
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <!-- Card do Eleitor -->
+            <!-- Card do Candidato -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8 flex flex-col md:flex-row items-center gap-6">
-                <?php if ($eleitor['foto']): ?>
-                    <img src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" alt="Foto" class="w-24 h-24 rounded-full object-cover ring-4 ring-gray-50 dark:ring-gray-700 shadow-md">
+                <?php if ($candidato['foto']): ?>
+                    <img src="../uploads/<?= htmlspecialchars($candidato['foto']) ?>" alt="Foto" class="w-24 h-24 rounded-full object-cover ring-4 ring-gray-50 dark:ring-gray-700 shadow-md">
                 <?php else: ?>
                     <div class="w-24 h-24 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-3xl shadow-md">
-                        <?= strtoupper(substr($eleitor['nome'], 0, 1)) ?>
+                        <?= strtoupper(substr($candidato['nome'], 0, 1)) ?>
                     </div>
                 <?php endif; ?>
                 
                 <div class="flex-1 text-center md:text-left">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1"><?= htmlspecialchars($eleitor['nome']) ?></h2>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1"><?= htmlspecialchars($candidato['nome']) ?></h2>
                     <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-gray-500 dark:text-gray-400 text-sm">
                         <span class="flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .883-.393 1.627-1.008 2.155C8.36 7.64 7.218 8 6 8H5"></path></svg>
-                            <?= htmlspecialchars($eleitor['cargo'] ?: 'Sem cargo') ?>
+                            <?= htmlspecialchars($candidato['cargo'] ?: 'Sem cargo') ?>
                         </span>
                         <span class="hidden md:inline">•</span>
-                        <span class="font-mono"><?= formatarCPF($eleitor['cpf']) ?></span>
+                        <span class="font-mono"><?= formatarCPF($candidato['cpf']) ?></span>
                         <span class="hidden md:inline">•</span>
-                        <?php if ($eleitor['ativo']): ?>
+                        <?php if ($candidato['ativo']): ?>
                             <span class="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Ativo
                             </span>
@@ -175,7 +175,7 @@ $votos = $stmt->fetchAll();
                     <div class="p-12 text-center text-gray-500 dark:text-gray-400">
                         <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         <p class="text-lg font-medium">Nenhum voto registrado</p>
-                        <p class="text-sm">Este eleitor ainda não participou de nenhuma votação.</p>
+                        <p class="text-sm">Este candidato ainda não participou de nenhuma votação.</p>
                     </div>
                 <?php endif; ?>
             </div>
