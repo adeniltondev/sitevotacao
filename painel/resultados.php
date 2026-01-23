@@ -362,11 +362,11 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                                     if (is_array($eleitores_para_exibir) && count($eleitores_para_exibir) > 0):
                                         foreach ($eleitores_para_exibir as $eleitor):
                                             if (!isset($eleitor['cpf']) || !isset($eleitor['nome'])) continue;
-                                        $cpf_limpo = preg_replace('/[^0-9]/', '', $eleitor['cpf']);
-                                        $votou = isset($mapa_votantes[$cpf_limpo]);
-                                        $voto_info = $votou ? $mapa_votantes[$cpf_limpo] : null;
-                                        $status_voto = $votou ? ($voto_info['voto'] == 'sim' ? 'sim' : 'nao') : 'ausente';
-                                        $status_texto = $votou ? ($voto_info['voto'] == 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
+                                            $cpf_limpo = preg_replace('/[^0-9]/', '', $eleitor['cpf']);
+                                            $votou = isset($mapa_votantes[$cpf_limpo]);
+                                            $voto_info = $votou ? $mapa_votantes[$cpf_limpo] : null;
+                                            $status_voto = $votou ? (isset($voto_info['voto']) && $voto_info['voto'] == 'sim' ? 'sim' : 'nao') : 'ausente';
+                                            $status_texto = $votou ? (isset($voto_info['voto']) && $voto_info['voto'] == 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
                                     ?>
                                         <div class="voter-card rounded-xl p-4 fade-in" data-cpf="<?= $cpf_limpo ?>">
                                             <!-- Foto e Informações -->
