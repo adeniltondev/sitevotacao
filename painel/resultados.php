@@ -415,74 +415,77 @@ foreach ($resultados['votos'] as $voto) {
 
     <script>
         // Função para formatar segundos em mm:ss
-        function formatarTempo(segundos) {
-            segundos = Math.max(0, parseInt(segundos) || 0);
-            const m = Math.floor(segundos / 60).toString().padStart(2, '0');
-            const s = (segundos % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
-
-        // Função para atualizar o card de tempo de fala
-        async function atualizarTempoFala() {
-            const loading = document.getElementById('tempo-fala-loading');
-            const conteudo = document.getElementById('tempo-fala-conteudo');
-            const debugBox = document.getElementById('debug-tempo-fala');
-            const debugJson = document.getElementById('debug-tempo-fala-json');
-            const debugErro = document.getElementById('debug-tempo-fala-erro');
-            let erroMsg = '';
-            let debugInfo = '';
-            let start = performance.now();
+        async function atualizarResultados() {
+            if (!votacaoId) {
+                setTimeout(() => location.reload(), 5000);
+                return;
+            }
             try {
-                const resp = await fetch('api_discurso.php');
-                let end = performance.now();
-                let data = null;
-                let raw = '';
-                let status = resp.status;
-                let headers = '';
-                resp.headers.forEach((v, k) => { headers += k+': '+v+'\n'; });
-                try {
-                    raw = await resp.text();
-                    data = JSON.parse(raw);
-                } catch (jsonErr) {
-                    erroMsg = 'Erro ao decodificar JSON: ' + jsonErr + '\nResposta bruta: ' + raw;
+                const response = await fetch(`api_resultados.php?votacao_id=${votacaoId}`);
+                const data = await response.json();
+                if (data.sucesso) {
+                    const resultados = data.dados;
+                    // Atualizar totais
+                    const totalGeralEl = document.getElementById('total-geral');
+                    const totalSimEl = document.getElementById('total-sim');
+                    const totalNaoEl = document.getElementById('total-nao');
+                    const totalGeralAntigo = parseInt(totalGeralEl?.textContent) || 0;
+                    const totalSimAntigo = parseInt(totalSimEl?.textContent) || 0;
+                    const totalNaoAntigo = parseInt(totalNaoEl?.textContent) || 0;
+                    if (totalGeralEl) animarNumero(totalGeralEl, totalGeralAntigo, resultados.total_geral);
+                    if (totalSimEl) animarNumero(totalSimEl, totalSimAntigo, resultados.total_sim);
+                    if (totalNaoEl) animarNumero(totalNaoEl, totalNaoAntigo, resultados.total_nao);
+
+                    // Atualizar Grid de Eleitores via AJAX
+                    const grid = document.getElementById('grid-eleitores');
+                    if (grid) {
+                        // Montar lista de eleitores (cadastrados + quem votou)
+                        let eleitores = (data.dados.eleitores && data.dados.eleitores.length > 0) ? data.dados.eleitores : [];
+                        // Se não houver eleitores cadastrados, usar os que votaram
+                        if (eleitores.length === 0) {
+                            eleitores = resultados.votos.map(v => ({
+                                id: null,
+                                nome: v.nome,
+                                cargo: v.cargo,
+                                foto: v.foto,
+                                cpf: v.cpf
+                            }));
+                        }
+                        // Map de votos por CPF
+                        const votosMap = {};
+                        resultados.votos.forEach(v => {
+                            const cpfLimpo = v.cpf.replace(/\D/g, '');
+                            votosMap[cpfLimpo] = v;
+                        });
+                        // Montar HTML
+                        let html = '';
+                        eleitores.forEach(eleitor => {
+                            const cpf_limpo = (eleitor.cpf || '').replace(/\D/g, '');
+                            const votou = !!votosMap[cpf_limpo];
+                            const voto_info = votou ? votosMap[cpf_limpo] : null;
+                            const status_voto = votou ? (voto_info.voto === 'sim' ? 'sim' : 'nao') : 'ausente';
+                            const status_texto = votou ? (voto_info.voto === 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
+                            html += `<div class="voter-card rounded-xl p-4 fade-in" data-cpf="${cpf_limpo}">
+                                <div class="flex items-center gap-3 mb-3">
+                                    ${eleitor.foto ? `<img src="../uploads/${eleitor.foto}" alt="${eleitor.nome}" class="w-14 h-14 rounded-full object-cover border-2 border-gray-300">` : `<div class="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-400"><span class="text-gray-700 text-lg font-bold">${(eleitor.nome||'').toUpperCase().charAt(0)}</span></div>`}
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-semibold text-gray-800 truncate">${eleitor.nome || ''}</div>
+                                        ${eleitor.cargo ? `<div class="text-xs text-gray-500 truncate">${eleitor.cargo}</div>` : ''}
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="status-bar ${status_voto} mb-2" data-role="status-bar"></div>
+                                    <div class="text-xs font-semibold text-gray-700 text-center status-text" data-role="status-text">${status_texto}</div>
+                                </div>
+                            </div>`;
+                        });
+                        grid.innerHTML = html;
+                    }
                 }
-                // debugBox.style.display = '';
-                debugInfo = '[Status HTTP]: ' + status + '\n[Tempo resposta]: ' + (end-start).toFixed(1) + 'ms\n[Headers]:\n' + headers + '\n[Conteúdo bruto]:\n' + raw + '\n[JSON]:\n' + (data ? JSON.stringify(data, null, 2) : 'null');
-                debugJson.textContent = debugInfo;
-                debugErro.textContent = erroMsg;
-                if (data && data.sucesso && (data.status === 'ativo' || data.status === 'pausado')) {
-                    conteudo.style.display = '';
-                    loading.style.display = 'none';
-                    document.getElementById('tempo-fala-nome').textContent = data.nome ? data.nome.toUpperCase() : 'VEREADOR(A)';
-                    document.getElementById('tempo-fala-cargo').textContent = data.cargo || '';
-                    document.getElementById('tempo-fala-restante').textContent = formatarTempo(data.tempo_restante);
-                    // Status
-                    const statusSpan = document.getElementById('tempo-fala-status');
-                    const statusDot = document.getElementById('tempo-fala-status-dot');
-                    if (data.status === 'ativo') {
-                        statusSpan.textContent = 'ATIVO';
-                        statusSpan.className = 'text-blue-700 dark:text-blue-300 text-base font-bold';
-                        statusDot.style.background = '#22c55e';
-                    } else if (data.status === 'pausado') {
-                        statusSpan.textContent = 'PAUSADO';
-                        statusSpan.className = 'text-yellow-600 dark:text-yellow-300 text-base font-bold';
-                        statusDot.style.background = '#fbbf24';
-                    } else {
-                        statusSpan.textContent = '';
-                        statusDot.style.background = 'transparent';
-                    }
-                    // Foto
-                    const foto = document.getElementById('tempo-fala-foto');
-                    if (data.foto) {
-                        foto.src = '../uploads/' + data.foto;
-                        foto.classList.remove('hidden');
-                    } else {
-                        foto.classList.add('hidden');
-                    }
-                    // Partido e logo
-                    const partidoDiv = document.getElementById('tempo-fala-partido');
-                    const logoImg = document.getElementById('tempo-fala-logo-partido');
-                    if (data.partido) {
+            } catch (error) {
+                console.error('Erro ao atualizar resultados:', error);
+            }
+        }
                         partidoDiv.textContent = data.partido;
                     } else {
                         partidoDiv.textContent = '';
