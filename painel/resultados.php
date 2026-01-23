@@ -159,11 +159,25 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
     // Se não há eleitores cadastrados, usar os que votaram
     foreach ($resultados['votos'] as $voto) {
         if (isset($voto['nome']) && isset($voto['cpf'])) {
+            // Buscar dados completos do eleitor (incluindo logo_partido) se existir
+            $eleitor_completo = null;
+            if (isset($voto['cpf'])) {
+                try {
+                    $cpf_limpo_voto = preg_replace('/[^0-9]/', '', $voto['cpf']);
+                    $stmt_eleitor = $pdo->prepare("SELECT logo_partido FROM eleitores WHERE cpf = ? LIMIT 1");
+                    $stmt_eleitor->execute([$cpf_limpo_voto]);
+                    $eleitor_completo = $stmt_eleitor->fetch();
+                } catch (Exception $e) {
+                    error_log("Erro ao buscar logo do partido: " . $e->getMessage());
+                }
+            }
+            
             $eleitores_para_exibir[] = [
                 'id' => $voto['id'] ?? null,
                 'nome' => $voto['nome'],
                 'cargo' => $voto['cargo'] ?? '',
                 'foto' => $voto['foto'] ?? null,
+                'logo_partido' => $eleitor_completo['logo_partido'] ?? null,
                 'cpf' => $voto['cpf']
             ];
         }

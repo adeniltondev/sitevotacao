@@ -49,7 +49,7 @@ foreach ($votos as &$voto) {
 unset($voto);
 
 // Buscar eleitores cadastrados
-$eleitores = $pdo->query("SELECT nome, cpf, cargo, foto FROM eleitores ORDER BY nome ASC")->fetchAll();
+$eleitores = $pdo->query("SELECT nome, cpf, cargo, foto, logo_partido FROM eleitores ORDER BY nome ASC")->fetchAll();
 
 respostaJSON(true, 'Resultados obtidos com sucesso', [
     'total_sim' => $total_sim,
