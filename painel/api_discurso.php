@@ -10,24 +10,20 @@ try {
     // Tenta query completa primeiro
     try {
         $stmt = $pdo->query("
-            SELECT d.*, e.nome, e.foto, e.partido, e.logo_partido, e.cargo
-            FROM controle_discurso d 
-            LEFT JOIN eleitores e ON d.eleitor_id = e.id 
-            WHERE d.id = 1
-        ");
-        $discurso = $stmt->fetch(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        // Se falhar (ex: coluna logo_partido não existe), tenta query simplificada
-        $stmt = $pdo->query("
-            SELECT d.*, e.nome, e.foto, e.partido, e.cargo
+            SELECT d.*, e.nome, e.foto, e.cargo
             FROM controle_discurso d 
             LEFT JOIN eleitores e ON d.eleitor_id = e.id 
             WHERE d.id = 1
         ");
         $discurso = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($discurso) {
-            $discurso['logo_partido'] = null; // Define null para evitar erro no JS
+            $discurso['partido'] = null;
+            $discurso['logo_partido'] = null;
         }
+    } catch (PDOException $e) {
+        // Se falhar, retorna erro
+        echo json_encode(['sucesso' => false, 'status' => 'erro', 'erro' => $e->getMessage()]);
+        exit;
     }
 
     if ($discurso) {
