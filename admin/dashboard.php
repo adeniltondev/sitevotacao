@@ -17,11 +17,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($acao === 'criar_votacao') {
         $titulo = sanitizar($_POST['titulo'] ?? '');
         $descricao = sanitizar($_POST['descricao'] ?? '');
+        $tipo_votacao = $_POST['tipo_votacao'] ?? 'nominal';
+
+        // Validar tipo de votação
+        if (!in_array($tipo_votacao, ['nominal', 'anonima'])) {
+            $tipo_votacao = 'nominal';
+        }
 
         if (!empty($titulo)) {
-            $stmt = $pdo->prepare("INSERT INTO votacoes (titulo, descricao, status) VALUES (?, ?, 'encerrada')");
-            $stmt->execute([$titulo, $descricao]);
-            header('Location: dashboard.php?sucesso=votacao_criada');
+            $stmt = $pdo->prepare("INSERT INTO votacoes (titulo, descricao, tipo_votacao, status) VALUES (?, ?, ?, 'encerrada')");
+            $stmt->execute([$titulo, $descricao, $tipo_votacao]);
+
+            $mensagem = $tipo_votacao === 'anonima'
+                ? 'Votação anônima criada com sucesso!'
+                : 'Votação nominal criada com sucesso!';
+
+            setFlashMessage('success', $mensagem);
+            header('Location: dashboard.php');
             exit;
         }
     }
@@ -388,7 +400,8 @@ require_once 'sidebar.php';
                     <div>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Votos Registrados</p>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mt-2" id="badge-votos">
-                            <?= $total_geral ?></h3>
+                            <?= $total_geral ?>
+                        </h3>
                     </div>
                     <div class="p-3 bg-green-50 dark:bg-green-900/30 rounded-xl text-green-600 dark:text-green-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -409,7 +422,8 @@ require_once 'sidebar.php';
                     <div>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pendentes</p>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mt-2" id="badge-nao">
-                            <?= $nao_votaram ?></h3>
+                            <?= $nao_votaram ?>
+                        </h3>
                     </div>
                     <div class="p-3 bg-red-50 dark:bg-red-900/30 rounded-xl text-red-600 dark:text-red-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -602,9 +616,11 @@ require_once 'sidebar.php';
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                     <td class="p-4">
                                         <div class="font-medium text-gray-900 dark:text-white">
-                                            <?= htmlspecialchars($v['titulo']) ?></div>
+                                            <?= htmlspecialchars($v['titulo']) ?>
+                                        </div>
                                         <div class="text-xs text-gray-500 truncate max-w-xs">
-                                            <?= htmlspecialchars($v['descricao']) ?></div>
+                                            <?= htmlspecialchars($v['descricao']) ?>
+                                        </div>
                                     </td>
                                     <td class="p-4">
                                         <?php if ($v['status'] === 'aberta'): ?>
