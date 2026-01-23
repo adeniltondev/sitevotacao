@@ -349,14 +349,19 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                     <div class="lg:col-span-2 flex flex-col gap-6">
                         <div class="stat-box rounded-2xl p-6 md:p-7 fade-in mb-4">
                             <h2 class="text-xl font-bold text-gray-800 mb-6">
-                                VOTAÇÃO <?= strtoupper(htmlspecialchars($votacao['titulo'])) ?>
+                                <?php if ($votacao): ?>
+                                    VOTAÇÃO <?= strtoupper(htmlspecialchars($votacao['titulo'])) ?>
+                                <?php else: ?>
+                                    NENHUMA VOTAÇÃO ATIVA
+                                <?php endif; ?>
                             </h2>
                             <?php if ($temAcessoDetalhado): ?>
                                 <!-- Grid de Eleitores -->
                                 <div id="grid-eleitores" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                                     <?php 
-                                    // ...existing code...
-                                    foreach ($eleitores_para_exibir as $eleitor):
+                                    if (is_array($eleitores_para_exibir) && count($eleitores_para_exibir) > 0):
+                                        foreach ($eleitores_para_exibir as $eleitor):
+                                            if (!isset($eleitor['cpf']) || !isset($eleitor['nome'])) continue;
                                         $cpf_limpo = preg_replace('/[^0-9]/', '', $eleitor['cpf']);
                                         $votou = isset($mapa_votantes[$cpf_limpo]);
                                         $voto_info = $votou ? $mapa_votantes[$cpf_limpo] : null;
