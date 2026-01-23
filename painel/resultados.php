@@ -528,7 +528,7 @@ foreach ($resultados['votos'] as $voto) {
             const debugErro = document.getElementById('debug-tempo-fala-erro');
 
             try {
-                const resp = await fetch('api_tempo_fala.php');
+                const resp = await fetch('api_discurso.php');
                 const data = await resp.json();
                 debugBox.style.display = '';
                 debugJson.textContent = JSON.stringify(data, null, 2);
