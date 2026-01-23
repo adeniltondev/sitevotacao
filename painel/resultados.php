@@ -390,7 +390,6 @@ foreach ($resultados['votos'] as $voto) {
                     <p class="text-gray-500">Aguardando abertura de nova votação...</p>
                 </div>
             <?php endif; ?>
-        </div>
                <!-- Controle de Tempo de Fala -->
                         <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in mt-4 bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 220px;">
                             <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
@@ -415,6 +414,8 @@ foreach ($resultados['votos'] as $voto) {
                                 </div>
                             </div>
                         </div>
+        </div>
+        
     </div>
 
     <script>
