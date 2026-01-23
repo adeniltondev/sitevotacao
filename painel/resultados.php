@@ -414,19 +414,32 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                                         <div class="voter-card rounded-xl p-4 fade-in" data-cpf="<?= $cpf_limpo ?>">
                                             <!-- Foto e Informações -->
                                             <div class="flex items-center gap-3 mb-3">
-                                                <?php if ($eleitor['foto']): ?>
-                                                    <img 
-                                                        src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
-                                                        alt="<?= htmlspecialchars($eleitor['nome']) ?>"
-                                                        class="w-14 h-14 rounded-full object-cover border-2 border-gray-300"
-                                                    >
-                                                <?php else: ?>
-                                                    <div class="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-400">
-                                                        <span class="text-gray-700 text-lg font-bold">
-                                                            <?= strtoupper(substr($eleitor['nome'], 0, 1)) ?>
-                                                        </span>
-                                                    </div>
-                                                <?php endif; ?>
+                                                <!-- Foto do Eleitor -->
+                                                <div class="relative">
+                                                    <?php if ($eleitor['foto']): ?>
+                                                        <img 
+                                                            src="../uploads/<?= htmlspecialchars($eleitor['foto']) ?>" 
+                                                            alt="<?= htmlspecialchars($eleitor['nome']) ?>"
+                                                            class="w-14 h-14 rounded-full object-cover border-2 border-gray-300"
+                                                        >
+                                                    <?php else: ?>
+                                                        <div class="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-400">
+                                                            <span class="text-gray-700 text-lg font-bold">
+                                                                <?= strtoupper(substr($eleitor['nome'], 0, 1)) ?>
+                                                            </span>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <!-- Logo do Partido (sobreposta no canto) -->
+                                                    <?php if (!empty($eleitor['logo_partido']) && file_exists(__DIR__ . '/../uploads/' . $eleitor['logo_partido'])): ?>
+                                                        <div class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shadow-md overflow-hidden">
+                                                            <img 
+                                                                src="../uploads/<?= htmlspecialchars($eleitor['logo_partido']) ?>" 
+                                                                alt="Logo Partido"
+                                                                class="w-full h-full object-contain p-1"
+                                                            >
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
                                                 <div class="flex-1 min-w-0">
                                                     <div class="text-sm font-semibold text-gray-800 truncate">
                                                         <?= htmlspecialchars($eleitor['nome']) ?>
