@@ -529,12 +529,21 @@ foreach ($resultados['votos'] as $voto) {
 
             try {
                 const resp = await fetch('api_discurso.php');
-                const data = await resp.json();
-                console.log('[DEBUG tempo de fala]', data); // DEBUG
+                const status = resp.status;
+                let data = null;
+                let text = '';
+                try {
+                    text = await resp.text();
+                    data = JSON.parse(text);
+                } catch (e) {
+                    data = null;
+                }
+                // Debug visual completo
                 debugBox.style.display = '';
-                debugJson.textContent = JSON.stringify(data, null, 2);
-                debugErro.textContent = '';
-                if (data.sucesso) {
+                debugJson.textContent = `HTTP: ${status}\n${text}`;
+                debugErro.textContent = data && data.erro ? 'Erro: ' + data.erro : '';
+                console.log('[DEBUG tempo de fala]', {status, data, text});
+                if (data && data.sucesso) {
                     loading.style.display = 'none';
                     conteudo.style.display = '';
                     nomeDiv.textContent = data.nome || '';
