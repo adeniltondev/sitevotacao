@@ -1,63 +1,74 @@
 <?php
 header('Content-Type: application/json');
-// Desativar exibição de erros no output para não quebrar o JSON
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 require_once '../config/database.php';
 
 try {
-    // Tenta query completa primeiro
-    try {
-        $stmt = $pdo->query("
-            SELECT d.*, e.nome, e.foto, e.cargo
-            FROM controle_discurso d 
-            LEFT JOIN eleitores e ON d.eleitor_id = e.id 
-            WHERE d.id = 1
-        ");
-        $discurso = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($discurso) {
-            $discurso['partido'] = null;
-            $discurso['logo_partido'] = null;
-        }
-    } catch (PDOException $e) {
-        // Se falhar, retorna erro
-        echo json_encode(['sucesso' => false, 'status' => 'erro', 'erro' => $e->getMessage()]);
-        exit;
-    }
+    // Buscar discurso ativo/pausado
+    $stmt = $pdo->query("
+        SELECT d.*, e.nome, e.foto, e.cargo
+        FROM controle_discurso d 
+        LEFT JOIN eleitores e ON d.eleitor_id = e.id 
+        WHERE d.id = 1
+    ");
+    $discurso = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($discurso) {
         $response = [
             'sucesso' => true,
             'status' => $discurso['status'],
-            'nome' => $discurso['nome'],
-            'foto' => $discurso['foto'],
-            'partido' => $discurso['partido'],
-            'logo_partido' => $discurso['logo_partido'],
-            'cargo' => $discurso['cargo'],
+            'nome' => $discurso['nome'] ?? 'Nome não disponível',
+            'foto' => $discurso['foto'] ?? null,
+            'partido' => $discurso['partido'] ?? null,
+            'logo_partido' => $discurso['logo_partido'] ?? null,
+            'cargo' => $discurso['cargo'] ?? 'Cargo não disponível',
             'tempo_restante' => 0
         ];
 
+        // Calcular tempo restante se estiver ativo
         if ($discurso['status'] === 'ativo') {
-            $inicio = strtotime($discurso['inicio']);
-            $agora = time();
-            $decorrido = $agora - $inicio;
-            $restante = max(0, $discurso['duracao_segundos'] - $decorrido);
-            $response['tempo_restante'] = $restante;
+            // Verifica se tem os campos necessários
+            if (!empty($discurso['inicio']) && !empty($discurso['duracao_segundos'])) {
+                $inicio = strtotime($discurso['inicio']);
+                $agora = time();
+                $decorrido = $agora - $inicio;
+                $restante = max(0, intval($discurso['duracao_segundos']) - $decorrido);
+                $response['tempo_restante'] = $restante;
+                
+                // Se o tempo acabou, atualizar status para encerrado
+                if ($restante <= 0) {
+                    $pdo->query("UPDATE controle_discurso SET status = 'encerrado' WHERE id = 1");
+                    $response['status'] = 'encerrado';
+                }
+            } else {
+                // Se não tem os campos, considerar como encerrado
+                $response['status'] = 'encerrado';
+                $response['tempo_restante'] = 0;
+            }
             
         } elseif ($discurso['status'] === 'pausado') {
-            $response['tempo_restante'] = intval($discurso['tempo_restante_pausa']);
+            // Quando pausado, usar o tempo salvo na pausa
+            $response['tempo_restante'] = intval($discurso['tempo_restante_pausa'] ?? 0);
+            
+        } elseif ($discurso['status'] === 'encerrado') {
+            // Quando encerrado, tempo é zero
+            $response['tempo_restante'] = 0;
         }
 
         echo json_encode($response);
+        
     } else {
-        // Tabela existe mas registro 1 não encontrado
-        echo json_encode(['sucesso' => false, 'status' => 'encerrado', 'mensagem' => 'Sistema aguardando']);
+        // Registro não encontrado
+        echo json_encode([
+            'sucesso' => false, 
+            'status' => 'encerrado', 
+            'mensagem' => 'Nenhum controle de tempo ativo'
+        ]);
     }
 
 } catch (PDOException $e) {
-    // Captura erro de tabela inexistente ou outros erros de banco
-    // Retorna JSON válido em vez de erro 500 para não quebrar o JS
     echo json_encode([
         'sucesso' => false, 
         'status' => 'erro', 
