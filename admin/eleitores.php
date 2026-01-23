@@ -71,9 +71,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
 
+                        // Processar upload de logo do partido
+                        $logo_partido = null;
+                        if (isset($_FILES['logo_partido']) && $_FILES['logo_partido']['error'] === UPLOAD_ERR_OK) {
+                            $resultado = uploadFoto($_FILES['logo_partido'], __DIR__ . '/../uploads');
+                            if (!isset($resultado['erro'])) {
+                                $logo_partido = $resultado['arquivo'];
+
+                                // Se for edição e tiver logo nova, deletar a antiga
+                                if ($acao === 'editar_eleitor' && $eleitor_id > 0) {
+                                    $stmt_old = $pdo->prepare("SELECT logo_partido FROM eleitores WHERE id = ?");
+                                    $stmt_old->execute([$eleitor_id]);
+                                    $old = $stmt_old->fetch();
+                                    if ($old && $old['logo_partido'] && file_exists(__DIR__ . '/../uploads/' . $old['logo_partido'])) {
+                                        @unlink(__DIR__ . '/../uploads/' . $old['logo_partido']);
+                                    }
+                                }
+                            } else {
+                                registrarLog('upload_logo_partido_erro', ['erro' => $resultado['erro']]);
+                            }
+                        }
+
                         if ($acao === 'cadastrar_eleitor') {
-                            $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, perfil) VALUES (?, ?, ?, ?, ?)");
-                            $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $perfil]);
+                            $stmt = $pdo->prepare("INSERT INTO eleitores (nome, cpf, cargo, foto, logo_partido, perfil) VALUES (?, ?, ?, ?, ?, ?)");
+                            $stmt->execute([$nome, $cpf, $cargo ?: null, $foto, $logo_partido, $perfil]);
                             $mensagem = 'Eleitor cadastrado com sucesso!';
                         } else {
                             // Edição
@@ -83,6 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if ($foto) {
                                 $sql_update .= ", foto = ?";
                                 $params_update[] = $foto;
+                            }
+
+                            if ($logo_partido) {
+                                $sql_update .= ", logo_partido = ?";
+                                $params_update[] = $logo_partido;
                             }
 
                             $sql_update .= " WHERE id = ?";
@@ -122,8 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($acao === 'excluir_eleitor') {
             $eleitor_id = intval($_POST['eleitor_id'] ?? 0);
 
-            // Buscar foto para excluir
-            $stmt = $pdo->prepare("SELECT foto FROM eleitores WHERE id = ?");
+            // Buscar foto e logo para excluir
+            $stmt = $pdo->prepare("SELECT foto, logo_partido FROM eleitores WHERE id = ?");
             $stmt->execute([$eleitor_id]);
             $eleitor = $stmt->fetch();
 
@@ -131,6 +157,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $caminho_foto = __DIR__ . '/../uploads/' . $eleitor['foto'];
                 if (file_exists($caminho_foto)) {
                     @unlink($caminho_foto);
+                }
+            }
+
+            if ($eleitor && $eleitor['logo_partido']) {
+                $caminho_logo = __DIR__ . '/../uploads/' . $eleitor['logo_partido'];
+                if (file_exists($caminho_logo)) {
+                    @unlink($caminho_logo);
                 }
             }
 
