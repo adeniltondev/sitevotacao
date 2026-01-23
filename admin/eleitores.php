@@ -454,6 +454,7 @@ require_once 'sidebar.php';
 
 <script>
 
+
     function mascaraCPF(i) {
         var v = i.value;
         if (isNaN(v[v.length - 1])) {
@@ -463,6 +464,37 @@ require_once 'sidebar.php';
         i.setAttribute("maxlength", "14");
         if (v.length == 3 || v.length == 7) i.value += ".";
         if (v.length == 11) i.value += "-";
+    }
+
+    function abrirModal() {
+        const modal = document.getElementById('modal-eleitor');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden'; // Prevenir scroll do body
+    }
+
+    function fecharModal() {
+        const modal = document.getElementById('modal-eleitor');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = ''; // Restaurar scroll do body
+        
+        // Resetar formulário
+        document.getElementById('form-titulo').textContent = 'Cadastrar Novo Eleitor';
+        document.getElementById('acao').value = 'cadastrar_eleitor';
+        document.getElementById('eleitor_id').value = '';
+        document.getElementById('form-eleitor').reset();
+        document.getElementById('btn-submit').textContent = 'Cadastrar Eleitor';
+        document.getElementById('btn-submit').classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        document.getElementById('btn-submit').classList.add('bg-blue-600', 'hover:bg-blue-700');
+        document.getElementById('aviso-foto-edit').style.display = 'none';
+        document.getElementById('aviso-logo-edit').style.display = 'none';
+    }
+
+    function fecharModalSeBackdrop(event) {
+        if (event.target.id === 'modal-eleitor') {
+            fecharModal();
+        }
     }
 
     function editarEleitor(dados) {
@@ -479,34 +511,20 @@ require_once 'sidebar.php';
         document.getElementById('btn-submit').classList.remove('bg-blue-600', 'hover:bg-blue-700');
         document.getElementById('btn-submit').classList.add('bg-indigo-600', 'hover:bg-indigo-700');
 
-        document.getElementById('btn-cancelar').classList.remove('hidden');
         document.getElementById('aviso-foto-edit').style.display = 'block';
         document.getElementById('aviso-logo-edit').style.display = 'block';
 
-        // Rolar para o formulário
-        document.getElementById('card-formulario').scrollIntoView({ behavior: 'smooth' });
-
-        // Atualizar visual do card para indicar edição
-        document.getElementById('card-formulario').classList.add('ring-2', 'ring-indigo-500');
+        // Abrir modal
+        abrirModal();
     }
 
-    function cancelarEdicao() {
-        document.getElementById('form-titulo').textContent = 'Cadastrar Novo Eleitor';
-        document.getElementById('acao').value = 'cadastrar_eleitor';
-        document.getElementById('eleitor_id').value = '';
+    // Fechar modal com tecla ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            fecharModal();
+        }
+    });
 
-        document.getElementById('form-eleitor').reset();
-
-        document.getElementById('btn-submit').textContent = 'Cadastrar Eleitor';
-        document.getElementById('btn-submit').classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-        document.getElementById('btn-submit').classList.add('bg-blue-600', 'hover:bg-blue-700');
-
-        document.getElementById('btn-cancelar').classList.add('hidden');
-        document.getElementById('aviso-foto-edit').style.display = 'none';
-        document.getElementById('aviso-logo-edit').style.display = 'none';
-
-        document.getElementById('card-formulario').classList.remove('ring-2', 'ring-indigo-500');
-    }
 </script>
 </body>
 
