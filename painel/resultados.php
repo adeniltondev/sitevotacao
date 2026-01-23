@@ -445,13 +445,15 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                                                     <?php endif; ?>
                                                     <!-- Logo do Partido (sobreposta no canto) -->
                                                     <?php if (!empty($eleitor['logo_partido']) && file_exists(__DIR__ . '/../uploads/' . $eleitor['logo_partido'])): ?>
-                                                        <div class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shadow-md overflow-hidden">
+                                                        <div class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shadow-md overflow-hidden logo-partido-container">
                                                             <img 
                                                                 src="../uploads/<?= htmlspecialchars($eleitor['logo_partido']) ?>" 
                                                                 alt="Logo Partido"
                                                                 class="w-full h-full object-contain p-1"
                                                             >
                                                         </div>
+                                                    <?php else: ?>
+                                                        <div class="logo-partido-container" style="display: none;"></div>
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="flex-1 min-w-0">
