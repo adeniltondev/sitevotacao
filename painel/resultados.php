@@ -607,15 +607,15 @@ foreach ($resultados['votos'] as $voto) {
                             }
                         });
                         
-                        // Se houver votos de quem não tem card (ex: novo cadastro), recarregar
-                        const temVotoSemCard = resultados.votos.some(v => {
-                            const cpfLimpo = v.cpf.replace(/\D/g, '');
-                            return !document.querySelector(`.voter-card[data-cpf="${cpfLimpo}"]`);
-                        });
-                        
-                        if (temVotoSemCard) {
-                            location.reload();
-                        }
+                        // Se houver votos de quem não tem card (ex: novo cadastro), pode-se atualizar a grid via AJAX futuramente.
+                        // Por ora, não recarrega a página inteira para evitar refresh geral.
+                        // const temVotoSemCard = resultados.votos.some(v => {
+                        //     const cpfLimpo = v.cpf.replace(/\D/g, '');
+                        //     return !document.querySelector(`.voter-card[data-cpf="${cpfLimpo}"]`);
+                        // });
+                        // if (temVotoSemCard) {
+                        //     location.reload();
+                        // }
                     }
                 }
             } catch (error) {
