@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 require_once '../config/database.php';
 
 try {
-    // Buscar discurso ativo/pausado
+    // Buscar discurso
     $stmt = $pdo->query("
         SELECT d.*, e.nome, e.foto, e.cargo
         FROM controle_discurso d 
@@ -29,38 +29,39 @@ try {
 
         // Calcular tempo restante se estiver ativo
         if ($discurso['status'] === 'ativo') {
-            // Verifica se tem os campos necessários
             if (!empty($discurso['inicio']) && !empty($discurso['duracao_segundos'])) {
                 $inicio = strtotime($discurso['inicio']);
                 $agora = time();
                 $decorrido = $agora - $inicio;
-                $restante = max(0, intval($discurso['duracao_segundos']) - $decorrido);
-                $response['tempo_restante'] = $restante;
+                $duracao = intval($discurso['duracao_segundos']);
+                $restante = $duracao - $decorrido;
                 
-                // Se o tempo acabou, atualizar status para encerrado
-                if ($restante <= 0) {
+                // Se ainda tem tempo
+                if ($restante > 0) {
+                    $response['tempo_restante'] = $restante;
+                } else {
+                    // Tempo acabou - atualizar para encerrado
                     $pdo->query("UPDATE controle_discurso SET status = 'encerrado' WHERE id = 1");
                     $response['status'] = 'encerrado';
+                    $response['tempo_restante'] = 0;
                 }
             } else {
-                // Se não tem os campos, considerar como encerrado
                 $response['status'] = 'encerrado';
                 $response['tempo_restante'] = 0;
             }
             
         } elseif ($discurso['status'] === 'pausado') {
-            // Quando pausado, usar o tempo salvo na pausa
+            // Quando pausado, mostrar tempo salvo
             $response['tempo_restante'] = intval($discurso['tempo_restante_pausa'] ?? 0);
             
-        } elseif ($discurso['status'] === 'encerrado') {
-            // Quando encerrado, tempo é zero
+        } else {
+            // Encerrado ou outro status
             $response['tempo_restante'] = 0;
         }
 
         echo json_encode($response);
         
     } else {
-        // Registro não encontrado
         echo json_encode([
             'sucesso' => false, 
             'status' => 'encerrado', 
@@ -69,12 +70,6 @@ try {
     }
 
 } catch (PDOException $e) {
-    echo json_encode([
-        'sucesso' => false, 
-        'status' => 'erro', 
-        'erro' => $e->getMessage()
-    ]);
-} catch (Exception $e) {
     echo json_encode([
         'sucesso' => false, 
         'status' => 'erro', 
