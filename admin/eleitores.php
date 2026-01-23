@@ -350,65 +350,78 @@ require_once 'sidebar.php';
         </div>
     </div>
     <!-- Modal de Cadastro/Edição -->
-    <div id="modal-eleitor" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4" onclick="fecharModalSeBackdrop(event)">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
-            <!-- Cabeçalho do Modal -->
-            <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
-                            </path>
-                        </svg>
+    <div id="modal-eleitor"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 transition-all duration-300"
+        onclick="fecharModalSeBackdrop(event)">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-95 opacity-0"
+            id="modal-content" onclick="event.stopPropagation()">
+            <!-- Cabeçalho do Modal com Gradiente -->
+            <div class="relative bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-white" id="form-titulo">Cadastrar Novo Eleitor</h2>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-white" id="form-titulo">Cadastrar Novo Eleitor</h2>
+                    <button onclick="fecharModal()"
+                        class="p-2 hover:bg-white/20 rounded-lg transition-all duration-200 group">
+                        <svg class="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
-                <button onclick="fecharModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
             </div>
 
-            <!-- Corpo do Modal -->
-            <div class="p-6">
+            <!-- Corpo do Modal com Scroll Suave -->
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)] custom-scrollbar">
                 <form method="POST" action="" enctype="multipart/form-data" class="space-y-6" id="form-eleitor">
                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                     <input type="hidden" name="acao" id="acao" value="cadastrar_eleitor">
                     <input type="hidden" name="eleitor_id" id="eleitor_id" value="">
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nome
-                                Completo *</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="group">
+                            <label for="nome" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Nome Completo <span class="text-red-500">*</span>
+                            </label>
                             <input type="text" id="nome" name="nome" required
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-500"
                                 placeholder="Ex: João da Silva">
                         </div>
 
-                        <div>
-                            <label for="cpf" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CPF
-                                *</label>
+                        <div class="group">
+                            <label for="cpf" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                CPF <span class="text-red-500">*</span>
+                            </label>
                             <input type="text" id="cpf" name="cpf" required maxlength="14"
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-500"
                                 placeholder="000.000.000-00" oninput="mascaraCPF(this)">
                         </div>
 
-                        <div>
+                        <div class="group">
                             <label for="cargo"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cargo</label>
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Cargo
+                            </label>
                             <input type="text" id="cargo" name="cargo"
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-500"
                                 placeholder="Ex: Vereador">
                         </div>
 
-                        <div>
+                        <div class="group">
                             <label for="perfil"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Perfil de
-                                Acesso</label>
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Perfil de Acesso
+                            </label>
                             <select id="perfil" name="perfil"
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-500">
                                 <option value="vereador">Vereador</option>
                                 <option value="secretario">Secretário</option>
                                 <option value="presidente">Presidente</option>
@@ -416,32 +429,49 @@ require_once 'sidebar.php';
                         </div>
                     </div>
 
-                    <div>
-                        <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto
-                            (Opcional)</label>
-                        <input type="file" id="foto" name="foto" accept="image/*"
-                            class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-foto-edit" style="display:none;">
-                            Deixe em branco para manter a foto atual.</p>
-                    </div>
+                    <div class="space-y-5">
+                        <div class="group">
+                            <label for="foto" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Foto (Opcional)
+                            </label>
+                            <input type="file" id="foto" name="foto" accept="image/*"
+                                class="w-full text-sm text-gray-600 dark:text-gray-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-blue-50 file:to-indigo-50 file:text-blue-700 hover:file:from-blue-100 hover:file:to-indigo-100 dark:file:from-blue-900/30 dark:file:to-indigo-900/30 dark:file:text-blue-400 file:transition-all file:duration-200 file:cursor-pointer">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-1"
+                                id="aviso-foto-edit" style="display:none;">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Deixe em branco para manter a foto atual.
+                            </p>
+                        </div>
 
-                    <div>
-                        <label for="logo_partido" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo do Partido
-                            (Opcional)</label>
-                        <input type="file" id="logo_partido" name="logo_partido" accept="image/*"
-                            class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-logo-edit" style="display:none;">
-                            Deixe em branco para manter a logo atual.</p>
+                        <div class="group">
+                            <label for="logo_partido"
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Logo do Partido (Opcional)
+                            </label>
+                            <input type="file" id="logo_partido" name="logo_partido" accept="image/*"
+                                class="w-full text-sm text-gray-600 dark:text-gray-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-blue-50 file:to-indigo-50 file:text-blue-700 hover:file:from-blue-100 hover:file:to-indigo-100 dark:file:from-blue-900/30 dark:file:to-indigo-900/30 dark:file:text-blue-400 file:transition-all file:duration-200 file:cursor-pointer">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-1"
+                                id="aviso-logo-edit" style="display:none;">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Deixe em branco para manter a logo atual.
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Botões do Modal -->
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-end gap-3 pt-6 border-t-2 border-gray-100 dark:border-gray-700">
                         <button type="button" onclick="fecharModal()"
-                            class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                            class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 font-semibold">
                             Cancelar
                         </button>
                         <button type="submit" id="btn-submit"
-                            class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg shadow-blue-600/30 transition-all transform hover:scale-[1.02]">
+                            class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-200 transform hover:scale-105">
                             Cadastrar Eleitor
                         </button>
                     </div>
@@ -449,6 +479,47 @@ require_once 'sidebar.php';
             </div>
         </div>
     </div>
+
+    <style>
+        /* Scrollbar personalizada */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Animação de entrada do modal */
+        #modal-eleitor.flex #modal-content {
+            animation: modalEnter 0.3s ease-out forwards;
+        }
+
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
 
 </main>
 
@@ -478,7 +549,7 @@ require_once 'sidebar.php';
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         document.body.style.overflow = ''; // Restaurar scroll do body
-        
+
         // Resetar formulário
         document.getElementById('form-titulo').textContent = 'Cadastrar Novo Eleitor';
         document.getElementById('acao').value = 'cadastrar_eleitor';
@@ -519,7 +590,7 @@ require_once 'sidebar.php';
     }
 
     // Fechar modal com tecla ESC
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             fecharModal();
         }

@@ -8,7 +8,7 @@ verificarAdmin();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
     $csrf_token = $_POST['csrf_token'] ?? '';
-    
+
     // Validar CSRF
     if (!validarCSRFToken()) {
         die('Token CSRF inválido');
@@ -62,21 +62,27 @@ require_once 'sidebar.php';
 
 <main class="md:ml-64 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
     <div class="p-6 md:p-10 space-y-8 fade-in">
-        
+
         <header class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
                 <h1 class="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">Pautas das Sessões</h1>
                 <p class="text-gray-500 dark:text-gray-400 mt-1">Gerencie as pautas das sessões da câmara.</p>
             </div>
-            
-            <button onclick="abrirModalCriar()" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium shadow-lg shadow-blue-600/20 transition-all transform hover:scale-105">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+
+            <button onclick="abrirModalCriar()"
+                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium shadow-lg shadow-blue-600/20 transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                        clip-rule="evenodd" />
+                </svg>
                 Nova Pauta
             </button>
         </header>
 
         <!-- Lista de Pautas -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -103,12 +109,16 @@ require_once 'sidebar.php';
                                         <?= htmlspecialchars($pauta['titulo']) ?>
                                     </td>
                                     <td class="p-4 text-right space-x-2">
-                                        <button onclick='abrirModalEditar(<?= json_encode($pauta) ?>)' class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm">Editar</button>
-                                        <form method="POST" class="inline-block" onsubmit="return confirm('Tem certeza que deseja excluir esta pauta?');">
+                                        <button onclick='abrirModalEditar(<?= json_encode($pauta) ?>)'
+                                            class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm">Editar</button>
+                                        <form method="POST" class="inline-block"
+                                            onsubmit="return confirm('Tem certeza que deseja excluir esta pauta?');">
                                             <input type="hidden" name="acao" value="excluir_pauta">
                                             <input type="hidden" name="id" value="<?= $pauta['id'] ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
-                                            <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium text-sm">Excluir</button>
+                                            <input type="hidden" name="csrf_token"
+                                                value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
+                                            <button type="submit"
+                                                class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium text-sm">Excluir</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -122,49 +132,125 @@ require_once 'sidebar.php';
 </main>
 
 <!-- Modal Criar/Editar Pauta -->
-<div id="modalPauta" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="fecharModal()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-            <form method="POST" action="">
-                <input type="hidden" name="acao" id="formAcao" value="criar_pauta">
-                <input type="hidden" name="id" id="pautaId" value="">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
-                
-                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modalTitle">Nova Pauta</h3>
-                            <div class="mt-4 space-y-4">
-                                <div>
-                                    <label for="titulo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
-                                    <input type="text" name="titulo" id="titulo" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-900 dark:text-white">
-                                </div>
-                                <div>
-                                    <label for="data_sessao" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data da Sessão</label>
-                                    <input type="date" name="data_sessao" id="data_sessao" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-900 dark:text-white">
-                                </div>
-                                <div>
-                                    <label for="conteudo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Conteúdo da Pauta</label>
-                                    <textarea name="conteudo" id="conteudo" rows="10" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-900 dark:text-white"></textarea>
-                                </div>
-                            </div>
+<div id="modalPauta"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all duration-300"
+    aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-2xl w-full transform transition-all duration-300 scale-95 opacity-0 overflow-hidden"
+        id="modal-pauta-content">
+        <form method="POST" action="">
+            <input type="hidden" name="acao" id="formAcao" value="criar_pauta">
+            <input type="hidden" name="id" id="pautaId" value="">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarCSRFToken()) ?>">
+
+            <!-- Cabeçalho com Gradiente -->
+            <div class="relative bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
                         </div>
+                        <h3 class="text-xl font-bold text-white" id="modalTitle">Nova Pauta</h3>
                     </div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        Salvar
+                    <button type="button" onclick="fecharModal()"
+                        class="p-2 hover:bg-white/20 rounded-lg transition-all duration-200 group">
+                        <svg class="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
-                    <button type="button" onclick="fecharModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Cancelar
-                    </button>
                 </div>
-            </form>
-        </div>
+            </div>
+
+            <!-- Corpo do Modal -->
+            <div class="p-6 space-y-5 max-h-[calc(90vh-180px)] overflow-y-auto custom-scrollbar-pauta">
+                <div class="group">
+                    <label for="titulo" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Título <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="titulo" id="titulo" required
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-500"
+                        placeholder="Digite o título da pauta">
+                </div>
+
+                <div class="group">
+                    <label for="data_sessao" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Data da Sessão <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="data_sessao" id="data_sessao" required
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-500">
+                </div>
+
+                <div class="group">
+                    <label for="conteudo" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Conteúdo da Pauta
+                    </label>
+                    <textarea name="conteudo" id="conteudo" rows="10"
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-500 resize-none"
+                        placeholder="Descreva o conteúdo da pauta..."></textarea>
+                </div>
+            </div>
+
+            <!-- Rodapé com Botões -->
+            <div
+                class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t-2 border-gray-100 dark:border-gray-700 flex justify-end gap-3">
+                <button type="button" onclick="fecharModal()"
+                    class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 font-semibold">
+                    Cancelar
+                </button>
+                <button type="submit"
+                    class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-200 transform hover:scale-105">
+                    Salvar
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+
+<style>
+    /* Scrollbar personalizada para modal de pautas */
+    .custom-scrollbar-pauta::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .custom-scrollbar-pauta::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar-pauta::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .dark .custom-scrollbar-pauta::-webkit-scrollbar-thumb {
+        background: #475569;
+    }
+
+    .custom-scrollbar-pauta::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Animação de entrada do modal de pautas */
+    #modalPauta.flex #modal-pauta-content {
+        animation: modalPautaEnter 0.3s ease-out forwards;
+    }
+
+    @keyframes modalPautaEnter {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+</style>
 
 <script>
     function abrirModalCriar() {
@@ -174,7 +260,10 @@ require_once 'sidebar.php';
         document.getElementById('titulo').value = '';
         document.getElementById('data_sessao').value = '';
         document.getElementById('conteudo').value = '';
-        document.getElementById('modalPauta').classList.remove('hidden');
+        const modal = document.getElementById('modalPauta');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
     }
 
     function abrirModalEditar(pauta) {
@@ -183,13 +272,33 @@ require_once 'sidebar.php';
         document.getElementById('pautaId').value = pauta.id;
         document.getElementById('titulo').value = pauta.titulo;
         document.getElementById('data_sessao').value = pauta.data_sessao;
-        document.getElementById('conteudo').value = pauta.conteudo; // Cuidado com caracteres especiais aqui, pode precisar de tratamento se usar editor rico
-        document.getElementById('modalPauta').classList.remove('hidden');
+        document.getElementById('conteudo').value = pauta.conteudo;
+        const modal = document.getElementById('modalPauta');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
     }
 
     function fecharModal() {
-        document.getElementById('modalPauta').classList.add('hidden');
+        const modal = document.getElementById('modalPauta');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
     }
+
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            fecharModal();
+        }
+    });
+
+    // Fechar ao clicar no backdrop
+    document.getElementById('modalPauta')?.addEventListener('click', function (e) {
+        if (e.target === this) {
+            fecharModal();
+        }
+    });
 </script>
 
 <?php require_once 'footer.php'; ?>
