@@ -278,21 +278,27 @@ foreach ($resultados['votos'] as $voto) {
                         </div>
 
                         <!-- Controle de Tempo de Fala -->
-                        <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in mt-4 bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 110px;">
+                        <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in mt-4 bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 220px;">
                             <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
-                            <div id="tempo-fala-conteudo" style="display:none;">
-                                <div class="flex items-center gap-4 mb-2">
-                                    <img id="tempo-fala-foto" src="" alt="Foto" class="w-14 h-14 rounded-full object-cover border-2 border-blue-400 hidden">
-                                    <div>
-                                        <div id="tempo-fala-nome" class="text-lg font-bold text-blue-800 dark:text-blue-200"></div>
-                                        <div id="tempo-fala-cargo" class="text-xs text-gray-600 dark:text-gray-300"></div>
+                            <div id="tempo-fala-conteudo" style="display:none; width:100%;">
+                                <div class="flex flex-col items-center justify-center w-full">
+                                    <div class="flex items-center justify-center mb-2 w-full">
+                                        <img id="tempo-fala-foto" src="" alt="Foto" class="w-24 h-24 rounded-full object-cover border-4 border-blue-400 shadow-lg hidden">
+                                    </div>
+                                    <div id="tempo-fala-nome" class="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white text-center mb-1 uppercase tracking-tight"></div>
+                                    <div class="flex flex-col items-center mb-2">
+                                        <img id="tempo-fala-logo-partido" src="" alt="Logo Partido" class="h-8 mb-1 hidden">
+                                        <div id="tempo-fala-partido" class="text-base font-bold text-blue-700 dark:text-blue-200 text-center"></div>
+                                    </div>
+                                    <div id="tempo-fala-cargo" class="text-xs text-gray-600 dark:text-gray-300 mb-2 text-center"></div>
+                                    <div class="flex items-center justify-center w-full mb-2">
+                                        <span id="tempo-fala-restante" class="text-5xl md:text-6xl font-mono font-extrabold text-gray-900 dark:text-white tracking-widest">00:00</span>
+                                    </div>
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <span class="inline-block w-3 h-3 rounded-full" id="tempo-fala-status-dot"></span>
+                                        <span id="tempo-fala-status" class="text-base font-bold"></span>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-xs font-semibold text-gray-500 uppercase">Tempo Restante:</span>
-                                    <span id="tempo-fala-restante" class="text-xl font-mono font-bold text-blue-700 dark:text-blue-200">00:00</span>
-                                </div>
-                                <div id="tempo-fala-status" class="text-xs font-semibold text-gray-600 dark:text-gray-300"></div>
                             </div>
                         </div>
 
@@ -429,16 +435,45 @@ foreach ($resultados['votos'] as $voto) {
                 if (data && data.sucesso && (data.status === 'ativo' || data.status === 'pausado')) {
                     conteudo.style.display = '';
                     loading.style.display = 'none';
-                    document.getElementById('tempo-fala-nome').textContent = data.nome || 'Vereador(a)';
+                    document.getElementById('tempo-fala-nome').textContent = data.nome ? data.nome.toUpperCase() : 'VEREADOR(A)';
                     document.getElementById('tempo-fala-cargo').textContent = data.cargo || '';
                     document.getElementById('tempo-fala-restante').textContent = formatarTempo(data.tempo_restante);
-                    document.getElementById('tempo-fala-status').textContent = data.status === 'ativo' ? 'Fala em andamento' : 'Fala pausada';
+                    // Status
+                    const statusSpan = document.getElementById('tempo-fala-status');
+                    const statusDot = document.getElementById('tempo-fala-status-dot');
+                    if (data.status === 'ativo') {
+                        statusSpan.textContent = 'ATIVO';
+                        statusSpan.className = 'text-blue-700 dark:text-blue-300 text-base font-bold';
+                        statusDot.style.background = '#22c55e';
+                    } else if (data.status === 'pausado') {
+                        statusSpan.textContent = 'PAUSADO';
+                        statusSpan.className = 'text-yellow-600 dark:text-yellow-300 text-base font-bold';
+                        statusDot.style.background = '#fbbf24';
+                    } else {
+                        statusSpan.textContent = '';
+                        statusDot.style.background = 'transparent';
+                    }
+                    // Foto
                     const foto = document.getElementById('tempo-fala-foto');
                     if (data.foto) {
                         foto.src = '../uploads/' + data.foto;
                         foto.classList.remove('hidden');
                     } else {
                         foto.classList.add('hidden');
+                    }
+                    // Partido e logo
+                    const partidoDiv = document.getElementById('tempo-fala-partido');
+                    const logoImg = document.getElementById('tempo-fala-logo-partido');
+                    if (data.partido) {
+                        partidoDiv.textContent = data.partido;
+                    } else {
+                        partidoDiv.textContent = '';
+                    }
+                    if (data.logo_partido) {
+                        logoImg.src = '../uploads/' + data.logo_partido;
+                        logoImg.classList.remove('hidden');
+                    } else {
+                        logoImg.classList.add('hidden');
                     }
                 } else {
                     conteudo.style.display = 'none';
