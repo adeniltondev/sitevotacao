@@ -714,13 +714,20 @@ async function atualizarResultados() {
             
             // Atualizar Grid de Eleitores (apenas os cards existentes)
             const grid = document.getElementById('grid-eleitores');
-            if (grid && resultados.votos) {
+            if (grid && resultados.votos && resultados.eleitores) {
                 // Criar mapa de votos por CPF (usando CPF limpo)
                 const votosMap = {};
                 resultados.votos.forEach(v => {
                     // Usar cpf_limpo se disponível, senão limpar o cpf
                     const cpfLimpo = v.cpf_limpo || v.cpf.replace(/\D/g, '');
                     votosMap[cpfLimpo] = v;
+                });
+                
+                // Criar mapa de eleitores por CPF (para logo do partido)
+                const eleitoresMap = {};
+                resultados.eleitores.forEach(e => {
+                    const cpfLimpo = e.cpf.replace(/\D/g, '');
+                    eleitoresMap[cpfLimpo] = e;
                 });
 
                 // Atualizar apenas os cards existentes
@@ -734,6 +741,7 @@ async function atualizarResultados() {
                         // Garantir que o CPF do card também está limpo
                         const cpfLimpoCard = cpfCard.replace(/\D/g, '');
                         
+                        // Atualizar status do voto
                         if (votosMap[cpfLimpoCard]) {
                             // Votou
                             const voto = votosMap[cpfLimpoCard].voto;
@@ -745,6 +753,32 @@ async function atualizarResultados() {
                             statusBar.classList.remove('sim', 'nao');
                             statusBar.classList.add('ausente');
                             statusText.textContent = 'AUSENTE';
+                        }
+                        
+                        // Atualizar logo do partido se disponível
+                        if (eleitoresMap[cpfLimpoCard] && eleitoresMap[cpfLimpoCard].logo_partido) {
+                            let logoContainer = card.querySelector('.logo-partido-container');
+                            if (!logoContainer) {
+                                // Criar container se não existir
+                                const fotoContainer = card.querySelector('.relative');
+                                if (fotoContainer) {
+                                    logoContainer = document.createElement('div');
+                                    logoContainer.className = 'absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shadow-md overflow-hidden logo-partido-container';
+                                    fotoContainer.appendChild(logoContainer);
+                                    
+                                    const logoImg = document.createElement('img');
+                                    logoImg.src = '../uploads/' + eleitoresMap[cpfLimpoCard].logo_partido;
+                                    logoImg.alt = 'Logo Partido';
+                                    logoImg.className = 'w-full h-full object-contain p-1';
+                                    logoContainer.appendChild(logoImg);
+                                }
+                            } else {
+                                // Atualizar logo existente
+                                const logoImg = logoContainer.querySelector('img');
+                                if (logoImg) {
+                                    logoImg.src = '../uploads/' + eleitoresMap[cpfLimpoCard].logo_partido;
+                                }
+                            }
                         }
                     }
                 });
