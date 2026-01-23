@@ -530,6 +530,7 @@ foreach ($resultados['votos'] as $voto) {
             try {
                 const resp = await fetch('api_discurso.php');
                 const data = await resp.json();
+                console.log('[DEBUG tempo de fala]', data); // DEBUG
                 debugBox.style.display = '';
                 debugJson.textContent = JSON.stringify(data, null, 2);
                 debugErro.textContent = '';
