@@ -439,10 +439,16 @@ foreach ($resultados['votos'] as $voto) {
             const debugJson = document.getElementById('debug-tempo-fala-json');
             const debugErro = document.getElementById('debug-tempo-fala-erro');
             let erroMsg = '';
+            let debugInfo = '';
+            let start = performance.now();
             try {
                 const resp = await fetch('api_discurso.php');
+                let end = performance.now();
                 let data = null;
                 let raw = '';
+                let status = resp.status;
+                let headers = '';
+                resp.headers.forEach((v, k) => { headers += k+': '+v+'\n'; });
                 try {
                     raw = await resp.text();
                     data = JSON.parse(raw);
@@ -450,7 +456,8 @@ foreach ($resultados['votos'] as $voto) {
                     erroMsg = 'Erro ao decodificar JSON: ' + jsonErr + '\nResposta bruta: ' + raw;
                 }
                 debugBox.style.display = '';
-                debugJson.textContent = raw || JSON.stringify(data, null, 2);
+                debugInfo = '[Status HTTP]: ' + status + '\n[Tempo resposta]: ' + (end-start).toFixed(1) + 'ms\n[Headers]:\n' + headers + '\n[Conteúdo bruto]:\n' + raw + '\n[JSON]:\n' + (data ? JSON.stringify(data, null, 2) : 'null');
+                debugJson.textContent = debugInfo;
                 debugErro.textContent = erroMsg;
                 if (data && data.sucesso && (data.status === 'ativo' || data.status === 'pausado')) {
                     conteudo.style.display = '';
