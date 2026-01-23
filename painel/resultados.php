@@ -370,7 +370,7 @@ foreach ($resultados['votos'] as $voto) {
                             </div>
                         </div>
 
-                        <!-- Controle de Tempo de Fala (apenas aqui) -->
+                        <!-- Controle de Tempo de Fala (único card) -->
                         <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 220px;">
                             <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
                             <div id="tempo-fala-conteudo" style="display:none; width:100%;">
