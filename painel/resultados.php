@@ -4,9 +4,29 @@
  * Estilo Institucional - Fundo Escuro
  */
 
-require_once '../config/database.php';
-require_once '../config/functions.php';
-iniciarSessao();
+// Habilitar exibição de erros para debug (remover em produção)
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
+try {
+    require_once '../config/database.php';
+    require_once '../config/functions.php';
+    
+    if (!function_exists('iniciarSessao')) {
+        throw new Exception('Função iniciarSessao não encontrada');
+    }
+    
+    if (!isset($pdo) || !$pdo) {
+        throw new Exception('Conexão com banco de dados não estabelecida');
+    }
+    
+    iniciarSessao();
+} catch (Exception $e) {
+    error_log("Erro ao inicializar resultados.php: " . $e->getMessage());
+    http_response_code(500);
+    die("Erro ao carregar a página. Por favor, tente novamente mais tarde.");
+}
 
 // Carregar configurações do sistema
 $configFile = __DIR__ . '/../config/settings.json';
@@ -28,7 +48,16 @@ if (isset($_SESSION['eleitor_id']) && isset($_SESSION['eleitor_perfil']) && in_a
 }
 
 // Buscar votação ativa
-$votacao = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIMIT 1")->fetch();
+$votacao = false;
+try {
+    $stmt = $pdo->query("SELECT * FROM votacoes WHERE status = 'aberta' LIMIT 1");
+    if ($stmt) {
+        $votacao = $stmt->fetch();
+    }
+} catch (Exception $e) {
+    error_log("Erro ao buscar votação: " . $e->getMessage());
+    $votacao = false;
+}
 
 // Função para buscar resultados
 function buscarResultados($pdo, $votacao_id) {
@@ -43,31 +72,45 @@ function buscarResultados($pdo, $votacao_id) {
         ];
     }
     
-    $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'sim'");
-    $stmt->execute([$votacao_id]);
-    $total_sim = $stmt->fetch()['total'];
-    
-    $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'nao'");
-    $stmt->execute([$votacao_id]);
-    $total_nao = $stmt->fetch()['total'];
-    
-    $total_geral = $total_sim + $total_nao;
-    $percentual_sim = $total_geral > 0 ? round(($total_sim / $total_geral) * 100, 1) : 0;
-    $percentual_nao = $total_geral > 0 ? round(($total_nao / $total_geral) * 100, 1) : 0;
-    
-    // Buscar todos os votos com dados dos eleitores
-    $stmt = $pdo->prepare("SELECT * FROM votos WHERE votacao_id = ? ORDER BY criado_em DESC");
-    $stmt->execute([$votacao_id]);
-    $votos = $stmt->fetchAll();
-    
-    return [
-        'total_sim' => $total_sim,
-        'total_nao' => $total_nao,
-        'total_geral' => $total_geral,
-        'percentual_sim' => $percentual_sim,
-        'percentual_nao' => $percentual_nao,
-        'votos' => $votos
-    ];
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'sim'");
+        $stmt->execute([$votacao_id]);
+        $result = $stmt->fetch();
+        $total_sim = $result ? (int)$result['total'] : 0;
+        
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM votos WHERE votacao_id = ? AND voto = 'nao'");
+        $stmt->execute([$votacao_id]);
+        $result = $stmt->fetch();
+        $total_nao = $result ? (int)$result['total'] : 0;
+        
+        $total_geral = $total_sim + $total_nao;
+        $percentual_sim = $total_geral > 0 ? round(($total_sim / $total_geral) * 100, 1) : 0;
+        $percentual_nao = $total_geral > 0 ? round(($total_nao / $total_geral) * 100, 1) : 0;
+        
+        // Buscar todos os votos com dados dos eleitores
+        $stmt = $pdo->prepare("SELECT * FROM votos WHERE votacao_id = ? ORDER BY criado_em DESC");
+        $stmt->execute([$votacao_id]);
+        $votos = $stmt->fetchAll() ?: [];
+        
+        return [
+            'total_sim' => $total_sim,
+            'total_nao' => $total_nao,
+            'total_geral' => $total_geral,
+            'percentual_sim' => $percentual_sim,
+            'percentual_nao' => $percentual_nao,
+            'votos' => $votos
+        ];
+    } catch (Exception $e) {
+        error_log("Erro ao buscar resultados: " . $e->getMessage());
+        return [
+            'total_sim' => 0,
+            'total_nao' => 0,
+            'total_geral' => 0,
+            'percentual_sim' => 0,
+            'percentual_nao' => 0,
+            'votos' => []
+        ];
+    }
 }
 
 // Buscar todos os eleitores cadastrados (para mostrar quem ainda não votou)
