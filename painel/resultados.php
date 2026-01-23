@@ -260,18 +260,20 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
 
                             <div class="mt-6 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-start">
                                 <div>
-                                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Exportação</div>
-                                    <div class="flex flex-wrap gap-2">
-                                        <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
-                                            CSV
-                                        </a>
-                                        <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
-                                            PDF
-                                        </a>
-                                        <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
-                                            Ata
-                                        </a>
-                                    </div>
+                                    <?php if ($votacao): ?>
+                                        <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Exportação</div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                                CSV
+                                            </a>
+                                            <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                                PDF
+                                            </a>
+                                            <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                                                Ata
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
                                     <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Exporta todos os votos desta votação.</div>
                                 </div>
 
