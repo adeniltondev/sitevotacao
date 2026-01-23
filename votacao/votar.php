@@ -60,18 +60,30 @@ if (!$eleitor || empty($eleitor['ativo'])) {
     exit;
 }
 
-// Verificar se a votação está aberta
-$stmt = $pdo->prepare("SELECT id FROM votacoes WHERE id = ? AND status = 'aberta'");
+// Verificar se a votação está aberta e obter tipo
+$stmt = $pdo->prepare("SELECT id, tipo_votacao FROM votacoes WHERE id = ? AND status = 'aberta'");
 $stmt->execute([$votacao_id]);
-if (!$stmt->fetch()) {
+$votacao = $stmt->fetch();
+
+if (!$votacao) {
     registrarLog('Voto falhou', ['motivo' => 'Votação não encontrada ou encerrada', 'votacao_id' => $votacao_id]);
     header('Location: index.php?erro=' . urlencode('Votação não encontrada ou encerrada'));
     exit;
 }
 
-// Verificar se já votou (por CPF)
-$stmt = $pdo->prepare("SELECT id FROM votos WHERE votacao_id = ? AND cpf = ? LIMIT 1");
-$stmt->execute([$votacao_id, $cpf]);
+$tipo_votacao = $votacao['tipo_votacao'] ?? 'nominal';
+
+// Verificar se já votou
+// Para votação anônima, verificamos por eleitor_id (sessão)
+// Para nominal, verificamos por CPF
+if ($tipo_votacao === 'anonima') {
+    $stmt = $pdo->prepare("SELECT id FROM votos WHERE votacao_id = ? AND eleitor_id = ? LIMIT 1");
+    $stmt->execute([$votacao_id, $_SESSION['eleitor_id']]);
+} else {
+    $stmt = $pdo->prepare("SELECT id FROM votos WHERE votacao_id = ? AND cpf = ? LIMIT 1");
+    $stmt->execute([$votacao_id, $cpf]);
+}
+
 if ($stmt->fetch()) {
     registrarLog('Voto duplicado bloqueado', ['votacao_id' => $votacao_id, 'cpf' => $cpf]);
     header('Location: index.php?erro=' . urlencode('Você já votou nesta votação'));
@@ -85,21 +97,38 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 }
 
 try {
-    $stmt = $pdo->prepare("
-        INSERT INTO votos (votacao_id, nome, cpf, cargo, foto, voto, ip_address) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->execute([
-        $votacao_id,
-        $nome,
-        $cpf,
-        $cargo ?: null,
-        $foto,
-        $voto,
-        $ip_address
-    ]);
+    // Se votação anônima, salvar apenas dados essenciais
+    if ($tipo_votacao === 'anonima') {
+        $stmt = $pdo->prepare("
+            INSERT INTO votos (votacao_id, eleitor_id, voto, ip_address) 
+            VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $votacao_id,
+            $_SESSION['eleitor_id'],
+            $voto,
+            $ip_address
+        ]);
+    } else {
+        // Votação nominal: salvar todos os dados
+        $stmt = $pdo->prepare("
+            INSERT INTO votos (votacao_id, eleitor_id, nome, cpf, cargo, foto, voto, ip_address) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $votacao_id,
+            $_SESSION['eleitor_id'],
+            $nome,
+            $cpf,
+            $cargo ?: null,
+            $foto,
+            $voto,
+            $ip_address
+        ]);
+    }
 
-    registrarLog('Voto registrado', ['votacao_id' => $votacao_id, 'cpf' => $cpf, 'voto' => $voto]);
+    $tipo_msg = $tipo_votacao === 'anonima' ? 'anônimo' : 'nominal';
+    registrarLog('Voto registrado', ['votacao_id' => $votacao_id, 'tipo' => $tipo_votacao, 'voto' => $voto]);
     header('Location: index.php?sucesso=1');
     exit;
 } catch (PDOException $e) {

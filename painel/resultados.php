@@ -59,6 +59,9 @@ try {
     $votacao = false;
 }
 
+// Verificar se votação é anônima
+$eh_votacao_anonima = $votacao && isset($votacao['tipo_votacao']) && $votacao['tipo_votacao'] === 'anonima';
+
 // Função para buscar resultados
 function buscarResultados($pdo, $votacao_id) {
     if (!$votacao_id) {
