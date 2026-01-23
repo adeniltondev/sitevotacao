@@ -8,6 +8,19 @@ require_once '../config/database.php';
 require_once '../config/functions.php';
 iniciarSessao();
 
+// Carregar configurações do sistema
+$configFile = __DIR__ . '/../config/settings.json';
+$settings = [
+    'sistema_nome' => 'Sistema de Votação',
+    'favicon_path' => ''
+];
+if (file_exists($configFile)) {
+    $savedSettings = json_decode(file_get_contents($configFile), true);
+    if ($savedSettings) {
+        $settings = array_merge($settings, $savedSettings);
+    }
+}
+
 // Permitir acesso público para leitura dos totais, mas grid detalhado só para vereador/secretario
 $temAcessoDetalhado = false;
 if (isset($_SESSION['eleitor_id']) && isset($_SESSION['eleitor_perfil']) && in_array($_SESSION['eleitor_perfil'], ['vereador','secretario'])) {
