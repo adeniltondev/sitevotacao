@@ -277,6 +277,25 @@ foreach ($resultados['votos'] as $voto) {
                             <?php endif; ?>
                         </div>
 
+                        <!-- Controle de Tempo de Fala -->
+                        <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in mt-4 bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 110px;">
+                            <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
+                            <div id="tempo-fala-conteudo" style="display:none;">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <img id="tempo-fala-foto" src="" alt="Foto" class="w-14 h-14 rounded-full object-cover border-2 border-blue-400 hidden">
+                                    <div>
+                                        <div id="tempo-fala-nome" class="text-lg font-bold text-blue-800 dark:text-blue-200"></div>
+                                        <div id="tempo-fala-cargo" class="text-xs text-gray-600 dark:text-gray-300"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase">Tempo Restante:</span>
+                                    <span id="tempo-fala-restante" class="text-xl font-mono font-bold text-blue-700 dark:text-blue-200">00:00</span>
+                                </div>
+                                <div id="tempo-fala-status" class="text-xs font-semibold text-gray-600 dark:text-gray-300"></div>
+                            </div>
+                        </div>
+
                         <!-- Estatísticas -->
                         <div class="grid grid-cols-2 gap-3">
                             <div class="stat-box rounded-xl p-4 text-center">
@@ -392,6 +411,50 @@ foreach ($resultados['votos'] as $voto) {
     </div>
 
     <script>
+        // Função para formatar segundos em mm:ss
+        function formatarTempo(segundos) {
+            segundos = Math.max(0, parseInt(segundos) || 0);
+            const m = Math.floor(segundos / 60).toString().padStart(2, '0');
+            const s = (segundos % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        // Função para atualizar o card de tempo de fala
+        async function atualizarTempoFala() {
+            const loading = document.getElementById('tempo-fala-loading');
+            const conteudo = document.getElementById('tempo-fala-conteudo');
+            try {
+                const resp = await fetch('api_discurso.php');
+                const data = await resp.json();
+                if (data && data.sucesso && (data.status === 'ativo' || data.status === 'pausado')) {
+                    conteudo.style.display = '';
+                    loading.style.display = 'none';
+                    document.getElementById('tempo-fala-nome').textContent = data.nome || 'Vereador(a)';
+                    document.getElementById('tempo-fala-cargo').textContent = data.cargo || '';
+                    document.getElementById('tempo-fala-restante').textContent = formatarTempo(data.tempo_restante);
+                    document.getElementById('tempo-fala-status').textContent = data.status === 'ativo' ? 'Fala em andamento' : 'Fala pausada';
+                    const foto = document.getElementById('tempo-fala-foto');
+                    if (data.foto) {
+                        foto.src = '../uploads/' + data.foto;
+                        foto.classList.remove('hidden');
+                    } else {
+                        foto.classList.add('hidden');
+                    }
+                } else {
+                    conteudo.style.display = 'none';
+                    loading.style.display = '';
+                    loading.textContent = 'Nenhum tempo de fala ativo.';
+                }
+            } catch (e) {
+                conteudo.style.display = 'none';
+                loading.style.display = '';
+                loading.textContent = 'Erro ao carregar tempo de fala.';
+            }
+        }
+
+        // Atualizar tempo de fala a cada 1s
+        setInterval(atualizarTempoFala, 1000);
+        setTimeout(atualizarTempoFala, 200);
                 function alternarModoEscuro() {
                     const html = document.documentElement;
                     const dark = html.classList.toggle('dark');
