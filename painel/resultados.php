@@ -413,205 +413,11 @@ foreach ($resultados['votos'] as $voto) {
         </div>
     </div>
 
-    <script>
-        // Função para formatar segundos em mm:ss
-        async function atualizarResultados() {
-            if (!votacaoId) {
-                setTimeout(() => location.reload(), 5000);
-                return;
-            }
-            try {
-                const response = await fetch(`api_resultados.php?votacao_id=${votacaoId}`);
-                const data = await response.json();
-                if (data.sucesso) {
-                    const resultados = data.dados;
-                    // Atualizar totais
-                    const totalGeralEl = document.getElementById('total-geral');
-                    const totalSimEl = document.getElementById('total-sim');
-                    const totalNaoEl = document.getElementById('total-nao');
-                    const totalGeralAntigo = parseInt(totalGeralEl?.textContent) || 0;
-                    const totalSimAntigo = parseInt(totalSimEl?.textContent) || 0;
-                    const totalNaoAntigo = parseInt(totalNaoEl?.textContent) || 0;
-                    if (totalGeralEl) animarNumero(totalGeralEl, totalGeralAntigo, resultados.total_geral);
-                    if (totalSimEl) animarNumero(totalSimEl, totalSimAntigo, resultados.total_sim);
-                    if (totalNaoEl) animarNumero(totalNaoEl, totalNaoAntigo, resultados.total_nao);
-
-                    // Atualizar Grid de Eleitores via AJAX
-                    const grid = document.getElementById('grid-eleitores');
-                    if (grid) {
-                        // Montar lista de eleitores (cadastrados + quem votou)
-                        let eleitores = (data.dados.eleitores && data.dados.eleitores.length > 0) ? data.dados.eleitores : [];
-                        // Se não houver eleitores cadastrados, usar os que votaram
-                        if (eleitores.length === 0) {
-                            eleitores = resultados.votos.map(v => ({
-                                id: null,
-                                nome: v.nome,
-                                cargo: v.cargo,
-                                foto: v.foto,
-                                cpf: v.cpf
-                            }));
-                        }
-                        // Map de votos por CPF
-                        const votosMap = {};
-                        resultados.votos.forEach(v => {
-                            const cpfLimpo = v.cpf.replace(/\D/g, '');
-                            votosMap[cpfLimpo] = v;
-                        });
-                        // Montar HTML
-                        let html = '';
-                        eleitores.forEach(eleitor => {
-                            const cpf_limpo = (eleitor.cpf || '').replace(/\D/g, '');
-                            const votou = !!votosMap[cpf_limpo];
-                            const voto_info = votou ? votosMap[cpf_limpo] : null;
-                            const status_voto = votou ? (voto_info.voto === 'sim' ? 'sim' : 'nao') : 'ausente';
-                            const status_texto = votou ? (voto_info.voto === 'sim' ? 'A FAVOR' : 'CONTRA') : 'AUSENTE';
-                            html += `<div class="voter-card rounded-xl p-4 fade-in" data-cpf="${cpf_limpo}">
-                                <div class="flex items-center gap-3 mb-3">
-                                    ${eleitor.foto ? `<img src="../uploads/${eleitor.foto}" alt="${eleitor.nome}" class="w-14 h-14 rounded-full object-cover border-2 border-gray-300">` : `<div class="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-400"><span class="text-gray-700 text-lg font-bold">${(eleitor.nome||'').toUpperCase().charAt(0)}</span></div>`}
-                                    <div class="flex-1 min-w-0">
-                                        <div class="text-sm font-semibold text-gray-800 truncate">${eleitor.nome || ''}</div>
-                                        ${eleitor.cargo ? `<div class="text-xs text-gray-500 truncate">${eleitor.cargo}</div>` : ''}
-                                    </div>
-                                </div>
-                                <div class="mt-3">
-                                    <div class="status-bar ${status_voto} mb-2" data-role="status-bar"></div>
-                                    <div class="text-xs font-semibold text-gray-700 text-center status-text" data-role="status-text">${status_texto}</div>
-                                </div>
-                            </div>`;
-                        });
-                        grid.innerHTML = html;
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao atualizar resultados:', error);
-            }
-        }
-                        partidoDiv.textContent = data.partido;
-                    } else {
-                        partidoDiv.textContent = '';
-                    }
-                    if (data.logo_partido) {
-                        logoImg.src = '../uploads/' + data.logo_partido;
-                        logoImg.classList.remove('hidden');
-                    } else {
-                        logoImg.classList.add('hidden');
-                    }
-                } else {
-                    conteudo.style.display = 'none';
-                    loading.style.display = '';
-                    loading.textContent = 'Nenhum tempo de fala ativo.';
-                }
-            } catch (e) {
-                conteudo.style.display = 'none';
-                loading.style.display = '';
-                loading.textContent = 'Erro ao carregar tempo de fala.';
-                debugBox.style.display = '';
-                debugJson.textContent = '';
-                debugErro.textContent = 'Erro de requisição: ' + e;
-            }
-        }
-
-        // Função para atualizar tempo de fala
-        async function atualizarTempoFala() {
-            const loading = document.getElementById('tempo-fala-loading');
-            const conteudo = document.getElementById('tempo-fala-conteudo');
-            const nomeDiv = document.getElementById('tempo-fala-nome');
-            const fotoImg = document.getElementById('tempo-fala-foto');
-            const partidoDiv = document.getElementById('tempo-fala-partido');
-            const logoImg = document.getElementById('tempo-fala-logo-partido');
-            const cargoDiv = document.getElementById('tempo-fala-cargo');
-            const restanteSpan = document.getElementById('tempo-fala-restante');
-            const statusDot = document.getElementById('tempo-fala-status-dot');
-            const statusDiv = document.getElementById('tempo-fala-status');
-            const debugBox = document.getElementById('debug-tempo-fala');
-            const debugJson = document.getElementById('debug-tempo-fala-json');
-            const debugErro = document.getElementById('debug-tempo-fala-erro');
-
-            try {
-                debugJson.textContent = '[INICIANDO] Chamada para api_discurso.php...';
-                const resp = await fetch('api_discurso.php');
-                const status = resp.status;
-                debugJson.textContent = `[HTTP ${status}] Resposta recebida, aguardando parse...`;
-                let data = null;
-                let text = '';
-                try {
-                    text = await resp.text();
-                    debugJson.textContent = `[HTTP ${status}] Texto bruto:\n${text}`;
-                    data = JSON.parse(text);
-                    debugJson.textContent += `\n[PARSE OK]`;
-                } catch (e) {
-                    debugJson.textContent += `\n[ERRO PARSE] ${e}`;
-                    data = null;
-                }
-                // Debug visual completo
-                debugBox.style.display = '';
-                debugErro.textContent = data && data.erro ? 'Erro: ' + data.erro : '';
-                console.log('[DEBUG tempo de fala]', {status, data, text});
-                if (data && data.sucesso) {
-                    loading.style.display = 'none';
-                    conteudo.style.display = '';
-                    nomeDiv.textContent = data.nome || '';
-                    cargoDiv.textContent = data.cargo || '';
-                    restanteSpan.textContent = formatarSegundos(data.tempo_restante || 0);
-                    statusDiv.textContent = data.status === 'ativo' ? 'FALANDO' : (data.status || '');
-                    statusDot.style.background = data.status === 'ativo' ? '#22c55e' : '#fbbf24';
-                    if (data.foto) {
-                        fotoImg.src = '../uploads/' + data.foto;
-                        fotoImg.classList.remove('hidden');
-                    } else {
-                        fotoImg.classList.add('hidden');
-                    }
-                    partidoDiv.textContent = data.partido || '';
-                    if (data.logo_partido) {
-                        logoImg.src = '../uploads/' + data.logo_partido;
-                        logoImg.classList.remove('hidden');
-                    } else {
-                        logoImg.classList.add('hidden');
-                    }
-                } else {
-                    conteudo.style.display = 'none';
-                    loading.style.display = '';
-                    loading.textContent = 'Nenhum tempo de fala ativo.';
-                }
-            } catch (e) {
-                conteudo.style.display = 'none';
-                loading.style.display = '';
-                loading.textContent = 'Erro ao carregar tempo de fala.';
-                debugBox.style.display = '';
-                debugJson.textContent = '';
-                debugErro.textContent = 'Erro de requisição: ' + e;
-            }
-        }
-
-        // Função para formatar segundos em mm:ss
-        function formatarSegundos(seg) {
-            seg = Math.max(0, parseInt(seg) || 0);
-            const m = Math.floor(seg / 60).toString().padStart(2, '0');
-            const s = (seg % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
-
-        // Atualizar tempo de fala a cada 1s
-        setInterval(atualizarTempoFala, 1000);
-        setTimeout(atualizarTempoFala, 200);
-                function alternarModoEscuro() {
-                    const html = document.documentElement;
-                    const dark = html.classList.toggle('dark');
-                    localStorage.setItem('darkMode', dark ? '1' : '0');
-                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
-                }
-                // Atualizar ícone ao carregar
-                document.addEventListener('DOMContentLoaded', function() {
-                    const dark = document.documentElement.classList.contains('dark');
-                    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-                    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
-                });
-      // Substitua todo o bloco <script> no final do resultados.php por este código corrigido:
-
+   <script>
 const votacaoId = <?= $votacao ? $votacao['id'] : 'null' ?>;
 
-// Função para formatar segundos em mm:ss
+// ==================== FUNÇÕES AUXILIARES ====================
+
 function formatarSegundos(seg) {
     seg = Math.max(0, parseInt(seg) || 0);
     const m = Math.floor(seg / 60).toString().padStart(2, '0');
@@ -619,106 +425,6 @@ function formatarSegundos(seg) {
     return `${m}:${s}`;
 }
 
-// Função para atualizar tempo de fala
-async function atualizarTempoFala() {
-    const loading = document.getElementById('tempo-fala-loading');
-    const conteudo = document.getElementById('tempo-fala-conteudo');
-    const nomeDiv = document.getElementById('tempo-fala-nome');
-    const fotoImg = document.getElementById('tempo-fala-foto');
-    const partidoDiv = document.getElementById('tempo-fala-partido');
-    const logoImg = document.getElementById('tempo-fala-logo-partido');
-    const cargoDiv = document.getElementById('tempo-fala-cargo');
-    const restanteSpan = document.getElementById('tempo-fala-restante');
-    const statusDot = document.getElementById('tempo-fala-status-dot');
-    const statusDiv = document.getElementById('tempo-fala-status');
-    const debugBox = document.getElementById('debug-tempo-fala');
-    const debugJson = document.getElementById('debug-tempo-fala-json');
-    const debugErro = document.getElementById('debug-tempo-fala-erro');
-
-    try {
-        debugJson.textContent = '[INICIANDO] Chamada para api_discurso.php...';
-        const resp = await fetch('api_discurso.php');
-        const status = resp.status;
-        debugJson.textContent = `[HTTP ${status}] Resposta recebida, aguardando parse...`;
-        
-        let data = null;
-        let text = '';
-        
-        try {
-            text = await resp.text();
-            debugJson.textContent = `[HTTP ${status}] Texto bruto:\n${text}`;
-            data = JSON.parse(text);
-            debugJson.textContent += `\n[PARSE OK] Dados: ${JSON.stringify(data, null, 2)}`;
-        } catch (e) {
-            debugJson.textContent += `\n[ERRO PARSE] ${e}`;
-            debugErro.textContent = 'Erro ao fazer parse do JSON: ' + e;
-            data = null;
-        }
-        
-        // Debug visual completo
-        debugBox.style.display = 'block';
-        debugErro.textContent = data && data.erro ? 'Erro da API: ' + data.erro : '';
-        console.log('[DEBUG tempo de fala]', {status, data, text});
-        
-        if (data && data.sucesso) {
-            loading.style.display = 'none';
-            conteudo.style.display = 'block';
-            
-            nomeDiv.textContent = data.nome || '';
-            cargoDiv.textContent = data.cargo || '';
-            restanteSpan.textContent = formatarSegundos(data.tempo_restante || 0);
-            
-            // Status
-            if (data.status === 'ativo') {
-                statusDiv.textContent = 'FALANDO';
-                statusDot.style.background = '#22c55e';
-            } else if (data.status === 'pausado') {
-                statusDiv.textContent = 'PAUSADO';
-                statusDot.style.background = '#fbbf24';
-            } else {
-                statusDiv.textContent = data.status ? data.status.toUpperCase() : '';
-                statusDot.style.background = '#94a3b8';
-            }
-            
-            // Foto
-            if (data.foto) {
-                fotoImg.src = '../uploads/' + data.foto;
-                fotoImg.classList.remove('hidden');
-            } else {
-                fotoImg.classList.add('hidden');
-            }
-            
-            // Partido
-            if (data.partido) {
-                partidoDiv.textContent = data.partido;
-            } else {
-                partidoDiv.textContent = '';
-            }
-            
-            // Logo do partido
-            if (data.logo_partido) {
-                logoImg.src = '../uploads/' + data.logo_partido;
-                logoImg.classList.remove('hidden');
-            } else {
-                logoImg.classList.add('hidden');
-            }
-        } else {
-            conteudo.style.display = 'none';
-            loading.style.display = 'block';
-            loading.textContent = data && data.mensagem ? data.mensagem : 'Nenhum tempo de fala ativo.';
-        }
-    } catch (e) {
-        conteudo.style.display = 'none';
-        loading.style.display = 'block';
-        loading.textContent = 'Erro ao carregar tempo de fala.';
-        debugBox.style.display = 'block';
-        debugJson.textContent = 'Erro de requisição: ' + e;
-        debugErro.textContent = 'Erro de requisição: ' + e;
-        console.error('[ERRO tempo de fala]', e);
-    }
-}
-
-// Função para animar número
 function animarNumero(elemento, valorAntigo, valorNovo, duracao = 800) {
     if (valorAntigo === valorNovo || !elemento) return;
     
@@ -744,7 +450,122 @@ function easeOutCubic(t) {
     return 1 - Math.pow(1 - t, 3);
 }
 
-// Função para atualizar resultados
+// ==================== ATUALIZAÇÃO DE TEMPO DE FALA ====================
+
+async function atualizarTempoFala() {
+    const loading = document.getElementById('tempo-fala-loading');
+    const conteudo = document.getElementById('tempo-fala-conteudo');
+    const nomeDiv = document.getElementById('tempo-fala-nome');
+    const fotoImg = document.getElementById('tempo-fala-foto');
+    const partidoDiv = document.getElementById('tempo-fala-partido');
+    const logoImg = document.getElementById('tempo-fala-logo-partido');
+    const cargoDiv = document.getElementById('tempo-fala-cargo');
+    const restanteSpan = document.getElementById('tempo-fala-restante');
+    const statusDot = document.getElementById('tempo-fala-status-dot');
+    const statusDiv = document.getElementById('tempo-fala-status');
+    
+    // Debug elements (opcional - pode remover depois)
+    const debugBox = document.getElementById('debug-tempo-fala');
+    const debugJson = document.getElementById('debug-tempo-fala-json');
+    const debugErro = document.getElementById('debug-tempo-fala-erro');
+
+    try {
+        if (debugJson) debugJson.textContent = '[INICIANDO] Chamada para api_discurso.php...';
+        
+        const resp = await fetch('api_discurso.php?t=' + Date.now()); // Cache bust
+        const status = resp.status;
+        
+        if (debugJson) debugJson.textContent = `[HTTP ${status}] Resposta recebida...`;
+        
+        let data = null;
+        let text = '';
+        
+        try {
+            text = await resp.text();
+            if (debugJson) debugJson.textContent = `[TEXTO BRUTO]\n${text.substring(0, 500)}...`;
+            data = JSON.parse(text);
+            if (debugJson) debugJson.textContent = `[PARSE OK]\n${JSON.stringify(data, null, 2)}`;
+        } catch (e) {
+            if (debugJson) debugJson.textContent = `[ERRO PARSE] ${e}\nTexto: ${text}`;
+            if (debugErro) debugErro.textContent = 'Erro ao fazer parse do JSON: ' + e;
+            data = null;
+        }
+        
+        console.log('[DEBUG tempo de fala]', {status, data, text});
+        
+        if (data && data.sucesso && data.status !== 'encerrado') {
+            // Mostrar conteúdo
+            if (loading) loading.style.display = 'none';
+            if (conteudo) conteudo.style.display = 'block';
+            
+            // Preencher dados
+            if (nomeDiv) nomeDiv.textContent = data.nome || 'Nome não disponível';
+            if (cargoDiv) cargoDiv.textContent = data.cargo || '';
+            if (restanteSpan) restanteSpan.textContent = formatarSegundos(data.tempo_restante || 0);
+            
+            // Status
+            if (statusDiv && statusDot) {
+                if (data.status === 'ativo') {
+                    statusDiv.textContent = 'FALANDO';
+                    statusDot.style.background = '#22c55e';
+                } else if (data.status === 'pausado') {
+                    statusDiv.textContent = 'PAUSADO';
+                    statusDot.style.background = '#fbbf24';
+                } else {
+                    statusDiv.textContent = data.status ? data.status.toUpperCase() : '';
+                    statusDot.style.background = '#94a3b8';
+                }
+            }
+            
+            // Foto
+            if (fotoImg) {
+                if (data.foto) {
+                    fotoImg.src = '../uploads/' + data.foto;
+                    fotoImg.classList.remove('hidden');
+                } else {
+                    fotoImg.classList.add('hidden');
+                }
+            }
+            
+            // Partido
+            if (partidoDiv) {
+                partidoDiv.textContent = data.partido || '';
+            }
+            
+            // Logo do partido
+            if (logoImg) {
+                if (data.logo_partido) {
+                    logoImg.src = '../uploads/' + data.logo_partido;
+                    logoImg.classList.remove('hidden');
+                } else {
+                    logoImg.classList.add('hidden');
+                }
+            }
+            
+            if (debugErro) debugErro.textContent = '';
+            
+        } else {
+            // Nenhum discurso ativo
+            if (conteudo) conteudo.style.display = 'none';
+            if (loading) {
+                loading.style.display = 'block';
+                loading.textContent = data && data.mensagem ? data.mensagem : 'Nenhum tempo de fala ativo.';
+            }
+        }
+    } catch (e) {
+        console.error('[ERRO tempo de fala]', e);
+        if (conteudo) conteudo.style.display = 'none';
+        if (loading) {
+            loading.style.display = 'block';
+            loading.textContent = 'Erro ao carregar tempo de fala.';
+        }
+        if (debugJson) debugJson.textContent = 'Erro de requisição: ' + e;
+        if (debugErro) debugErro.textContent = 'Erro de requisição: ' + e;
+    }
+}
+
+// ==================== ATUALIZAÇÃO DE RESULTADOS ====================
+
 async function atualizarResultados() {
     if (!votacaoId) {
         setTimeout(() => location.reload(), 5000);
@@ -752,13 +573,13 @@ async function atualizarResultados() {
     }
     
     try {
-        const response = await fetch(`api_resultados.php?votacao_id=${votacaoId}`);
+        const response = await fetch(`api_resultados.php?votacao_id=${votacaoId}&t=` + Date.now());
         const data = await response.json();
         
         if (data.sucesso) {
             const resultados = data.dados;
             
-            // Obter valores antigos
+            // Atualizar badges de totais
             const totalGeralEl = document.getElementById('total-geral');
             const totalSimEl = document.getElementById('total-sim');
             const totalNaoEl = document.getElementById('total-nao');
@@ -767,35 +588,40 @@ async function atualizarResultados() {
             const totalSimAntigo = parseInt(totalSimEl?.textContent) || 0;
             const totalNaoAntigo = parseInt(totalNaoEl?.textContent) || 0;
             
-            // Atualizar valores com animação
             if (totalGeralEl) animarNumero(totalGeralEl, totalGeralAntigo, resultados.total_geral);
             if (totalSimEl) animarNumero(totalSimEl, totalSimAntigo, resultados.total_sim);
             if (totalNaoEl) animarNumero(totalNaoEl, totalNaoAntigo, resultados.total_nao);
             
-            // Atualizar Grid de Eleitores sem recarregar
+            // Atualizar Grid de Eleitores (apenas os cards existentes)
             const grid = document.getElementById('grid-eleitores');
-            if (grid) {
+            if (grid && resultados.votos) {
+                // Criar mapa de votos por CPF
                 const votosMap = {};
                 resultados.votos.forEach(v => {
                     const cpfLimpo = v.cpf.replace(/\D/g, '');
                     votosMap[cpfLimpo] = v;
                 });
 
+                // Atualizar apenas os cards existentes
                 const cards = document.querySelectorAll('.voter-card');
                 cards.forEach(card => {
                     const cpf = card.getAttribute('data-cpf');
                     const statusBar = card.querySelector('[data-role="status-bar"]');
                     const statusText = card.querySelector('[data-role="status-text"]');
                     
-                    if (cpf && votosMap[cpf]) {
-                        const voto = votosMap[cpf].voto;
-                        statusBar.classList.remove('ausente', 'sim', 'nao');
-                        statusBar.classList.add(voto);
-                        statusText.textContent = voto === 'sim' ? 'A FAVOR' : 'CONTRA';
-                    } else if (cpf) {
-                        statusBar.classList.remove('sim', 'nao');
-                        statusBar.classList.add('ausente');
-                        statusText.textContent = 'AUSENTE';
+                    if (cpf && statusBar && statusText) {
+                        if (votosMap[cpf]) {
+                            // Votou
+                            const voto = votosMap[cpf].voto;
+                            statusBar.classList.remove('ausente', 'sim', 'nao');
+                            statusBar.classList.add(voto);
+                            statusText.textContent = voto === 'sim' ? 'A FAVOR' : 'CONTRA';
+                        } else {
+                            // Ainda não votou
+                            statusBar.classList.remove('sim', 'nao');
+                            statusBar.classList.add('ausente');
+                            statusText.textContent = 'AUSENTE';
+                        }
                     }
                 });
             }
@@ -805,31 +631,40 @@ async function atualizarResultados() {
     }
 }
 
-// Função para alternar modo escuro
+// ==================== MODO ESCURO ====================
+
 function alternarModoEscuro() {
     const html = document.documentElement;
     const dark = html.classList.toggle('dark');
     localStorage.setItem('darkMode', dark ? '1' : '0');
-    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+    const icone = document.getElementById('icone-modo');
+    const texto = document.getElementById('texto-modo');
+    if (icone) icone.textContent = dark ? '☀️' : '🌙';
+    if (texto) texto.textContent = dark ? 'Modo Claro' : 'Modo Escuro';
 }
 
-// Inicializar ao carregar
+// ==================== INICIALIZAÇÃO ====================
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Atualizar ícone do modo escuro
     const dark = document.documentElement.classList.contains('dark');
-    document.getElementById('icone-modo').textContent = dark ? '☀️' : '🌙';
-    document.getElementById('texto-modo').textContent = dark ? 'Modo Claro' : 'Modo Escuro';
+    const icone = document.getElementById('icone-modo');
+    const texto = document.getElementById('texto-modo');
+    if (icone) icone.textContent = dark ? '☀️' : '🌙';
+    if (texto) texto.textContent = dark ? 'Modo Claro' : 'Modo Escuro';
     
     // Primeira atualização
     setTimeout(atualizarTempoFala, 200);
     setTimeout(atualizarResultados, 500);
 });
 
-// Atualizar tempo de fala a cada 1s
+// ==================== INTERVALOS ====================
+
+// Atualizar tempo de fala a cada 1 segundo
 setInterval(atualizarTempoFala, 1000);
 
 // Atualizar resultados a cada 3 segundos
 setInterval(atualizarResultados, 3000);
-    </script>
+</script>
 </body>
 </html>
