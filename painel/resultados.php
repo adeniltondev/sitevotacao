@@ -1,5 +1,5 @@
                         <!-- Debug Tempo de Fala -->
-                        <div id="debug-tempo-fala" class="stat-box rounded-xl p-4 mt-4 bg-gray-100 dark:bg-gray-800 text-xs text-left w-full max-w-2xl mx-auto" style="display:block; visibility:visible; height:auto; overflow:auto;">
+                        <div id="debug-tempo-fala" class="stat-box rounded-xl p-4 mt-4 bg-gray-100 dark:bg-gray-800 text-xs text-left w-full max-w-2xl mx-auto" style="display:none; visibility:hidden; height:0; overflow:hidden;">
                             <div class="font-bold mb-1">[DEBUG] Tempo de Fala API Response:</div>
                             <pre id="debug-tempo-fala-json" style="white-space:pre-wrap;word-break:break-all;"></pre>
                             <div id="debug-tempo-fala-erro" class="text-red-600 font-bold mt-2"></div>
@@ -445,7 +445,7 @@ foreach ($resultados['votos'] as $voto) {
                 } catch (jsonErr) {
                     erroMsg = 'Erro ao decodificar JSON: ' + jsonErr + '\nResposta bruta: ' + raw;
                 }
-                debugBox.style.display = '';
+                // debugBox.style.display = '';
                 debugInfo = '[Status HTTP]: ' + status + '\n[Tempo resposta]: ' + (end-start).toFixed(1) + 'ms\n[Headers]:\n' + headers + '\n[Conteúdo bruto]:\n' + raw + '\n[JSON]:\n' + (data ? JSON.stringify(data, null, 2) : 'null');
                 debugJson.textContent = debugInfo;
                 debugErro.textContent = erroMsg;
