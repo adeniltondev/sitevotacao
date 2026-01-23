@@ -117,7 +117,7 @@ function buscarResultados($pdo, $votacao_id) {
 $eleitores_cadastrados = [];
 try {
     if ($votacao) {
-        $eleitores_cadastrados = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll();
+        $eleitores_cadastrados = $pdo->query("SELECT id, nome, cpf, cargo, foto, logo_partido, perfil, ativo FROM eleitores ORDER BY nome ASC")->fetchAll();
     }
 } catch (Exception $e) {
     $eleitores_cadastrados = [];
