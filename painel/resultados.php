@@ -80,26 +80,32 @@ if ($resultados['total_geral'] > 0) {
 
 // Criar mapa de quem já votou (por CPF)
 $mapa_votantes = [];
-foreach ($resultados['votos'] as $voto) {
-    $cpf_limpo = preg_replace('/[^0-9]/', '', $voto['cpf']);
-    $mapa_votantes[$cpf_limpo] = $voto;
+if (isset($resultados['votos']) && is_array($resultados['votos'])) {
+    foreach ($resultados['votos'] as $voto) {
+        if (isset($voto['cpf'])) {
+            $cpf_limpo = preg_replace('/[^0-9]/', '', $voto['cpf']);
+            $mapa_votantes[$cpf_limpo] = $voto;
+        }
+    }
 }
 
 // Preparar lista de eleitores para exibir
 $eleitores_para_exibir = [];
-if (count($eleitores_cadastrados) > 0) {
+if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
     // Se há eleitores cadastrados, usar eles
     $eleitores_para_exibir = $eleitores_cadastrados;
-} else {
+} elseif (isset($resultados['votos']) && is_array($resultados['votos']) && count($resultados['votos']) > 0) {
     // Se não há eleitores cadastrados, usar os que votaram
     foreach ($resultados['votos'] as $voto) {
-        $eleitores_para_exibir[] = [
-            'id' => null,
-            'nome' => $voto['nome'],
-            'cargo' => $voto['cargo'] ?? '',
-            'foto' => $voto['foto'] ?? null,
-            'cpf' => $voto['cpf']
-        ];
+        if (isset($voto['nome']) && isset($voto['cpf'])) {
+            $eleitores_para_exibir[] = [
+                'id' => $voto['id'] ?? null,
+                'nome' => $voto['nome'],
+                'cargo' => $voto['cargo'] ?? '',
+                'foto' => $voto['foto'] ?? null,
+                'cpf' => $voto['cpf']
+            ];
+        }
     }
 }
 ?>
