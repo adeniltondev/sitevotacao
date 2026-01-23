@@ -266,6 +266,15 @@ require_once 'sidebar.php';
                         Deixe em branco para manter a foto atual.</p>
                 </div>
 
+                <div>
+                    <label for="logo_partido" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo do Partido
+                        (Opcional)</label>
+                    <input type="file" id="logo_partido" name="logo_partido" accept="image/*"
+                        class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="aviso-logo-edit" style="display:none;">
+                        Deixe em branco para manter a logo atual.</p>
+                </div>
+
                 <div class="flex justify-end gap-3 pt-4">
                     <button type="button" id="btn-cancelar" onclick="cancelarEdicao()"
                         class="hidden px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
@@ -297,6 +306,7 @@ require_once 'sidebar.php';
                             <th class="px-6 py-4 font-semibold">Eleitor</th>
                             <th class="px-6 py-4 font-semibold">CPF</th>
                             <th class="px-6 py-4 font-semibold">Cargo</th>
+                            <th class="px-6 py-4 font-semibold">Partido</th>
                             <th class="px-6 py-4 font-semibold">Status</th>
                             <th class="px-6 py-4 font-semibold text-right">Ações</th>
                         </tr>
@@ -328,6 +338,14 @@ require_once 'sidebar.php';
                                 </td>
                                 <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
                                     <?= htmlspecialchars($eleitor['cargo'] ?? '-') ?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <?php if ($eleitor['logo_partido']): ?>
+                                        <img src="../uploads/<?= htmlspecialchars($eleitor['logo_partido']) ?>" alt="Logo do Partido"
+                                            class="h-8 w-auto object-contain">
+                                    <?php else: ?>
+                                        <span class="text-gray-400 dark:text-gray-500 text-sm">-</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4">
                                     <?php if ($eleitor['ativo']): ?>
