@@ -528,19 +528,23 @@ foreach ($resultados['votos'] as $voto) {
             const debugErro = document.getElementById('debug-tempo-fala-erro');
 
             try {
+                debugJson.textContent = '[INICIANDO] Chamada para api_discurso.php...';
                 const resp = await fetch('api_discurso.php');
                 const status = resp.status;
+                debugJson.textContent = `[HTTP ${status}] Resposta recebida, aguardando parse...`;
                 let data = null;
                 let text = '';
                 try {
                     text = await resp.text();
+                    debugJson.textContent = `[HTTP ${status}] Texto bruto:\n${text}`;
                     data = JSON.parse(text);
+                    debugJson.textContent += `\n[PARSE OK]`;
                 } catch (e) {
+                    debugJson.textContent += `\n[ERRO PARSE] ${e}`;
                     data = null;
                 }
                 // Debug visual completo
                 debugBox.style.display = '';
-                debugJson.textContent = `HTTP: ${status}\n${text}`;
                 debugErro.textContent = data && data.erro ? 'Erro: ' + data.erro : '';
                 console.log('[DEBUG tempo de fala]', {status, data, text});
                 if (data && data.sucesso) {
