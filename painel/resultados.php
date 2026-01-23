@@ -277,36 +277,7 @@ foreach ($resultados['votos'] as $voto) {
                             <?php endif; ?>
                         </div>
 
-                        <!-- Controle de Tempo de Fala -->
-                        <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in mt-4 bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 220px;">
-                                                    <!-- Debug Tempo de Fala -->
-                                                    <div id="debug-tempo-fala" class="stat-box rounded-xl p-4 mt-4 bg-gray-100 dark:bg-gray-800 text-xs text-left w-full max-w-2xl mx-auto" style="display:none;">
-                                                        <div class="font-bold mb-1">[DEBUG] Tempo de Fala API Response:</div>
-                                                        <pre id="debug-tempo-fala-json" style="white-space:pre-wrap;word-break:break-all;"></pre>
-                                                        <div id="debug-tempo-fala-erro" class="text-red-600 font-bold mt-2"></div>
-                                                    </div>
-                            <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
-                            <div id="tempo-fala-conteudo" style="display:none; width:100%;">
-                                <div class="flex flex-col items-center justify-center w-full">
-                                    <div class="flex items-center justify-center mb-2 w-full">
-                                        <img id="tempo-fala-foto" src="" alt="Foto" class="w-24 h-24 rounded-full object-cover border-4 border-blue-400 shadow-lg hidden">
-                                    </div>
-                                    <div id="tempo-fala-nome" class="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white text-center mb-1 uppercase tracking-tight"></div>
-                                    <div class="flex flex-col items-center mb-2">
-                                        <img id="tempo-fala-logo-partido" src="" alt="Logo Partido" class="h-8 mb-1 hidden">
-                                        <div id="tempo-fala-partido" class="text-base font-bold text-blue-700 dark:text-blue-200 text-center"></div>
-                                    </div>
-                                    <div id="tempo-fala-cargo" class="text-xs text-gray-600 dark:text-gray-300 mb-2 text-center"></div>
-                                    <div class="flex items-center justify-center w-full mb-2">
-                                        <span id="tempo-fala-restante" class="text-5xl md:text-6xl font-mono font-extrabold text-gray-900 dark:text-white tracking-widest">00:00</span>
-                                    </div>
-                                    <div class="flex items-center justify-center gap-2 mb-1">
-                                        <span class="inline-block w-3 h-3 rounded-full" id="tempo-fala-status-dot"></span>
-                                        <span id="tempo-fala-status" class="text-base font-bold"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                 
 
                         <!-- Estatísticas -->
                         <div class="grid grid-cols-2 gap-3">
@@ -420,6 +391,30 @@ foreach ($resultados['votos'] as $voto) {
                 </div>
             <?php endif; ?>
         </div>
+               <!-- Controle de Tempo de Fala -->
+                        <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in mt-4 bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 220px;">
+                            <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
+                            <div id="tempo-fala-conteudo" style="display:none; width:100%;">
+                                <div class="flex flex-col items-center justify-center w-full">
+                                    <div class="flex items-center justify-center mb-2 w-full">
+                                        <img id="tempo-fala-foto" src="" alt="Foto" class="w-24 h-24 rounded-full object-cover border-4 border-blue-400 shadow-lg hidden">
+                                    </div>
+                                    <div id="tempo-fala-nome" class="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white text-center mb-1 uppercase tracking-tight"></div>
+                                    <div class="flex flex-col items-center mb-2">
+                                        <img id="tempo-fala-logo-partido" src="" alt="Logo Partido" class="h-8 mb-1 hidden">
+                                        <div id="tempo-fala-partido" class="text-base font-bold text-blue-700 dark:text-blue-200 text-center"></div>
+                                    </div>
+                                    <div id="tempo-fala-cargo" class="text-xs text-gray-600 dark:text-gray-300 mb-2 text-center"></div>
+                                    <div class="flex items-center justify-center w-full mb-2">
+                                        <span id="tempo-fala-restante" class="text-5xl md:text-6xl font-mono font-extrabold text-gray-900 dark:text-white tracking-widest">00:00</span>
+                                    </div>
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <span class="inline-block w-3 h-3 rounded-full" id="tempo-fala-status-dot"></span>
+                                        <span id="tempo-fala-status" class="text-base font-bold"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
     </div>
 
     <script>
