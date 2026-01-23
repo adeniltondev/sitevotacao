@@ -458,6 +458,7 @@ require_once 'sidebar.php';
 
         document.getElementById('btn-cancelar').classList.remove('hidden');
         document.getElementById('aviso-foto-edit').style.display = 'block';
+        document.getElementById('aviso-logo-edit').style.display = 'block';
 
         // Rolar para o formulário
         document.getElementById('card-formulario').scrollIntoView({ behavior: 'smooth' });
@@ -479,6 +480,7 @@ require_once 'sidebar.php';
 
         document.getElementById('btn-cancelar').classList.add('hidden');
         document.getElementById('aviso-foto-edit').style.display = 'none';
+        document.getElementById('aviso-logo-edit').style.display = 'none';
 
         document.getElementById('card-formulario').classList.remove('ring-2', 'ring-indigo-500');
     }
