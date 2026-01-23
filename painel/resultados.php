@@ -81,7 +81,26 @@ if ($resultados['total_geral'] > 0) {
 // Criar mapa de quem já votou (por CPF)
 $mapa_votantes = [];
 foreach ($resultados['votos'] as $voto) {
-    $mapa_votantes[$voto['cpf']] = $voto;
+    $cpf_limpo = preg_replace('/[^0-9]/', '', $voto['cpf']);
+    $mapa_votantes[$cpf_limpo] = $voto;
+}
+
+// Preparar lista de eleitores para exibir
+$eleitores_para_exibir = [];
+if (count($eleitores_cadastrados) > 0) {
+    // Se há eleitores cadastrados, usar eles
+    $eleitores_para_exibir = $eleitores_cadastrados;
+} else {
+    // Se não há eleitores cadastrados, usar os que votaram
+    foreach ($resultados['votos'] as $voto) {
+        $eleitores_para_exibir[] = [
+            'id' => null,
+            'nome' => $voto['nome'],
+            'cargo' => $voto['cargo'] ?? '',
+            'foto' => $voto['foto'] ?? null,
+            'cpf' => $voto['cpf']
+        ];
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -353,7 +372,13 @@ foreach ($resultados['votos'] as $voto) {
                                                 </div>
                                             </div>
                                         </div>
-                                    <?php endforeach; ?>
+                                    <?php 
+                                        endforeach;
+                                    else: ?>
+                                        <div class="col-span-full text-center text-gray-500 py-8">
+                                            Nenhum eleitor cadastrado ou votante encontrado.
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             <?php else: ?>
                                 <div class="text-center text-gray-500 text-sm my-8">Acesse com login de vereador ou secretário para ver o detalhamento dos votantes.</div>
@@ -589,24 +614,28 @@ async function atualizarResultados() {
             // Atualizar Grid de Eleitores (apenas os cards existentes)
             const grid = document.getElementById('grid-eleitores');
             if (grid && resultados.votos) {
-                // Criar mapa de votos por CPF
+                // Criar mapa de votos por CPF (usando CPF limpo)
                 const votosMap = {};
                 resultados.votos.forEach(v => {
-                    const cpfLimpo = v.cpf.replace(/\D/g, '');
+                    // Usar cpf_limpo se disponível, senão limpar o cpf
+                    const cpfLimpo = v.cpf_limpo || v.cpf.replace(/\D/g, '');
                     votosMap[cpfLimpo] = v;
                 });
 
                 // Atualizar apenas os cards existentes
                 const cards = document.querySelectorAll('.voter-card');
                 cards.forEach(card => {
-                    const cpf = card.getAttribute('data-cpf');
+                    const cpfCard = card.getAttribute('data-cpf');
                     const statusBar = card.querySelector('[data-role="status-bar"]');
                     const statusText = card.querySelector('[data-role="status-text"]');
                     
-                    if (cpf && statusBar && statusText) {
-                        if (votosMap[cpf]) {
+                    if (cpfCard && statusBar && statusText) {
+                        // Garantir que o CPF do card também está limpo
+                        const cpfLimpoCard = cpfCard.replace(/\D/g, '');
+                        
+                        if (votosMap[cpfLimpoCard]) {
                             // Votou
-                            const voto = votosMap[cpf].voto;
+                            const voto = votosMap[cpfLimpoCard].voto;
                             statusBar.classList.remove('ausente', 'sim', 'nao');
                             statusBar.classList.add(voto);
                             statusText.textContent = voto === 'sim' ? 'A FAVOR' : 'CONTRA';

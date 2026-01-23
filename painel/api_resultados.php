@@ -42,6 +42,12 @@ $stmt = $pdo->prepare("SELECT nome, cpf, cargo, foto, voto, criado_em FROM votos
 $stmt->execute([$votacao_id]);
 $votos = $stmt->fetchAll();
 
+// Normalizar CPF nos votos para comparação (remover formatação)
+foreach ($votos as &$voto) {
+    $voto['cpf_limpo'] = preg_replace('/[^0-9]/', '', $voto['cpf']);
+}
+unset($voto);
+
 // Buscar eleitores cadastrados
 $eleitores = $pdo->query("SELECT nome, cpf, cargo, foto FROM eleitores ORDER BY nome ASC")->fetchAll();
 
