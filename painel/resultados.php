@@ -279,6 +279,12 @@ foreach ($resultados['votos'] as $voto) {
 
                         <!-- Controle de Tempo de Fala -->
                         <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in mt-4 bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 220px;">
+                                                    <!-- Debug Tempo de Fala -->
+                                                    <div id="debug-tempo-fala" class="stat-box rounded-xl p-4 mt-4 bg-gray-100 dark:bg-gray-800 text-xs text-left w-full max-w-2xl mx-auto" style="display:none;">
+                                                        <div class="font-bold mb-1">[DEBUG] Tempo de Fala API Response:</div>
+                                                        <pre id="debug-tempo-fala-json" style="white-space:pre-wrap;word-break:break-all;"></pre>
+                                                        <div id="debug-tempo-fala-erro" class="text-red-600 font-bold mt-2"></div>
+                                                    </div>
                             <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
                             <div id="tempo-fala-conteudo" style="display:none; width:100%;">
                                 <div class="flex flex-col items-center justify-center w-full">
