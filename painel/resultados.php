@@ -252,7 +252,7 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                                 </div>
                             </div>
 
-                            <?php if ($votacao['descricao']): ?>
+                            <?php if ($votacao && isset($votacao['descricao']) && $votacao['descricao']): ?>
                                 <p class="mt-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                     <?= htmlspecialchars($votacao['descricao']) ?>
                                 </p>
