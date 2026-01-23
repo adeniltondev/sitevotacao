@@ -511,6 +511,72 @@ foreach ($resultados['votos'] as $voto) {
             }
         }
 
+        // Função para atualizar tempo de fala
+        async function atualizarTempoFala() {
+            const loading = document.getElementById('tempo-fala-loading');
+            const conteudo = document.getElementById('tempo-fala-conteudo');
+            const nomeDiv = document.getElementById('tempo-fala-nome');
+            const fotoImg = document.getElementById('tempo-fala-foto');
+            const partidoDiv = document.getElementById('tempo-fala-partido');
+            const logoImg = document.getElementById('tempo-fala-logo-partido');
+            const cargoDiv = document.getElementById('tempo-fala-cargo');
+            const restanteSpan = document.getElementById('tempo-fala-restante');
+            const statusDot = document.getElementById('tempo-fala-status-dot');
+            const statusDiv = document.getElementById('tempo-fala-status');
+            const debugBox = document.getElementById('debug-tempo-fala');
+            const debugJson = document.getElementById('debug-tempo-fala-json');
+            const debugErro = document.getElementById('debug-tempo-fala-erro');
+
+            try {
+                const resp = await fetch('api_tempo_fala.php');
+                const data = await resp.json();
+                debugBox.style.display = '';
+                debugJson.textContent = JSON.stringify(data, null, 2);
+                debugErro.textContent = '';
+                if (data.sucesso) {
+                    loading.style.display = 'none';
+                    conteudo.style.display = '';
+                    nomeDiv.textContent = data.nome || '';
+                    cargoDiv.textContent = data.cargo || '';
+                    restanteSpan.textContent = formatarSegundos(data.tempo_restante || 0);
+                    statusDiv.textContent = data.status === 'ativo' ? 'FALANDO' : (data.status || '');
+                    statusDot.style.background = data.status === 'ativo' ? '#22c55e' : '#fbbf24';
+                    if (data.foto) {
+                        fotoImg.src = '../uploads/' + data.foto;
+                        fotoImg.classList.remove('hidden');
+                    } else {
+                        fotoImg.classList.add('hidden');
+                    }
+                    partidoDiv.textContent = data.partido || '';
+                    if (data.logo_partido) {
+                        logoImg.src = '../uploads/' + data.logo_partido;
+                        logoImg.classList.remove('hidden');
+                    } else {
+                        logoImg.classList.add('hidden');
+                    }
+                } else {
+                    conteudo.style.display = 'none';
+                    loading.style.display = '';
+                    loading.textContent = 'Nenhum tempo de fala ativo.';
+                }
+            } catch (e) {
+                conteudo.style.display = 'none';
+                loading.style.display = '';
+                loading.textContent = 'Erro ao carregar tempo de fala.';
+                debugBox.style.display = '';
+                debugJson.textContent = '';
+                debugErro.textContent = 'Erro de requisição: ' + e;
+            }
+        }
+
+        // Função para formatar segundos em mm:ss
+        function formatarSegundos(seg) {
+            seg = Math.max(0, parseInt(seg) || 0);
+            const m = Math.floor(seg / 60).toString().padStart(2, '0');
+            const s = (seg % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
         // Atualizar tempo de fala a cada 1s
         setInterval(atualizarTempoFala, 1000);
         setTimeout(atualizarTempoFala, 200);
