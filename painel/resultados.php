@@ -59,8 +59,13 @@ function buscarResultados($pdo, $votacao_id) {
 
 // Buscar todos os eleitores cadastrados (para mostrar quem ainda não votou)
 $eleitores_cadastrados = [];
-if ($votacao) {
-    $eleitores_cadastrados = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll();
+try {
+    if ($votacao) {
+        $eleitores_cadastrados = $pdo->query("SELECT * FROM eleitores ORDER BY nome ASC")->fetchAll();
+    }
+} catch (Exception $e) {
+    $eleitores_cadastrados = [];
+    error_log("Erro ao buscar eleitores: " . $e->getMessage());
 }
 
 $resultados = buscarResultados($pdo, $votacao ? $votacao['id'] : null);
