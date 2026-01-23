@@ -329,31 +329,17 @@ foreach ($resultados['votos'] as $voto) {
                         </div>
                     </div>
 
-                    <!-- Coluna Direita - Grid de Eleitores -->
-                    <div class="lg:col-span-2">
+                    <!-- Coluna Direita - Grid de Eleitores + Controle de Tempo de Fala -->
+                    <div class="lg:col-span-2 flex flex-col gap-6">
                         <div class="stat-box rounded-2xl p-6 md:p-7 fade-in mb-4">
                             <h2 class="text-xl font-bold text-gray-800 mb-6">
                                 VOTAÇÃO <?= strtoupper(htmlspecialchars($votacao['titulo'])) ?>
                             </h2>
-                            
                             <?php if ($temAcessoDetalhado): ?>
                                 <!-- Grid de Eleitores -->
                                 <div id="grid-eleitores" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                                     <?php 
-                                    // Mostrar eleitores cadastrados ou votantes
-                                    $eleitores_para_exibir = count($eleitores_cadastrados) > 0 ? $eleitores_cadastrados : [];
-                                    // Se não houver eleitores cadastrados, usar os que votaram
-                                    if (count($eleitores_para_exibir) == 0) {
-                                        foreach ($resultados['votos'] as $voto) {
-                                            $eleitores_para_exibir[] = [
-                                                'id' => null,
-                                                'nome' => $voto['nome'],
-                                                'cargo' => $voto['cargo'],
-                                                'foto' => $voto['foto'],
-                                                'cpf' => $voto['cpf']
-                                            ];
-                                        }
-                                    }
+                                    // ...existing code...
                                     foreach ($eleitores_para_exibir as $eleitor):
                                         $cpf_limpo = preg_replace('/[^0-9]/', '', $eleitor['cpf']);
                                         $votou = isset($mapa_votantes[$cpf_limpo]);
@@ -401,6 +387,32 @@ foreach ($resultados['votos'] as $voto) {
                             <?php else: ?>
                                 <div class="text-center text-gray-500 text-sm my-8">Acesse com login de vereador ou secretário para ver o detalhamento dos votantes.</div>
                             <?php endif; ?>
+                        </div>
+
+                        <!-- Controle de Tempo de Fala (agora na direita) -->
+                        <div id="card-tempo-fala" class="stat-box rounded-2xl p-6 md:p-7 fade-in bg-blue-50 dark:bg-blue-900/30 flex flex-col items-center justify-center" style="min-height: 220px;">
+                            <!-- ...existing code do card de tempo de fala... -->
+                            <div id="tempo-fala-loading" class="text-gray-500 text-center">Carregando tempo de fala...</div>
+                            <div id="tempo-fala-conteudo" style="display:none; width:100%;">
+                                <div class="flex flex-col items-center justify-center w-full">
+                                    <div class="flex items-center justify-center mb-2 w-full">
+                                        <img id="tempo-fala-foto" src="" alt="Foto" class="w-24 h-24 rounded-full object-cover border-4 border-blue-400 shadow-lg hidden">
+                                    </div>
+                                    <div id="tempo-fala-nome" class="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white text-center mb-1 uppercase tracking-tight"></div>
+                                    <div class="flex flex-col items-center mb-2">
+                                        <img id="tempo-fala-logo-partido" src="" alt="Logo Partido" class="h-8 mb-1 hidden">
+                                        <div id="tempo-fala-partido" class="text-base font-bold text-blue-700 dark:text-blue-200 text-center"></div>
+                                    </div>
+                                    <div id="tempo-fala-cargo" class="text-xs text-gray-600 dark:text-gray-300 mb-2 text-center"></div>
+                                    <div class="flex items-center justify-center w-full mb-2">
+                                        <span id="tempo-fala-restante" class="text-5xl md:text-6xl font-mono font-extrabold text-gray-900 dark:text-white tracking-widest">00:00</span>
+                                    </div>
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <span class="inline-block w-3 h-3 rounded-full" id="tempo-fala-status-dot"></span>
+                                        <span id="tempo-fala-status" class="text-base font-bold"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Status de Atualização -->
