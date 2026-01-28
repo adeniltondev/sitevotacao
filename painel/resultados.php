@@ -345,7 +345,7 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                                 </p>
                             <?php endif; ?>
 
-                            <div class="mt-6 grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-start">
+                            <div class="mt-6 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center">
                                 <div>
                                     <?php if (!empty($settings['logo_path']) && file_exists(__DIR__ . '/../' . $settings['logo_path'])): ?>
                                         <div class="flex items-center justify-center h-full py-2">
@@ -360,7 +360,7 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                                     <?php endif; ?>
                                 </div>
 
-                                <div class="flex md:justify-end">
+                                <div class="flex md:justify-center">
                                     <div class="rounded-xl bg-white/70 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700 p-3">
                                         <div class="text-[11px] font-semibold text-gray-600 dark:text-gray-400 text-center mb-2">Acesse pelo celular</div>
                                         <?php
@@ -368,8 +368,8 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
                                         $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=' . urlencode($url_resultados);
                                         $url_display = preg_replace('#^https?://#', '', $url_resultados);
                                         ?>
-                                        <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="text-center w-28 h-28 rounded-lg bg-white" loading="lazy" onerror="this.style.display='none'">
-                                        <div class="mt-2 text-[10px] text-center  text-gray-400 dark:text-gray-500 text-center max-w-[140px] truncate" title="<?= htmlspecialchars($url_display) ?>">
+                                        <img src="<?= $qr_url ?>" alt="QR Code Resultados" class="block mx-auto w-28 h-28 rounded-lg bg-white" loading="lazy" onerror="this.style.display='none'">
+                                        <div class="mt-2 text-[10px] text-gray-400 dark:text-gray-500 text-center max-w-[140px] truncate" title="<?= htmlspecialchars($url_display) ?>">
                                             <?= htmlspecialchars($url_display) ?>
                                         </div>
                                     </div>
