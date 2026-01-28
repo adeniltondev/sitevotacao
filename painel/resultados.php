@@ -32,7 +32,8 @@ try {
 $configFile = __DIR__ . '/../config/settings.json';
 $settings = [
     'sistema_nome' => 'Sistema de Votação',
-    'favicon_path' => ''
+    'favicon_path' => '',
+    'logo_path' => ''
 ];
 if (file_exists($configFile)) {
     $savedSettings = json_decode(file_get_contents($configFile), true);
@@ -346,21 +347,17 @@ if (is_array($eleitores_cadastrados) && count($eleitores_cadastrados) > 0) {
 
                             <div class="mt-6 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-start">
                                 <div>
-                                    <?php if ($votacao): ?>
-                                        <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Exportação</div>
-                                        <div class="flex flex-wrap gap-2">
-                                            <a href="exportar_csv.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
-                                                CSV
-                                            </a>
-                                            <a href="exportar_pdf.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
-                                                PDF
-                                            </a>
-                                            <a href="exportar_ata.php?votacao_id=<?= $votacao['id'] ?>" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-gray-900 text-white px-3 py-2 text-xs font-semibold hover:bg-gray-800 transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
-                                                Ata
-                                            </a>
+                                    <?php if (!empty($settings['logo_path']) && file_exists(__DIR__ . '/../' . $settings['logo_path'])): ?>
+                                        <div class="flex items-center justify-center h-full py-2">
+                                            <img src="../<?= htmlspecialchars($settings['logo_path']) ?>" 
+                                                 alt="<?= htmlspecialchars($settings['sistema_nome']) ?>" 
+                                                 class="max-h-24 w-auto object-contain drop-shadow-sm">
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="flex items-center justify-center h-full py-4 text-2xl font-bold text-gray-300 dark:text-gray-700">
+                                            <?= htmlspecialchars($settings['sistema_nome'] ?? 'Votação') ?>
                                         </div>
                                     <?php endif; ?>
-                                    <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Exporta todos os votos desta votação.</div>
                                 </div>
 
                                 <div class="flex md:justify-end">
